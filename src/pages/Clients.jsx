@@ -137,7 +137,7 @@ export function Clients() {
               <button
                 key={c.id}
                 onClick={() => { setEditingId(c.id); setMode('edit') }}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-primary-300 transition-colors"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-gold-400 transition-colors"
               >
                 <p className="text-xl font-bold text-gray-800">{c.name}</p>
                 {(c.address || c.city) && (

@@ -60,14 +60,14 @@ export function InvoiceList() {
                 <button
                   key={inv.id}
                   onClick={() => navigate(`/facturen/${inv.id}`)}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left flex items-center gap-4 hover:border-primary-300 transition-colors"
+                  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left flex items-center gap-4 hover:border-gold-400 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-xl font-bold text-gray-800 truncate">{inv.client?.name || '—'}</p>
                     <p className="text-base text-gray-500">#{inv.invoiceNumber} · {new Date(inv.date).toLocaleDateString('nl-NL')}</p>
                   </div>
                   <div className="text-right flex flex-col items-end gap-1 shrink-0">
-                    <p className="text-xl font-bold text-primary-800">{formatEuro(total)}</p>
+                    <p className="text-xl font-bold text-primary-700">{formatEuro(total)}</p>
                     <StatusBadge status={inv.status} />
                   </div>
                 </button>

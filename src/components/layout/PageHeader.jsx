@@ -12,8 +12,10 @@ export function PageHeader({ title, showBack = false, backTo, rightAction }) {
   }
 
   return (
-    <header className="sticky top-0 bg-primary-800 text-white z-30 shadow-md">
-      <div className="flex items-center min-h-[64px] px-4 gap-3">
+    <header className="sticky top-0 bg-primary-700 text-white z-30 shadow-md">
+      {/* Gold accent line at top */}
+      <div className="h-1 bg-gold-500 w-full" />
+      <div className="flex items-center min-h-[60px] px-4 gap-3">
         {showBack && (
           <button
             onClick={handleBack}
@@ -23,7 +25,7 @@ export function PageHeader({ title, showBack = false, backTo, rightAction }) {
             <span className={`text-2xl ${isRtl ? 'rotate-180' : ''} inline-block`}>←</span>
           </button>
         )}
-        <h1 className="flex-1 text-2xl font-bold truncate">{title}</h1>
+        <h1 className="flex-1 text-2xl font-bold truncate font-poppins">{title}</h1>
         {rightAction}
       </div>
     </header>

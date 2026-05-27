@@ -49,18 +49,18 @@ export function Settings() {
       <div className="p-4 pb-24 flex flex-col gap-6">
 
         {/* UI Language */}
-        <section className="bg-white rounded-2xl p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('label_ui_language')}</h2>
+        <section className="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-gold-500">
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('label_ui_language')}</h2>
           <div className="flex gap-3">
             <button
               onClick={() => handleLangChange('nl')}
-              className={`flex-1 min-h-[64px] text-xl font-bold rounded-2xl border-2 transition-all ${settings.uiLanguage === 'nl' ? 'bg-primary-700 text-white border-primary-700' : 'bg-white text-gray-700 border-gray-300'}`}
+              className={`flex-1 min-h-[64px] text-xl font-bold rounded-2xl border-2 transition-all font-poppins ${settings.uiLanguage === 'nl' ? 'bg-primary-700 text-gold-400 border-primary-700' : 'bg-white text-gray-700 border-gray-300'}`}
             >
               🇳🇱 Nederlands
             </button>
             <button
               onClick={() => handleLangChange('ar')}
-              className={`flex-1 min-h-[64px] text-xl font-bold rounded-2xl border-2 transition-all ${settings.uiLanguage === 'ar' ? 'bg-primary-700 text-white border-primary-700' : 'bg-white text-gray-700 border-gray-300'}`}
+              className={`flex-1 min-h-[64px] text-xl font-bold rounded-2xl border-2 transition-all font-poppins ${settings.uiLanguage === 'ar' ? 'bg-primary-700 text-gold-400 border-primary-700' : 'bg-white text-gray-700 border-gray-300'}`}
             >
               🇸🇦 عربي
             </button>
@@ -69,7 +69,7 @@ export function Settings() {
 
         {/* Payment terms */}
         <section className="bg-white rounded-2xl p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('label_default_due_days')}</h2>
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('label_default_due_days')}</h2>
           <BigInput
             type="number"
             inputMode="numeric"
@@ -82,7 +82,7 @@ export function Settings() {
 
         {/* PIN */}
         <section className="bg-white rounded-2xl p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('label_change_pin')}</h2>
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('label_change_pin')}</h2>
           {pinSuccess && <p className="text-green-600 text-lg mb-3">✅ PIN gewijzigd!</p>}
           {!changingPin ? (
             <BigButton variant="outline" onClick={() => setChangingPin(true)}>
@@ -117,7 +117,7 @@ export function Settings() {
 
         {/* Company info */}
         <section className="bg-white rounded-2xl p-5 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('settings_company')}</h2>
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('settings_company')}</h2>
           <div className="flex flex-col gap-2 text-lg text-gray-600">
             <p className="font-bold text-gray-800">{COMPANY.name}</p>
             <p>{COMPANY.address}</p>

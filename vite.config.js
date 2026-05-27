@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'Omniworx Factuur',
         short_name: 'Factuur',
         description: 'Facturatie app voor Omniworx',
-        theme_color: '#1e40af',
+        theme_color: '#0C3C3A',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',

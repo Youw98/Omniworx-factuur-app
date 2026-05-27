@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { hashPin } from '../../utils/pinHash'
-import { BigButton } from './BigButton'
+import { OmniworxWordmark } from './OmniworxLogo'
 
 export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const { t } = useTranslation('ui')
@@ -57,25 +57,26 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const displayPin = isSettingUp && step === 'confirm' ? confirmPin : pin
 
   return (
-    <div className="min-h-screen bg-primary-800 flex flex-col items-center justify-center p-6 gap-8">
-      <div className="text-white text-center">
-        <p className="text-5xl font-bold mb-2">🔒</p>
-        <p className="text-2xl font-semibold mt-4">{title}</p>
-      </div>
+    <div className="min-h-screen bg-primary-700 flex flex-col items-center justify-center p-6 gap-8">
+      {/* Logo */}
+      <OmniworxWordmark className="justify-center" />
+
+      {/* Title */}
+      <p className="text-gold-300 text-2xl font-semibold font-poppins">{title}</p>
 
       {/* PIN dots */}
       <div className="flex gap-5">
         {[0, 1, 2, 3].map(i => (
           <div
             key={i}
-            className={`w-6 h-6 rounded-full border-2 border-white transition-all ${
-              displayPin.length > i ? 'bg-white scale-110' : 'bg-transparent'
+            className={`w-6 h-6 rounded-full border-2 border-gold-400 transition-all ${
+              displayPin.length > i ? 'bg-gold-400 scale-110' : 'bg-transparent'
             }`}
           />
         ))}
       </div>
 
-      {error && <p className="text-red-300 text-xl text-center">{error}</p>}
+      {error && <p className="text-red-300 text-xl text-center font-poppins">{error}</p>}
 
       {/* Number pad */}
       <div className="grid grid-cols-3 gap-4 w-full max-w-xs">
@@ -83,21 +84,21 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
           <button
             key={d}
             onClick={() => handleDigit(String(d))}
-            className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/20 active:bg-white/40 transition-all"
+            className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/10 border border-white/20 active:bg-gold-500/40 active:text-primary-800 transition-all font-poppins"
           >
             {d}
           </button>
         ))}
-        <div /> {/* empty cell */}
+        <div />
         <button
           onClick={() => handleDigit('0')}
-          className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/20 active:bg-white/40 transition-all"
+          className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/10 border border-white/20 active:bg-gold-500/40 active:text-primary-800 transition-all font-poppins"
         >
           0
         </button>
         <button
           onClick={handleDelete}
-          className="min-h-[72px] text-2xl text-white rounded-2xl bg-white/20 active:bg-white/40 transition-all"
+          className="min-h-[72px] text-2xl text-white rounded-2xl bg-white/10 border border-white/20 active:bg-red-500/30 transition-all"
         >
           ⌫
         </button>

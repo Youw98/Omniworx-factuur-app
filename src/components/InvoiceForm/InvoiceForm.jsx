@@ -96,7 +96,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
               type="button"
               onClick={() => setInvoiceLanguage(lang)}
               className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
-                invoiceLanguage === lang ? 'bg-primary-700 text-white border-primary-700' : 'bg-white text-gray-700 border-gray-300'
+                invoiceLanguage === lang ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-700 border-gray-300'
               }`}
             >
               {lang.toUpperCase()}
@@ -133,7 +133,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
             type="button"
             onClick={() => setClientMode('saved')}
             className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
-              clientMode === 'saved' ? 'bg-primary-700 text-white border-primary-700' : 'bg-white text-gray-600 border-gray-300'
+              clientMode === 'saved' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
             📋 {t('btn_choose_client')}
@@ -142,7 +142,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
             type="button"
             onClick={() => setClientMode('manual')}
             className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
-              clientMode === 'manual' ? 'bg-primary-700 text-white border-primary-700' : 'bg-white text-gray-600 border-gray-300'
+              clientMode === 'manual' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
             ✏️ {t('btn_manual_client')}
@@ -152,9 +152,9 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
         {clientMode === 'saved' && (
           <div>
             {selectedClient ? (
-              <div className="bg-primary-50 border-2 border-primary-200 rounded-2xl p-4 flex items-start justify-between gap-3">
+              <div className="bg-primary-50 border-2 border-gold-300 rounded-2xl p-4 flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xl font-bold text-primary-900">{selectedClient.name}</p>
+                  <p className="text-xl font-bold text-primary-800">{selectedClient.name}</p>
                   <p className="text-lg text-primary-700">{selectedClient.address}, {selectedClient.postalCode} {selectedClient.city}</p>
                 </div>
                 <button
@@ -167,7 +167,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
               <button
                 type="button"
                 onClick={() => setShowClientPicker(true)}
-                className={`w-full min-h-[56px] text-xl rounded-2xl border-2 border-dashed ${errors.clientName ? 'border-red-400 text-red-600' : 'border-gray-400 text-gray-500'} hover:border-primary-600 hover:text-primary-600 transition-colors`}
+                className={`w-full min-h-[56px] text-xl rounded-2xl border-2 border-dashed ${errors.clientName ? 'border-red-400 text-red-600' : 'border-gray-400 text-gray-500'} hover:border-primary-700 hover:text-primary-600 transition-colors`}
               >
                 👤 {t('btn_choose_client')}
               </button>
@@ -212,20 +212,20 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
       </section>
 
       {/* Totals */}
-      <section className="bg-gray-50 rounded-2xl p-4 flex flex-col gap-2">
-        <div className="flex justify-between text-lg text-gray-600">
+      <section className="bg-primary-700 rounded-2xl p-5 flex flex-col gap-2">
+        <div className="flex justify-between text-lg text-gold-300/80">
           <span>{t('total_excl')}</span>
           <span>{formatEuro(totals.subtotal)}</span>
         </div>
         {Object.entries(totals.btwGroups).map(([rate, amount]) => (
           amount > 0 && (
-            <div key={rate} className="flex justify-between text-lg text-gray-600">
+            <div key={rate} className="flex justify-between text-lg text-gold-300/80">
               <span>{t('total_btw')} {rate}%</span>
               <span>{formatEuro(amount)}</span>
             </div>
           )
         ))}
-        <div className="border-t-2 border-gray-300 pt-2 flex justify-between text-2xl font-bold text-primary-900">
+        <div className="border-t-2 border-gold-500/50 pt-3 flex justify-between text-2xl font-bold text-gold-400 font-poppins">
           <span>{t('total_incl')}</span>
           <span>{formatEuro(totals.grandTotal)}</span>
         </div>
@@ -238,7 +238,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
           value={notes}
           onChange={e => setNotes(e.target.value)}
           rows={3}
-          className="w-full text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-600 bg-white resize-none"
+          className="w-full text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white resize-none"
           placeholder="Optionele opmerkingen..."
         />
       </section>
@@ -263,7 +263,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
               value={clientSearch}
               onChange={e => setClientSearch(e.target.value)}
               placeholder={t('label_search')}
-              className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-600 mb-3"
+              className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 mb-3"
             />
             <div className="overflow-y-auto flex-1">
               {filteredClients.length === 0 ? (

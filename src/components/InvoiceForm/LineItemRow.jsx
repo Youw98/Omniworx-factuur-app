@@ -7,7 +7,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   const { t } = useTranslation('ui')
   const primaryServices = SERVICES.filter(s => s.isPrimary)
   const secondaryServices = SERVICES.filter(s => !s.isPrimary && s.id !== 'other')
-  const serviceLabel = (s) => s[uiLanguage] || s.nl
+  const serviceLabel = (s) => `${s.icon} ${s[uiLanguage] || s.nl}`
 
   const lineTotal = (item.quantity || 0) * (item.unitPrice || 0)
   const btwAmount = lineTotal * (item.btwRate ?? 21) / 100
@@ -22,7 +22,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
     } else {
       const svc = SERVICES.find(s => s.id === id)
       update('serviceId', id)
-      update('description', svc ? serviceLabel(svc) : '')
+      update('description', svc ? (svc[uiLanguage] || svc.nl) : '')
     }
   }
 
@@ -30,14 +30,14 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
     <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
       {/* Service selector */}
       <div className="flex flex-col gap-1">
-        <label className="text-lg font-medium text-gray-700">{t('label_service')}</label>
+        <label className="text-lg font-semibold text-gray-700 font-poppins">{t('label_service')}</label>
         <select
           value={item.serviceId || ''}
           onChange={handleServiceChange}
-          className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-600 bg-white"
+          className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white"
         >
           <option value="">— Kies dienst —</option>
-          <optgroup label="Hoofddiensten">
+          <optgroup label="⭐ Hoofddiensten">
             {primaryServices.map(s => (
               <option key={s.id} value={s.id}>{serviceLabel(s)}</option>
             ))}
@@ -87,17 +87,17 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
 
       {/* BTW rate selection */}
       <div className="flex flex-col gap-2">
-        <label className="text-lg font-medium text-gray-700">{t('label_btw_rate')}</label>
+        <label className="text-lg font-semibold text-gray-700 font-poppins">{t('label_btw_rate')}</label>
         <div className="flex gap-2">
           {BTW_RATES.map(rate => (
             <button
               key={rate}
               type="button"
               onClick={() => update('btwRate', rate)}
-              className={`flex-1 min-h-[52px] text-xl font-semibold rounded-xl border-2 transition-all ${
+              className={`flex-1 min-h-[52px] text-xl font-semibold rounded-xl border-2 transition-all font-poppins ${
                 (item.btwRate ?? 21) === rate
-                  ? 'bg-primary-700 text-white border-primary-700'
-                  : 'bg-white text-gray-700 border-gray-300'
+                  ? 'bg-primary-700 text-gold-400 border-primary-700'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-primary-400'
               }`}
             >
               {rate}%
@@ -107,10 +107,10 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
       </div>
 
       {/* Row total + delete */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+      <div className="flex items-center justify-between pt-2 border-t-2 border-gray-100">
         <div>
           <p className="text-base text-gray-500">{formatEuro(lineTotal)} + {formatEuro(btwAmount)} BTW</p>
-          <p className="text-2xl font-bold text-primary-800">{formatEuro(lineTotal + btwAmount)}</p>
+          <p className="text-2xl font-bold text-primary-700 font-poppins">{formatEuro(lineTotal + btwAmount)}</p>
         </div>
         <button
           type="button"
