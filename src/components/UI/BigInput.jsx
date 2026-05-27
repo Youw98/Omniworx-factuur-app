@@ -1,0 +1,19 @@
+export function BigInput({ label, id, error, className = '', ...props }) {
+  return (
+    <div className={`flex flex-col gap-1 ${className}`}>
+      {label && (
+        <label htmlFor={id} className="text-lg font-medium text-gray-700">
+          {label}
+        </label>
+      )}
+      <input
+        id={id}
+        className={`w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 ${
+          error ? 'border-red-500' : 'border-gray-300'
+        } focus:outline-none focus:border-primary-600 bg-white`}
+        {...props}
+      />
+      {error && <p className="text-red-600 text-base">{error}</p>}
+    </div>
+  )
+}

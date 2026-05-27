@@ -1,0 +1,24 @@
+{
+  "invoice": {
+    "invoice_title": "INVOICE",
+    "invoice_number": "Invoice Number",
+    "invoice_date": "Invoice Date",
+    "due_date": "Due Date",
+    "bill_to": "Bill To",
+    "description": "Description",
+    "quantity": "Qty",
+    "unit_price": "Unit Price",
+    "btw_rate": "VAT%",
+    "line_total": "Total",
+    "subtotal": "Subtotal",
+    "btw": "VAT",
+    "grand_total": "Total",
+    "iban": "IBAN",
+    "kvk": "Chamber of Commerce",
+    "btw_id": "VAT ID",
+    "payment_terms": "Payment within {{days}} days",
+    "payment_details": "Pay to IBAN {{iban}} in the name of {{name}}",
+    "thank_you": "Thank you for your business.",
+    "notes": "Notes"
+  }
+}
