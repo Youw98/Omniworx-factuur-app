@@ -58,8 +58,7 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
     if (!client?.name) e.clientName = t('error_required')
     if (lineItems.length === 0) e.lineItems = t('error_required')
     lineItems.forEach((item, i) => {
-      if (!item.description && item.serviceId !== 'other') e[`item_${i}`] = t('error_required')
-      if (item.serviceId === 'other' && !item.description) e[`item_${i}`] = t('error_required')
+      if (!item.description) e[`item_${i}`] = t('error_required')
     })
     setErrors(e)
     return Object.keys(e).length === 0
@@ -191,16 +190,18 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
 
       {/* Line Items */}
       <section className="flex flex-col gap-3">
-        <label className="text-lg font-semibold text-gray-700">Werkzaamheden</label>
+        <label className="text-lg font-semibold text-gray-700">{t('label_line_items')}</label>
         {lineItems.map((item, i) => (
-          <LineItemRow
-            key={item.id}
-            item={item}
-            index={i}
-            onChange={updateLineItem}
-            onDelete={deleteLineItem}
-            uiLanguage={uiLang}
-          />
+          <div key={item.id} className="flex flex-col gap-1">
+            <LineItemRow
+              item={item}
+              index={i}
+              onChange={updateLineItem}
+              onDelete={deleteLineItem}
+              uiLanguage={uiLang}
+            />
+            {errors[`item_${i}`] && <p className="text-red-600 text-base px-1">{errors[`item_${i}`]}</p>}
+          </div>
         ))}
         <button
           type="button"

@@ -39,6 +39,7 @@
     "label_quantity": "الكمية",
     "label_unit_price": "السعر للوحدة (€)",
     "label_btw_rate": "نسبة ضريبة القيمة المضافة",
+    "label_line_items": "أعمال",
     "label_custom_service": "الوصف",
     "label_search": "بحث...",
     "label_ui_language": "لغة التطبيق",

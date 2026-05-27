@@ -39,6 +39,7 @@
     "label_quantity": "Aantal",
     "label_unit_price": "Prijs per stuk (€)",
     "label_btw_rate": "BTW tarief",
+    "label_line_items": "Werkzaamheden",
     "label_custom_service": "Omschrijving",
     "label_search": "Zoeken...",
     "label_ui_language": "App taal",

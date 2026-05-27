@@ -7,7 +7,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const { t } = useTranslation('ui')
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
-  const [step, setStep] = useState('enter') // 'enter' | 'new' | 'confirm'
+  const [step, setStep] = useState(!pinHash ? 'new' : 'enter') // 'enter' | 'new' | 'confirm'
   const [error, setError] = useState('')
 
   const isSettingUp = !pinHash

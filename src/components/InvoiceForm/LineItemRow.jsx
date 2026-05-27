@@ -17,12 +17,10 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   const handleServiceChange = (e) => {
     const id = e.target.value
     if (id === 'other') {
-      update('serviceId', 'other')
-      update('description', '')
+      onChange(index, { ...item, serviceId: 'other', description: '' })
     } else {
       const svc = SERVICES.find(s => s.id === id)
-      update('serviceId', id)
-      update('description', svc ? (svc[uiLanguage] || svc.nl) : '')
+      onChange(index, { ...item, serviceId: id, description: svc ? (svc[uiLanguage] || svc.nl) : '' })
     }
   }
 
