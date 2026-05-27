@@ -90,7 +90,13 @@
     "or_divider": "أو",
     "invoice_number_label": "رقم الفاتورة",
     "select_client_title": "اختيار عميل",
-    "due_days_suffix": "أيام"
+    "due_days_suffix": "أيام",
+    "btn_mark_paid_short": "✅ مدفوعة",
+    "btn_mark_unpaid_short": "↩ غير مدفوعة",
+    "toggle_saved_client": "عميل مسجل",
+    "toggle_manual_client": "يدوي",
+    "dashboard_invoices_label": "فواتير",
+    "label_unit_price_short": "سعر (€)"
   },
   "invoice": {
     "invoice_title": "فاتورة",

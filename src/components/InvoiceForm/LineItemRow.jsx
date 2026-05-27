@@ -72,7 +72,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           placeholder="1"
         />
         <BigInput
-          label={t('label_unit_price')}
+          label={t('label_unit_price_short')}
           type="number"
           inputMode="decimal"
           min="0"

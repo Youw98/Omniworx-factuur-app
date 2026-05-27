@@ -90,7 +90,13 @@
     "or_divider": "OF",
     "invoice_number_label": "Factuurnummer",
     "select_client_title": "Klant Kiezen",
-    "due_days_suffix": "dagen"
+    "due_days_suffix": "dagen",
+    "btn_mark_paid_short": "✅ Betaald",
+    "btn_mark_unpaid_short": "↩ Onbetaald",
+    "toggle_saved_client": "Klant kiezen",
+    "toggle_manual_client": "Handmatig",
+    "dashboard_invoices_label": "facturen",
+    "label_unit_price_short": "Prijs (€)"
   },
   "invoice": {
     "invoice_title": "FACTUUR",

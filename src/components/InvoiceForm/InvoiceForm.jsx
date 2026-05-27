@@ -131,20 +131,20 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
           <button
             type="button"
             onClick={() => setClientMode('saved')}
-            className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
+            className={`flex-1 min-h-[52px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
               clientMode === 'saved' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
-            📋 {t('btn_choose_client')}
+            📋 {t('toggle_saved_client')}
           </button>
           <button
             type="button"
             onClick={() => setClientMode('manual')}
-            className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
+            className={`flex-1 min-h-[52px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
               clientMode === 'manual' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
-            ✏️ {t('btn_manual_client')}
+            ✏️ {t('toggle_manual_client')}
           </button>
         </div>
 

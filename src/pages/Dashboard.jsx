@@ -51,7 +51,7 @@ export function Dashboard() {
             <p className={`text-3xl font-bold font-poppins ${overdueInvoices.length > 0 ? 'text-red-600' : 'text-gray-300'}`}>
               {overdueInvoices.length}
             </p>
-            <p className="text-lg text-gray-400 mt-1">facturen</p>
+            <p className="text-lg text-gray-400 mt-1">{t('dashboard_invoices_label')}</p>
           </div>
         </div>
 

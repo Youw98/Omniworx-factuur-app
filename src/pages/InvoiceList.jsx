@@ -31,18 +31,21 @@ export function InvoiceList() {
       <PageHeader title={t('nav_invoices')} />
 
       {/* Filter tabs */}
-      <div className="flex gap-2 p-4 bg-white border-b border-gray-200 overflow-x-auto">
-        {TABS.map(key => (
-          <button
-            key={key}
-            onClick={() => setTab(key)}
-            className={`min-h-[44px] px-4 rounded-xl text-lg font-semibold whitespace-nowrap transition-colors ${
-              tab === key ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            {tabLabel[key]}
-          </button>
-        ))}
+      <div className="relative bg-white border-b border-gray-200">
+        <div className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-none">
+          {TABS.map(key => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              className={`min-h-[44px] px-4 rounded-xl text-lg font-semibold whitespace-nowrap transition-colors ${
+                tab === key ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-600'
+              }`}
+            >
+              {tabLabel[key]}
+            </button>
+          ))}
+        </div>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
       </div>
 
       <div className="flex-1 p-4 pb-24">
