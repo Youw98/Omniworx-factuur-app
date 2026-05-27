@@ -1,0 +1,20 @@
+{
+  "appId": "nl.omniworx.factuur",
+  "appName": "Omniworx Factuur",
+  "webDir": "dist",
+  "android": {
+    "buildOptions": {
+      "keystorePath": null,
+      "keystoreAlias": null,
+      "releaseType": "APK"
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1000,
+      "backgroundColor": "#0C3C3A",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    }
+  }
+}
