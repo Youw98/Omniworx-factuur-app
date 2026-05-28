@@ -20,5 +20,27 @@
     "payment_details": "Pay to IBAN {{iban}} in the name of {{name}}",
     "thank_you": "Thank you for your business.",
     "notes": "Notes"
+  },
+  "quote": {
+    "quote_title": "QUOTATION",
+    "quote_number": "Quote Number",
+    "quote_date": "Quote Date",
+    "valid_until": "Valid Until",
+    "bill_to": "Quote For",
+    "description": "Description",
+    "quantity": "Qty",
+    "unit_price": "Unit Price",
+    "btw_rate": "VAT%",
+    "line_total": "Total",
+    "subtotal": "Subtotal",
+    "btw": "VAT",
+    "grand_total": "Total",
+    "kvk": "Chamber of Commerce",
+    "btw_id": "VAT ID",
+    "iban": "IBAN",
+    "valid_until_footer": "This quotation is valid until {{date}}",
+    "contact_footer": "Questions? {{name}} — {{iban}}",
+    "thank_you": "We look forward to your response.",
+    "notes": "Notes"
   }
 }

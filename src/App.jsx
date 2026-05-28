@@ -9,6 +9,10 @@ import { InvoiceList } from './pages/InvoiceList'
 import { NewInvoice } from './pages/NewInvoice'
 import { InvoiceDetail } from './pages/InvoiceDetail'
 import { EditInvoice } from './pages/EditInvoice'
+import { Quotes } from './pages/Quotes'
+import { NewQuote } from './pages/NewQuote'
+import { QuoteDetail } from './pages/QuoteDetail'
+import { EditQuote } from './pages/EditQuote'
 import { Clients } from './pages/Clients'
 import { Settings } from './pages/Settings'
 
@@ -47,6 +51,10 @@ function AppContent() {
         <Route path="/facturen/:id" element={<InvoiceDetail />} />
         <Route path="/facturen/:id/bewerken" element={<EditInvoice />} />
         <Route path="/nieuw" element={<NewInvoice />} />
+        <Route path="/offerten" element={<Quotes />} />
+        <Route path="/offerten/nieuw" element={<NewQuote />} />
+        <Route path="/offerten/:id" element={<QuoteDetail />} />
+        <Route path="/offerten/:id/bewerken" element={<EditQuote />} />
         <Route path="/klanten" element={<Clients />} />
         <Route path="/instellingen" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />

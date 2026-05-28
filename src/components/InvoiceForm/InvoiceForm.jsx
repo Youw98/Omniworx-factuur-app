@@ -25,14 +25,14 @@ function newLineItem() {
 const INVOICE_LANGS = ['nl', 'ar', 'en']
 const LANG_LABELS = { nl: '🇳🇱 Nederlands', ar: '🇸🇦 Arabisch', en: '🇬🇧 Engels' }
 
-export function InvoiceForm({ initial, onSave, onCancel }) {
+export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDays }) {
   const { t, i18n } = useTranslation('ui')
   const { clients } = useClients()
   const { settings } = useSettings()
   const uiLang = i18n.language
 
   const [date, setDate] = useState(initial?.date || todayIso())
-  const [dueDate, setDueDate] = useState(initial?.dueDate || addDays(todayIso(), settings.defaultDueDays || 14))
+  const [dueDate, setDueDate] = useState(initial?.dueDate || addDays(todayIso(), defaultDays ?? settings.defaultDueDays ?? 14))
   const [invoiceLanguage, setInvoiceLanguage] = useState(initial?.invoiceLanguage || settings.defaultInvoiceLanguage || 'nl')
   const [lineItems, setLineItems] = useState(initial?.lineItems?.length ? initial.lineItems : [newLineItem()])
   const [notes, setNotes] = useState(initial?.notes || '')
@@ -112,11 +112,11 @@ export function InvoiceForm({ initial, onSave, onCancel }) {
           value={date}
           onChange={e => {
             setDate(e.target.value)
-            setDueDate(addDays(e.target.value, settings.defaultDueDays || 14))
+            setDueDate(addDays(e.target.value, defaultDays ?? settings.defaultDueDays ?? 14))
           }}
         />
         <BigInput
-          label={t('label_due_date')}
+          label={dueDateLabel || t('label_due_date')}
           type="date"
           value={dueDate}
           onChange={e => setDueDate(e.target.value)}

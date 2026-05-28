@@ -6,6 +6,10 @@ export function StatusBadge({ status }) {
     paid: 'bg-green-600 text-white',
     unpaid: 'bg-amber-500 text-white',
     overdue: 'bg-red-600 text-white',
+    pending: 'bg-blue-500 text-white',
+    accepted: 'bg-green-600 text-white',
+    rejected: 'bg-gray-500 text-white',
+    expired: 'bg-orange-500 text-white',
   }
   return (
     <span className={`inline-block px-3 py-1 rounded-full text-base font-semibold ${styles[status] || styles.unpaid}`}>
