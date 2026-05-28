@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { COMPANY } from '../../constants/company'
 import { SERVICES } from '../../constants/services'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
+import { CWMonogram } from '../UI/OmniworxLogo'
 
 const BRAND_GREEN = '#0C3C3A'
 const BRAND_GOLD = '#E7B260'
@@ -25,13 +26,7 @@ function getServiceLabel(item, lang) {
 }
 
 function QuoteMonogram() {
-  return (
-    <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" rx="12" fill={BRAND_GREEN} />
-      <path d="M52 18 C29 18 15 31 15 50 C15 69 29 82 52 82 C59 82 66 80 72 76 L64 67 C60 69.5 56 71 52 71 C34 71 25 62 25 50 C25 38 34 29 52 29 C56 29 60 30.5 64 33 L72 24 C66 20 59 18 52 18 Z" fill={BRAND_GOLD} />
-      <path d="M55 29 L62 58 L72 38 L82 58 L89 29 L83 29 L76 51 L69.5 36 L63.5 51 L57 29 Z" fill={BRAND_GOLD} />
-    </svg>
-  )
+  return <CWMonogram size={72} color={BRAND_GOLD} bg={BRAND_GREEN} bgRadius={10} />
 }
 
 export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { SERVICES, BTW_RATES } from '../../constants/services'
 import { formatEuro } from '../../utils/btwCalc'
 import { BigInput } from '../UI/BigInput'
+import { PaintRollerIcon, FaucetIcon } from '../UI/OmniworxLogo'
 
 export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   const { t } = useTranslation('ui')
@@ -52,6 +53,16 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
             <option value="other">{serviceLabel(SERVICES.find(s => s.id === 'other'))}</option>
           </optgroup>
         </select>
+        {item.serviceId && item.serviceId !== '' && item.serviceId !== 'other' && (
+          <div className="flex items-center gap-2 text-primary-700 text-base font-medium px-1">
+            {(item.serviceId === 'binnen_buiten' || item.serviceId === 'afwerkingen') && (
+              <PaintRollerIcon size={22} color="#E7B260"/>
+            )}
+            {item.serviceId === 'loodgieter' && (
+              <FaucetIcon size={22} color="#E7B260"/>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Custom description if 'other' */}

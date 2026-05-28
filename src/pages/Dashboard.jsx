@@ -4,7 +4,7 @@ import { useInvoices } from '../hooks/useInvoices'
 import { calcBtw, formatEuro } from '../utils/btwCalc'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { BigButton } from '../components/UI/BigButton'
-import { OmniworxWordmark } from '../components/UI/OmniworxLogo'
+import { OmniworxWordmark, BuildingsIcon, HardHatIcon } from '../components/UI/OmniworxLogo'
 
 function greeting(t) {
   const h = new Date().getHours()
@@ -24,10 +24,9 @@ export function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Brand Header */}
-      <header className="bg-primary-700 text-white px-5 pt-4 pb-10">
-        {/* Gold accent stripe */}
-        <div className="h-1 bg-gold-500 w-full -mx-5 mb-4" style={{ width: 'calc(100% + 40px)' }} />
-        <div className="flex items-center justify-between">
+      <header className="bg-primary-700 text-white px-5 pt-0 pb-10">
+        <div className="h-1.5 bg-gold-500 w-full -mx-5 mb-5" style={{ width: 'calc(100% + 40px)' }} />
+        <div className="flex items-center justify-between mb-4">
           <OmniworxWordmark />
           <button
             onClick={() => navigate('/instellingen')}
@@ -35,23 +34,23 @@ export function Dashboard() {
             aria-label="Instellingen"
           >⚙️</button>
         </div>
-        <p className="text-gold-300 text-xl mt-3 font-poppins">{greeting(t)}</p>
+        <p className="text-gold-300/80 text-lg font-poppins">{greeting(t)}</p>
       </header>
 
       <div className="flex flex-col gap-5 p-5 -mt-4">
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-gold-500">
-            <p className="text-base text-gray-500 mb-1 font-poppins font-semibold">{t('dashboard_outstanding')}</p>
+            <BuildingsIcon size={28} color="#E7B260" className="mb-2"/>
+            <p className="text-xs text-gray-500 mb-1 font-poppins font-semibold uppercase tracking-wider">{t('dashboard_outstanding')}</p>
             <p className="text-3xl font-bold text-primary-700 font-poppins">{unpaidInvoices.length}</p>
-            <p className="text-lg text-gray-600 mt-1">{formatEuro(unpaidTotal)}</p>
+            <p className="text-base text-gray-500 mt-1">{formatEuro(unpaidTotal)}</p>
           </div>
           <div className="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-red-400">
-            <p className="text-base text-gray-500 mb-1 font-poppins font-semibold">{t('dashboard_overdue')}</p>
-            <p className={`text-3xl font-bold font-poppins ${overdueInvoices.length > 0 ? 'text-red-600' : 'text-gray-300'}`}>
-              {overdueInvoices.length}
-            </p>
-            <p className="text-lg text-gray-400 mt-1">{t('dashboard_invoices_label')}</p>
+            <HardHatIcon size={28} color="#dc2626" className="mb-2"/>
+            <p className="text-xs text-gray-500 mb-1 font-poppins font-semibold uppercase tracking-wider">{t('dashboard_overdue')}</p>
+            <p className={`text-3xl font-bold font-poppins ${overdueInvoices.length > 0 ? 'text-red-600' : 'text-gray-300'}`}>{overdueInvoices.length}</p>
+            <p className="text-base text-gray-400 mt-1">{t('dashboard_invoices_label')}</p>
           </div>
         </div>
 

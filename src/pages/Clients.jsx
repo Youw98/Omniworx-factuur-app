@@ -6,6 +6,7 @@ import { BigButton } from '../components/UI/BigButton'
 import { BigInput } from '../components/UI/BigInput'
 import { EmptyState } from '../components/UI/EmptyState'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
+import { WorkerIcon } from '../components/UI/OmniworxLogo'
 
 function ClientForm({ initial = {}, onSave, onCancel }) {
   const { t } = useTranslation('ui')
@@ -128,7 +129,7 @@ export function Clients() {
         )}
 
         {filtered.length === 0 && clients.length === 0 ? (
-          <EmptyState icon="👥" message={t('clients_empty')} />
+          <EmptyState icon={<WorkerIcon size={56} color="#E7B260"/>} message={t('clients_empty')} />
         ) : filtered.length === 0 ? (
           <p className="text-center text-gray-400 text-xl py-8">Geen klanten gevonden</p>
         ) : (

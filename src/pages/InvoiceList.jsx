@@ -116,11 +116,12 @@ export function InvoiceList() {
               <div key={group.label}>
                 {/* Month header */}
                 <div className="flex items-center gap-3 mb-2 px-1">
-                  <h2 className="text-base font-bold text-primary-700 font-poppins uppercase tracking-wide">
+                  <div className="w-1 h-5 rounded-full bg-gold-500" />
+                  <h2 className="text-sm font-bold text-primary-700 font-poppins uppercase tracking-widest">
                     {group.label}
                   </h2>
-                  <div className="flex-1 h-px bg-gold-300 opacity-50" />
-                  <span className="text-sm text-gray-400 font-poppins">
+                  <div className="flex-1 h-px bg-gold-400 opacity-30" />
+                  <span className="text-sm font-semibold text-gold-600 font-poppins">
                     {formatEuro(group.items.reduce((s, inv) => s + calcBtw(inv.lineItems || []).grandTotal, 0))}
                   </span>
                 </div>

@@ -2,8 +2,8 @@
 // (Tabel I, post b-7 Wet OB 1968, Belastingdienst). All other construction services: 21%.
 export const SERVICES = [
   { id: 'renovatie',         icon: '🔨', nl: 'Renovatie',                       en: 'Renovation',               ar: 'التجديد',                              isPrimary: true,  defaultBtwRate: 21 },
-  { id: 'binnen_buiten',     icon: '🎨', nl: 'Binnen- & Buitenafwerkingen',     en: 'Interior & Exterior Finishes', ar: 'التشطيبات الداخلية والخارجية',      isPrimary: true,  defaultBtwRate: 9  },
-  { id: 'afwerkingen',       icon: '✨', nl: 'Afwerkingen',                     en: 'Finishes',                 ar: 'التشطيبات',                            isPrimary: true,  defaultBtwRate: 9  },
+  { id: 'binnen_buiten',     icon: '🎨', svgIcon: 'paint-roller', nl: 'Binnen- & Buitenafwerkingen',     en: 'Interior & Exterior Finishes', ar: 'التشطيبات الداخلية والخارجية',      isPrimary: true,  defaultBtwRate: 9  },
+  { id: 'afwerkingen',       icon: '✨', svgIcon: 'paint-roller', nl: 'Afwerkingen',                     en: 'Finishes',                 ar: 'التشطيبات',                            isPrimary: true,  defaultBtwRate: 9  },
   { id: 'vloerleggen',       icon: '🪵', nl: 'Vloerleggen',                     en: 'Flooring Installation',    ar: 'تركيب الأرضيات',                       isPrimary: true,  defaultBtwRate: 9  },
   { id: 'loodgieter',        icon: '🚿', nl: 'Loodgieterwerk',                  en: 'Plumbing Services',        ar: 'أعمال السباكة',                        isPrimary: true,  defaultBtwRate: 21 },
   { id: 'elektra',           icon: '⚡', nl: 'Elektra',                         en: 'Electrical Work',          ar: 'أعمال الكهرباء',                       isPrimary: true,  defaultBtwRate: 21 },
