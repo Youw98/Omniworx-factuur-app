@@ -4,6 +4,11 @@ import { formatEuro } from '../../utils/btwCalc'
 import { BigInput } from '../UI/BigInput'
 import { PaintRollerIcon, FaucetIcon } from '../UI/OmniworxLogo'
 
+const BTW_NINE_AGE_SERVICES = new Set(['schilderwerk', 'stukadoorwerk', 'behangen', 'isoleren'])
+const BTW_NINE_CLEAN_SERVICES = new Set(['schoonmaakwerk'])
+
+const UNIT_STEP = { uur: '0.5', dag: '0.5', stuk: '1', m: '0.1', 'm²': '0.1', 'm³': '0.1' }
+
 export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   const { t } = useTranslation('ui')
   const primaryServices = SERVICES.filter(s => s.isPrimary)
@@ -35,6 +40,12 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   }
 
   const currentUnit = item.unit || 'uur'
+  const quantityStep = UNIT_STEP[currentUnit] || '1'
+
+  const svc = item.serviceId ? SERVICES.find(s => s.id === item.serviceId) : null
+  const showPriceRange = svc && svc.minPrice > 0 && svc.maxPrice > 0
+  const showBtw9AgeWarning = (item.btwRate ?? 21) === 9 && BTW_NINE_AGE_SERVICES.has(item.serviceId)
+  const showBtw9CleanWarning = (item.btwRate ?? 21) === 9 && BTW_NINE_CLEAN_SERVICES.has(item.serviceId)
 
   return (
     <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
@@ -88,7 +99,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           type="number"
           inputMode="decimal"
           min="0"
-          step="0.5"
+          step={quantityStep}
           value={item.quantity || ''}
           onChange={e => update('quantity', parseFloat(e.target.value) || 0)}
           placeholder="1"
@@ -107,19 +118,26 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         </div>
       </div>
 
-      {/* Unit price */}
-      <BigInput
-        label={`${t('label_unit_price_short')} / ${currentUnit}`}
-        type="number"
-        inputMode="decimal"
-        min="0"
-        step="0.01"
-        value={item.unitPrice || ''}
-        onChange={e => update('unitPrice', parseFloat(e.target.value) || 0)}
-        placeholder="0,00"
-      />
+      {/* Unit price + range hint */}
+      <div className="flex flex-col gap-1">
+        <BigInput
+          label={`${t('label_unit_price_short')} / ${currentUnit}`}
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          value={item.unitPrice || ''}
+          onChange={e => update('unitPrice', parseFloat(e.target.value) || 0)}
+          placeholder="0,00"
+        />
+        {showPriceRange && (
+          <p className="text-sm text-gray-400 px-1">
+            Marktprijs: {formatEuro(svc.minPrice)} – {formatEuro(svc.maxPrice)} / {currentUnit}
+          </p>
+        )}
+      </div>
 
-      {/* BTW rate selection */}
+      {/* BTW rate selection + condition warning */}
       <div className="flex flex-col gap-2">
         <label className="text-lg font-semibold text-gray-700 font-poppins">{t('label_btw_rate')}</label>
         <div className="flex gap-2">
@@ -138,6 +156,16 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
             </button>
           ))}
         </div>
+        {showBtw9AgeWarning && (
+          <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            ⚠️ 9% geldt alleen bij woningen ouder dan 2 jaar bestemd voor permanente bewoning. Anders 21%.
+          </p>
+        )}
+        {showBtw9CleanWarning && (
+          <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            ⚠️ 9% geldt voor schoonmaakwerk ín woningen. Buiten of specialistisch werk: 21%.
+          </p>
+        )}
       </div>
 
       {/* Row total + delete */}
