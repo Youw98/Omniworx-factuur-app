@@ -7,8 +7,10 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const { t } = useTranslation('ui')
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
-  const [step, setStep] = useState(!pinHash ? 'new' : 'enter') // 'enter' | 'new' | 'confirm'
+  const [step, setStep] = useState(!pinHash ? 'new' : 'enter')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [showReset, setShowReset] = useState(false)
 
   const isSettingUp = !pinHash
   const currentTarget = step === 'confirm' ? confirmPin : pin
@@ -18,13 +20,16 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
     : t('pin_title')
 
   const handleDigit = async (digit) => {
+    if (loading) return
     const next = currentTarget + digit
     setCurrentTarget(next)
     setError('')
 
     if (next.length === 4) {
+      setLoading(true)
       if (isSettingUp) {
         if (step === 'new') {
+          setLoading(false)
           setStep('confirm')
         } else {
           if (next === pin) {
@@ -36,6 +41,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
             setConfirmPin('')
             setStep('new')
           }
+          setLoading(false)
         }
       } else {
         const hash = await hashPin(next)
@@ -45,6 +51,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
           setError(t('pin_error_wrong'))
           setPin('')
         }
+        setLoading(false)
       }
     }
   }
@@ -52,6 +59,13 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const handleDelete = () => {
     setCurrentTarget(prev => prev.slice(0, -1))
     setError('')
+  }
+
+  const handleReset = () => {
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('omniworx'))
+      .forEach(k => localStorage.removeItem(k))
+    window.location.reload()
   }
 
   const displayPin = isSettingUp && step === 'confirm' ? confirmPin : pin
@@ -69,22 +83,26 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
         {[0, 1, 2, 3].map(i => (
           <div
             key={i}
-            className={`w-6 h-6 rounded-full border-2 border-gold-400 transition-all ${
-              displayPin.length > i ? 'bg-gold-400 scale-110' : 'bg-transparent'
+            className={`w-5 h-5 rounded-full transition-all ${
+              displayPin.length > i ? 'bg-gold-400 scale-110' : 'bg-white/30'
             }`}
           />
         ))}
       </div>
 
-      {error && <p className="text-red-300 text-xl text-center font-poppins">{error}</p>}
+      {error && <p className="text-red-300 text-xl font-semibold text-center">{error}</p>}
+
+      {/* Loading indicator */}
+      {loading && <p className="text-gold-300/70 text-lg animate-pulse">{t('pin_checking')}</p>}
 
       {/* Number pad */}
       <div className="grid grid-cols-3 gap-4 w-full max-w-xs">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
+        {[1,2,3,4,5,6,7,8,9].map(d => (
           <button
             key={d}
             onClick={() => handleDigit(String(d))}
-            className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/10 border border-white/20 active:bg-gold-500/40 active:text-primary-800 transition-all font-poppins"
+            disabled={loading || displayPin.length >= 4}
+            className="min-h-[72px] text-3xl font-bold text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50 font-poppins"
           >
             {d}
           </button>
@@ -92,17 +110,53 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
         <div />
         <button
           onClick={() => handleDigit('0')}
-          className="min-h-[72px] text-3xl font-bold text-white rounded-2xl bg-white/10 border border-white/20 active:bg-gold-500/40 active:text-primary-800 transition-all font-poppins"
+          disabled={loading || displayPin.length >= 4}
+          className="min-h-[72px] text-3xl font-bold text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50 font-poppins"
         >
           0
         </button>
         <button
           onClick={handleDelete}
-          className="min-h-[72px] text-2xl text-white rounded-2xl bg-white/10 border border-white/20 active:bg-red-500/30 transition-all"
+          disabled={loading}
+          className="min-h-[72px] text-3xl text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50"
         >
           ⌫
         </button>
       </div>
+
+      {/* Forgot PIN */}
+      {!isSettingUp && (
+        <button
+          onClick={() => setShowReset(true)}
+          className="text-gold-300/60 text-lg underline mt-2 min-h-[44px] px-4"
+        >
+          {t('pin_forgot')}
+        </button>
+      )}
+
+      {/* Reset confirm dialog */}
+      {showReset && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+            <p className="text-2xl font-bold text-red-600 mb-3 text-center">⚠️ {t('pin_forgot')}</p>
+            <p className="text-lg text-gray-700 mb-6 text-center">{t('pin_reset_warning')}</p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleReset}
+                className="w-full min-h-[56px] text-xl font-bold bg-red-600 text-white rounded-2xl"
+              >
+                {t('pin_reset_confirm')}
+              </button>
+              <button
+                onClick={() => setShowReset(false)}
+                className="w-full min-h-[56px] text-xl font-semibold bg-gray-100 text-gray-800 rounded-2xl"
+              >
+                {t('btn_cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

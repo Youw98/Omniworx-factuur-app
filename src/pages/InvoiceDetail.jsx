@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
+import { useToast } from '../hooks/useToast'
 import { InvoicePreview } from '../components/InvoicePreview/InvoicePreview'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
@@ -16,6 +17,7 @@ export function InvoiceDetail() {
   const navigate = useNavigate()
   const { id } = useParams()
   const { getInvoice, markPaid, markUnpaid, deleteInvoice } = useInvoices()
+  const showToast = useToast()
   const invoice = getInvoice(id)
   const previewRef = useRef(null)
   const [sharing, setSharing] = useState(false)
@@ -69,12 +71,19 @@ export function InvoiceDetail() {
         <BigButton onClick={handleShare} disabled={sharing}>
           {sharing ? t('btn_generating_pdf') : `📤 ${t('btn_share')}`}
         </BigButton>
-        {shareError && <p className="text-red-600 text-base text-center">{shareError}</p>}
+        {shareError && (
+          <div className="flex items-center gap-3">
+            <p className="text-red-600 text-base flex-1 text-center">{shareError}</p>
+            <button onClick={handleShare} className="min-h-[44px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
+              {t('btn_retry')}
+            </button>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3">
           {invoice.status !== 'paid' ? (
-            <BigButton variant="success" onClick={() => markPaid(id)}>{t('btn_mark_paid_short')}</BigButton>
+            <BigButton variant="success" onClick={() => { markPaid(id); showToast(t('toast_marked_paid')) }}>{t('btn_mark_paid_short')}</BigButton>
           ) : (
-            <BigButton variant="secondary" onClick={() => markUnpaid(id)}>{t('btn_mark_unpaid_short')}</BigButton>
+            <BigButton variant="secondary" onClick={() => { markUnpaid(id); showToast(t('toast_marked_unpaid')) }}>{t('btn_mark_unpaid_short')}</BigButton>
           )}
           <BigButton variant="secondary" onClick={() => navigate(`/facturen/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
         </div>

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from './hooks/useSettings'
+import { useOnlineStatus } from './hooks/useOnlineStatus'
+import { ToastProvider } from './hooks/useToast'
 import { PinLock } from './components/UI/PinLock'
 import { BottomNav } from './components/layout/BottomNav'
 import { Dashboard } from './pages/Dashboard'
@@ -15,6 +17,16 @@ import { QuoteDetail } from './pages/QuoteDetail'
 import { EditQuote } from './pages/EditQuote'
 import { Clients } from './pages/Clients'
 import { Settings } from './pages/Settings'
+
+function OfflineBanner() {
+  const online = useOnlineStatus()
+  if (online) return null
+  return (
+    <div className="fixed top-0 left-0 right-0 max-w-lg mx-auto bg-orange-500 text-white text-center text-lg font-semibold py-2 z-[60] shadow-lg">
+      📵 Geen internetverbinding
+    </div>
+  )
+}
 
 function AppContent() {
   const { settings, updateSetting } = useSettings()
@@ -45,6 +57,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 max-w-lg mx-auto relative">
+      <OfflineBanner />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/facturen" element={<InvoiceList />} />
@@ -67,7 +80,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </BrowserRouter>
   )
 }

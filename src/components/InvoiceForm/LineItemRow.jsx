@@ -38,7 +38,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         <select
           value={item.serviceId || ''}
           onChange={handleServiceChange}
-          className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white"
+          className="w-full min-h-[56px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white"
         >
           <option value="">— Kies dienst —</option>
           <optgroup label="⭐ Hoofddiensten">
@@ -108,7 +108,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
               key={rate}
               type="button"
               onClick={() => update('btwRate', rate)}
-              className={`flex-1 min-h-[52px] text-xl font-semibold rounded-xl border-2 transition-all font-poppins ${
+              className={`flex-1 min-h-[56px] text-xl font-semibold rounded-xl border-2 transition-all font-poppins ${
                 (item.btwRate ?? 21) === rate
                   ? 'bg-primary-700 text-gold-400 border-primary-700'
                   : 'bg-white text-gray-700 border-gray-300 hover:border-primary-400'
@@ -129,7 +129,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         <button
           type="button"
           onClick={() => onDelete(index)}
-          className="min-w-[52px] min-h-[52px] flex items-center justify-center rounded-xl bg-red-50 text-red-600 text-2xl hover:bg-red-100 transition-colors"
+          className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl bg-red-50 text-red-600 text-2xl hover:bg-red-100 transition-colors"
           aria-label="Verwijder regel"
         >
           🗑️

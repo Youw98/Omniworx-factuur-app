@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useClients } from '../hooks/useClients'
+import { useToast } from '../hooks/useToast'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
 import { BigInput } from '../components/UI/BigInput'
@@ -48,6 +49,7 @@ function ClientForm({ initial = {}, onSave, onCancel }) {
 export function Clients() {
   const { t } = useTranslation('ui')
   const { clients, addClient, updateClient, deleteClient } = useClients()
+  const showToast = useToast()
   const [search, setSearch] = useState('')
   const [mode, setMode] = useState('list') // 'list' | 'add' | 'edit'
   const [editingId, setEditingId] = useState(null)
@@ -62,17 +64,20 @@ export function Clients() {
 
   const handleAdd = (data) => {
     addClient(data)
+    showToast(t('toast_client_saved'))
     setMode('list')
   }
 
   const handleUpdate = (data) => {
     updateClient(editingId, data)
+    showToast(t('toast_client_saved'))
     setMode('list')
     setEditingId(null)
   }
 
   const handleDelete = () => {
     deleteClient(deleteId)
+    showToast(t('toast_client_deleted'))
     setDeleteId(null)
     if (mode === 'edit') setMode('list')
   }

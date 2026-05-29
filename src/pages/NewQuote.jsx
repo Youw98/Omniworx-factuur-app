@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
 import { useSettings } from '../hooks/useSettings'
+import { useToast } from '../hooks/useToast'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
 
@@ -20,6 +21,7 @@ export function NewQuote() {
   const navigate = useNavigate()
   const { createQuote } = useQuotes()
   const { settings } = useSettings()
+  const showToast = useToast()
   const validDays = settings.defaultValidDays ?? 30
 
   const handleSave = (data) => {
@@ -31,6 +33,7 @@ export function NewQuote() {
       notes: data.notes,
       client: data.client,
     })
+    showToast(t('toast_quote_saved'))
     navigate(`/offerten/${quote.id}`, { replace: true })
   }
 

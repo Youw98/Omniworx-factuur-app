@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
 import { useInvoices } from '../hooks/useInvoices'
 import { useSettings } from '../hooks/useSettings'
+import { useToast } from '../hooks/useToast'
 import { QuotePreview } from '../components/QuotePreview/QuotePreview'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
@@ -26,6 +27,7 @@ export function QuoteDetail() {
   const { getQuote, markAccepted, markRejected, deleteQuote, updateQuote } = useQuotes()
   const { createInvoice } = useInvoices()
   const { settings } = useSettings()
+  const showToast = useToast()
   const quote = getQuote(id)
   const previewRef = useRef(null)
   const [sharing, setSharing] = useState(false)
@@ -95,19 +97,26 @@ export function QuoteDetail() {
         <BigButton onClick={handleShare} disabled={sharing}>
           {sharing ? t('btn_generating_pdf') : `📤 ${t('btn_share')}`}
         </BigButton>
-        {shareError && <p className="text-red-600 text-base text-center">{shareError}</p>}
+        {shareError && (
+          <div className="flex items-center gap-3">
+            <p className="text-red-600 text-base flex-1 text-center">{shareError}</p>
+            <button onClick={handleShare} className="min-h-[44px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
+              {t('btn_retry')}
+            </button>
+          </div>
+        )}
 
         {/* Accept + Edit row */}
         <div className="grid grid-cols-2 gap-3">
           {quote.status === 'pending' && (
-            <BigButton variant="success" onClick={() => markAccepted(id)}>{t('btn_mark_accepted')}</BigButton>
+            <BigButton variant="success" onClick={() => { markAccepted(id); showToast(t('toast_marked_accepted')) }}>{t('btn_mark_accepted')}</BigButton>
           )}
           <BigButton variant="secondary" onClick={() => navigate(`/offerten/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
         </div>
 
         {/* Reject button — only if pending */}
         {quote.status === 'pending' && (
-          <BigButton variant="danger" onClick={() => markRejected(id)}>{t('btn_mark_rejected')}</BigButton>
+          <BigButton variant="danger" onClick={() => { markRejected(id); showToast(t('toast_marked_rejected')) }}>{t('btn_mark_rejected')}</BigButton>
         )}
 
         {/* Convert to invoice — only if accepted and not yet converted */}

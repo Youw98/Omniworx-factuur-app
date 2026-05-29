@@ -23,7 +23,6 @@ function newLineItem() {
 }
 
 const INVOICE_LANGS = ['nl', 'ar', 'en']
-const LANG_LABELS = { nl: '🇳🇱 Nederlands', ar: '🇸🇦 Arabisch', en: '🇬🇧 Engels' }
 
 export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDays }) {
   const { t, i18n } = useTranslation('ui')
@@ -44,6 +43,10 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
   )
   const [errors, setErrors] = useState({})
   const [showClientPicker, setShowClientPicker] = useState(false)
+  const [dirty, setDirty] = useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
+
+  const markDirty = () => setDirty(true)
 
   const selectedClient = clients.find(c => c.id === selectedClientId)
   const filteredClients = clients.filter(c =>
@@ -56,6 +59,7 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
     const e = {}
     const client = clientMode === 'saved' ? selectedClient : manualClient
     if (!client?.name) e.clientName = t('error_required')
+    if (dueDate < date) e.dueDate = t('error_date_order')
     if (lineItems.length === 0) e.lineItems = t('error_required')
     lineItems.forEach((item, i) => {
       if (!item.description) e[`item_${i}`] = t('error_required')
@@ -70,15 +74,26 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
     onSave({ date, dueDate, invoiceLanguage, lineItems, notes, client: clientSnapshot })
   }
 
+  const handleCancel = () => {
+    if (dirty) {
+      setShowCancelConfirm(true)
+    } else {
+      onCancel()
+    }
+  }
+
   const updateLineItem = (index, item) => {
+    markDirty()
     setLineItems(prev => prev.map((it, i) => i === index ? item : it))
   }
 
   const deleteLineItem = (index) => {
+    markDirty()
     setLineItems(prev => prev.filter((_, i) => i !== index))
   }
 
   const addLineItem = () => {
+    markDirty()
     setLineItems(prev => [...prev, { ...newLineItem(), btwRate: settings.defaultBtwRate || 21 }])
   }
 
@@ -93,8 +108,8 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
             <button
               key={lang}
               type="button"
-              onClick={() => setInvoiceLanguage(lang)}
-              className={`flex-1 min-h-[52px] text-lg font-semibold rounded-xl border-2 transition-all ${
+              onClick={() => { setInvoiceLanguage(lang); markDirty() }}
+              className={`flex-1 min-h-[56px] text-lg font-semibold rounded-xl border-2 transition-all ${
                 invoiceLanguage === lang ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-700 border-gray-300'
               }`}
             >
@@ -111,27 +126,33 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
           type="date"
           value={date}
           onChange={e => {
-            setDate(e.target.value)
-            setDueDate(addDays(e.target.value, defaultDays ?? settings.defaultDueDays ?? 14))
+            const newDate = e.target.value
+            setDate(newDate)
+            setDueDate(addDays(newDate, defaultDays ?? settings.defaultDueDays ?? 14))
+            markDirty()
           }}
         />
         <BigInput
           label={dueDateLabel || t('label_due_date')}
           type="date"
           value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
+          min={date}
+          error={errors.dueDate}
+          onChange={e => { setDueDate(e.target.value); markDirty() }}
         />
       </section>
 
       {/* Client Section */}
       <section className="flex flex-col gap-3">
-        <label className="text-lg font-semibold text-gray-700">{t('label_client')}</label>
+        <label className="text-lg font-semibold text-gray-700">
+          {t('label_client')}<span className="text-red-500 ml-1">*</span>
+        </label>
 
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => setClientMode('saved')}
-            className={`flex-1 min-h-[52px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
+            onClick={() => { setClientMode('saved'); markDirty() }}
+            className={`flex-1 min-h-[56px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
               clientMode === 'saved' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
@@ -139,8 +160,8 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
           </button>
           <button
             type="button"
-            onClick={() => setClientMode('manual')}
-            className={`flex-1 min-h-[52px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
+            onClick={() => { setClientMode('manual'); markDirty() }}
+            className={`flex-1 min-h-[56px] text-base font-semibold rounded-xl border-2 px-3 whitespace-nowrap transition-all ${
               clientMode === 'manual' ? 'bg-primary-700 text-gold-300 border-primary-700' : 'bg-white text-gray-600 border-gray-300'
             }`}
           >
@@ -158,7 +179,7 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
                 </div>
                 <button
                   type="button"
-                  onClick={() => setSelectedClientId('')}
+                  onClick={() => { setSelectedClientId(''); markDirty() }}
                   className="min-w-[44px] min-h-[44px] flex items-center justify-center text-2xl text-gray-500 hover:text-red-600"
                 >✕</button>
               </div>
@@ -171,26 +192,52 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
                 👤 {t('btn_choose_client')}
               </button>
             )}
-            {errors.clientName && <p className="text-red-600 text-base mt-1">{errors.clientName}</p>}
+            {errors.clientName && <p className="text-red-600 text-lg font-medium mt-1">{errors.clientName}</p>}
           </div>
         )}
 
         {clientMode === 'manual' && (
           <div className="flex flex-col gap-3 bg-gray-50 rounded-2xl p-4">
-            <BigInput label={t('label_name')} value={manualClient.name} onChange={e => setManualClient(p => ({ ...p, name: e.target.value }))} error={errors.clientName} />
-            <BigInput label={t('label_address')} value={manualClient.address} onChange={e => setManualClient(p => ({ ...p, address: e.target.value }))} />
+            <BigInput
+              label={t('label_name')}
+              required
+              value={manualClient.name}
+              onChange={e => { setManualClient(p => ({ ...p, name: e.target.value })); markDirty() }}
+              error={errors.clientName}
+            />
+            <BigInput
+              label={t('label_address')}
+              value={manualClient.address}
+              onChange={e => { setManualClient(p => ({ ...p, address: e.target.value })); markDirty() }}
+            />
             <div className="grid grid-cols-2 gap-3">
-              <BigInput label={t('label_postal_code')} value={manualClient.postalCode} onChange={e => setManualClient(p => ({ ...p, postalCode: e.target.value }))} />
-              <BigInput label={t('label_city')} value={manualClient.city} onChange={e => setManualClient(p => ({ ...p, city: e.target.value }))} />
+              <BigInput
+                label={t('label_postal_code')}
+                value={manualClient.postalCode}
+                onChange={e => { setManualClient(p => ({ ...p, postalCode: e.target.value })); markDirty() }}
+              />
+              <BigInput
+                label={t('label_city')}
+                value={manualClient.city}
+                onChange={e => { setManualClient(p => ({ ...p, city: e.target.value })); markDirty() }}
+              />
             </div>
-            <BigInput label={t('label_phone')} type="tel" value={manualClient.phone} onChange={e => setManualClient(p => ({ ...p, phone: e.target.value }))} />
+            <BigInput
+              label={t('label_phone')}
+              type="tel"
+              inputMode="tel"
+              value={manualClient.phone}
+              onChange={e => { setManualClient(p => ({ ...p, phone: e.target.value })); markDirty() }}
+            />
           </div>
         )}
       </section>
 
       {/* Line Items */}
       <section className="flex flex-col gap-3">
-        <label className="text-lg font-semibold text-gray-700">{t('label_line_items')}</label>
+        <label className="text-lg font-semibold text-gray-700">
+          {t('label_line_items')}<span className="text-red-500 ml-1">*</span>
+        </label>
         {lineItems.map((item, i) => (
           <div key={item.id} className="flex flex-col gap-1">
             <LineItemRow
@@ -200,9 +247,10 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
               onDelete={deleteLineItem}
               uiLanguage={uiLang}
             />
-            {errors[`item_${i}`] && <p className="text-red-600 text-base px-1">{errors[`item_${i}`]}</p>}
+            {errors[`item_${i}`] && <p className="text-red-600 text-lg font-medium px-1">{errors[`item_${i}`]}</p>}
           </div>
         ))}
+        {errors.lineItems && <p className="text-red-600 text-lg font-medium">{errors.lineItems}</p>}
         <button
           type="button"
           onClick={addLineItem}
@@ -237,7 +285,7 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
         <label className="text-lg font-medium text-gray-700">{t('label_notes')}</label>
         <textarea
           value={notes}
-          onChange={e => setNotes(e.target.value)}
+          onChange={e => { setNotes(e.target.value); markDirty() }}
           rows={3}
           className="w-full text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white resize-none"
           placeholder="Optionele opmerkingen..."
@@ -247,8 +295,21 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
       {/* Actions */}
       <div className="flex flex-col gap-3">
         <BigButton onClick={handleSave}>{t('btn_save')}</BigButton>
-        {onCancel && <BigButton variant="secondary" onClick={onCancel}>{t('btn_cancel')}</BigButton>}
+        {onCancel && <BigButton variant="secondary" onClick={handleCancel}>{t('btn_cancel')}</BigButton>}
       </div>
+
+      {/* Unsaved changes confirmation */}
+      {showCancelConfirm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+            <p className="text-xl text-gray-800 mb-6 text-center font-medium">{t('confirm_discard_changes')}</p>
+            <div className="flex flex-col gap-3">
+              <BigButton variant="danger" onClick={onCancel}>{t('btn_discard')}</BigButton>
+              <BigButton variant="secondary" onClick={() => setShowCancelConfirm(false)}>{t('btn_keep_editing')}</BigButton>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Client Picker Modal */}
       {showClientPicker && (
@@ -264,7 +325,7 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
               value={clientSearch}
               onChange={e => setClientSearch(e.target.value)}
               placeholder={t('label_search')}
-              className="w-full min-h-[52px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 mb-3"
+              className="w-full min-h-[56px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 mb-3"
             />
             <div className="overflow-y-auto flex-1">
               {filteredClients.length === 0 ? (
@@ -276,8 +337,9 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
                     setSelectedClientId(c.id)
                     setShowClientPicker(false)
                     setClientSearch('')
+                    markDirty()
                   }}
-                  className="w-full text-left p-4 border-b border-gray-100 hover:bg-primary-50 transition-colors"
+                  className="w-full text-left p-4 border-b border-gray-100 hover:bg-primary-50 transition-colors min-h-[56px]"
                 >
                   <p className="text-xl font-semibold">{c.name}</p>
                   <p className="text-base text-gray-500">{c.address}, {c.postalCode} {c.city}</p>

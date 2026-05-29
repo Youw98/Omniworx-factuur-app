@@ -19,7 +19,7 @@ export function PageHeader({ title, showBack = false, backTo, rightAction }) {
         {showBack && (
           <button
             onClick={handleBack}
-            className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl hover:bg-white/20 transition-colors"
+            className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl hover:bg-white/20 transition-colors"
             aria-label={t('btn_back')}
           >
             <span className={`text-2xl ${isRtl ? 'rotate-180' : ''} inline-block`}>←</span>

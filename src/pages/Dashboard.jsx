@@ -32,7 +32,7 @@ export function Dashboard() {
           <OmniworxWordmark height={44} />
           <button
             onClick={() => navigate('/instellingen')}
-            className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl transition-colors"
+            className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl transition-colors"
             aria-label="Instellingen"
           >⚙️</button>
         </div>

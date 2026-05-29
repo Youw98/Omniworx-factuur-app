@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
+import { useToast } from '../hooks/useToast'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
 
@@ -8,9 +9,11 @@ export function NewInvoice() {
   const { t } = useTranslation('ui')
   const navigate = useNavigate()
   const { createInvoice } = useInvoices()
+  const showToast = useToast()
 
   const handleSave = (data) => {
     const invoice = createInvoice(data)
+    showToast(t('toast_invoice_saved'))
     navigate(`/facturen/${invoice.id}`, { replace: true })
   }
 
