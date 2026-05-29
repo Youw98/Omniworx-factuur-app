@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { COMPANY } from '../../constants/company'
 import { SERVICES } from '../../constants/services'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
-import { CWMonogram } from '../UI/OmniworxLogo'
+import { OWMonogram } from '../UI/OmniworxLogo'
 
 const BRAND_GREEN = '#0C3C3A'
 const BRAND_GOLD = '#E7B260'
@@ -29,7 +29,7 @@ function getServiceLabel(item, lang) {
 }
 
 function InvoiceMonogram() {
-  return <CWMonogram size={72} color={BRAND_GOLD} bg={BRAND_GREEN} bgRadius={10} />
+  return <OWMonogram size={72} color={BRAND_GOLD} bg={BRAND_GREEN} bgRadius={10} />
 }
 
 export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, ref) {
