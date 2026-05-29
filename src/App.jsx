@@ -68,6 +68,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/facturen" element={<InvoiceList />} />
+        <Route path="/facturen/nieuw" element={<NewInvoice />} />
         <Route path="/facturen/:id" element={<InvoiceDetail />} />
         <Route path="/facturen/:id/bewerken" element={<EditInvoice />} />
         <Route path="/nieuw" element={<NewInvoice />} />
