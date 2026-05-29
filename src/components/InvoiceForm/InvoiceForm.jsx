@@ -26,8 +26,6 @@ const INVOICE_LANGS = ['nl', 'ar', 'en']
 
 const NOTE_SNIPPETS = [
   { key: 'excl_mat',  label: 'Excl. materiaal',    text: 'Prijzen zijn exclusief materiaalkosten.' },
-  { key: 'betaling',  label: 'Betaling 14 dagen',   text: 'Betaling binnen 14 dagen na factuurdatum op IBAN NL40INGB0675253160 t.n.v. Omniworx.' },
-  { key: 'garantie',  label: '12 mnd garantie',     text: 'Op alle uitgevoerde werkzaamheden geldt een garantie van 12 maanden.' },
   { key: 'meerwerk',  label: 'Meerwerk op akkoord', text: 'Meerwerk wordt uitsluitend uitgevoerd na schriftelijk akkoord.' },
 ]
 
