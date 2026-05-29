@@ -18,21 +18,30 @@ export function OWMonogram({ size = 56, color = '#E7B260', bg = null, bgRadius =
   )
 }
 
-export function OmniworxWordmark({ dark = false, className = '' }) {
-  const gold = '#E7B260'
-  const goldDim = 'rgba(231,178,96,0.75)'
+// variant: 'horizontal' (default, for headers) | 'stacked' (for centered screens)
+// dark: true uses the green-bg JPG, false uses transparent WebP (shows on any bg)
+export function OmniworxWordmark({ dark = false, variant = 'horizontal', height = 48, className = '' }) {
+  if (variant === 'stacked') {
+    const src = dark ? '/logo-stacked-green.jpg' : '/logo-stacked.webp'
+    return (
+      <img
+        src={src}
+        alt="Omniworx logo"
+        height={height}
+        style={{ height, width: 'auto', display: 'block' }}
+        className={className}
+      />
+    )
+  }
+  const src = dark ? '/logo-horizontal-green.jpg' : '/logo-horizontal.webp'
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <OWMonogram size={44} color={dark ? '#0C3C3A' : gold} />
-      <div className="flex flex-col leading-none">
-        <span style={{ fontFamily: 'Poppins, sans-serif', color: dark ? '#0C3C3A' : gold, fontWeight: 800, fontSize: 20, letterSpacing: 2 }}>
-          OMNIWORX
-        </span>
-        <span style={{ fontFamily: 'Poppins, sans-serif', color: dark ? '#666' : goldDim, fontWeight: 400, fontSize: 9, letterSpacing: 3, marginTop: 1 }}>
-          ONDERHOUD EN RENOVATIES
-        </span>
-      </div>
-    </div>
+    <img
+      src={src}
+      alt="Omniworx logo"
+      height={height}
+      style={{ height, width: 'auto', display: 'block' }}
+      className={className}
+    />
   )
 }
 

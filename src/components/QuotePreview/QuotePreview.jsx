@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { COMPANY } from '../../constants/company'
 import { SERVICES } from '../../constants/services'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
-import { OWMonogram } from '../UI/OmniworxLogo'
 
 const BRAND_GREEN = '#0C3C3A'
 const BRAND_GOLD = '#E7B260'
@@ -25,9 +24,6 @@ function getServiceLabel(item, lang) {
   return item.description || ''
 }
 
-function QuoteMonogram() {
-  return <OWMonogram size={72} color={BRAND_GOLD} bg={BRAND_GREEN} bgRadius={10} />
-}
 
 export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
   const quoteLang = quote.invoiceLanguage || 'nl'
@@ -119,17 +115,11 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
         flexDirection: flexDir,
       }}>
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexDirection: isRtl ? 'row-reverse' : 'row' }}>
-          <QuoteMonogram />
-          <div>
-            <div style={{ fontFamily: 'Poppins, Arial, sans-serif', fontSize: 26, fontWeight: 900, color: BRAND_GOLD, letterSpacing: 3 }}>
-              OMNIWORX
-            </div>
-            <div style={{ fontFamily: 'Poppins, Arial, sans-serif', fontSize: 9, color: BRAND_GOLD_LIGHT, letterSpacing: 4, marginTop: 3, opacity: 0.85 }}>
-              ONDERHOUD EN RENOVATIES
-            </div>
-          </div>
-        </div>
+        <img
+          src="/logo-stacked.webp"
+          alt="Omniworx"
+          style={{ height: 110, width: 'auto', display: 'block' }}
+        />
 
         {/* Company details */}
         <div style={{ textAlign: textAlignEnd, fontSize: 12, lineHeight: 1.9 }}>

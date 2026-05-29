@@ -29,7 +29,7 @@ export function Dashboard() {
       <header className="bg-primary-700 text-white px-5 pt-0 pb-10">
         <div className="h-1.5 bg-gold-500 w-full -mx-5 mb-5" style={{ width: 'calc(100% + 40px)' }} />
         <div className="flex items-center justify-between mb-4">
-          <OmniworxWordmark />
+          <OmniworxWordmark height={44} />
           <button
             onClick={() => navigate('/instellingen')}
             className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl transition-colors"

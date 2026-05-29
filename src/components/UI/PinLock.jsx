@@ -59,7 +59,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   return (
     <div className="min-h-screen bg-primary-700 flex flex-col items-center justify-center p-6 gap-8">
       {/* Logo */}
-      <OmniworxWordmark className="justify-center" />
+      <OmniworxWordmark variant="stacked" height={160} className="mx-auto" />
 
       {/* Title */}
       <p className="text-gold-300 text-2xl font-semibold font-poppins">{title}</p>
