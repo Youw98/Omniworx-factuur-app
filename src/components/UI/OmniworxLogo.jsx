@@ -2,14 +2,21 @@
 export function OWMonogram({ size = 56, dark = true, className = '' }) {
   const src = dark ? '/monogram-green.jpg' : '/monogram.webp'
   return (
-    <img
-      src={src}
-      alt="Omniworx monogram"
-      width={size}
-      height={size}
-      style={{ width: size, height: size, display: 'block', borderRadius: Math.round(size * 0.18) }}
+    <div
+      style={{
+        width: size, height: size, flexShrink: 0, overflow: 'hidden',
+        borderRadius: Math.round(size * 0.18),
+        background: dark ? '#0C3C3A' : 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}
       className={className}
-    />
+    >
+      <img
+        src={src}
+        alt="Omniworx monogram"
+        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+      />
+    </div>
   )
 }
 
