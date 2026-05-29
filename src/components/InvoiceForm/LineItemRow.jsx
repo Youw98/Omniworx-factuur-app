@@ -55,7 +55,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         </select>
         {item.serviceId && item.serviceId !== '' && item.serviceId !== 'other' && (
           <div className="flex items-center gap-2 text-primary-700 text-base font-medium px-1">
-            {(item.serviceId === 'binnen_buiten' || item.serviceId === 'afwerkingen') && (
+            {(item.serviceId === 'schilderwerk' || item.serviceId === 'stukadoorwerk') && (
               <PaintRollerIcon size={22} color="#E7B260"/>
             )}
             {item.serviceId === 'loodgieter' && (

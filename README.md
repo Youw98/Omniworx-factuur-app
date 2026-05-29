@@ -106,14 +106,25 @@ src/
 
 ## Pre-defined Services
 
+### Hoofddiensten
+
 | NL | EN | AR | BTW |
 |---|---|---|---|
-| Renovatie | Renovation | التجديد | 21% |
-| Binnen- & Buitenafwerkingen | Interior & Exterior Finishes | التشطيبات الداخلية والخارجية | 9% |
-| Afwerkingen | Finishes | التشطيبات | 9% |
-| Vloerleggen | Flooring Installation | تركيب الأرضيات | 9% |
+| Renovatie | Renovation | أعمال التجديد | 21% |
+| Schilderwerk | Painting | أعمال الدهانات | 9% |
+| Stukadoorwerk | Plastering | أعمال الجبس والليّاسة | 9% |
+| Laminaat / Parket leggen | Laminate / Parquet Flooring | تركيب الباركيه والألواح الخشبية | 9% |
+| Tegelzetten | Tile Installation | تركيب البلاط والسيراميك | 21% |
 | Loodgieterwerk | Plumbing Services | أعمال السباكة | 21% |
 | Elektra | Electrical Work | أعمال الكهرباء | 21% |
+
+### Overige diensten
+
+| NL | EN | AR | BTW |
+|---|---|---|---|
+| Behangen | Wallpapering | تركيب ورق الجدران | 9% |
+| Isolatiewerk | Insulation Work | أعمال العزل الحراري | 9% |
+| Schoonmaakwerk | Cleaning Services | خدمات التنظيف | 9% |
 | Sloopwerk | Demolition | أعمال الهدم | 21% |
 | Timmerwerk | Carpentry | النجارة | 21% |
 | Tuinonderhoud | Landscaping | تنسيق الحدائق | 21% |
@@ -122,7 +133,11 @@ src/
 | Raamwerk | Framing | الهيكل الإنشائي | 21% |
 | Anders (vrije tekst) | Other (custom) | أخرى (نص حر) | 21% |
 
-9% rates follow Dutch tax law (Tabel I, post b-7 Wet OB 1968) for painting, finishing, and floor-laying on residential properties older than 2 years.
+**BTW 9% rules** (Tabel I, post b-7 Wet OB 1968, Belastingdienst):
+- Schilderen, stukadoren, behangen, isoleren en laminaat/parket leggen in woningen **ouder dan 2 jaar** → 9%
+- Schoonmaakwerk in woningen → 9% (**geen leeftijdseis**)
+- Tegelzetten valt niet onder het verlaagde tarief → 21%
+- Als hoofdaannemer die werk uitbesteedt: splits werkzaamheden op 9%- en 21%-regels in offerte en factuur
 
 ---
 
