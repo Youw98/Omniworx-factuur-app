@@ -37,11 +37,6 @@ export function Settings() {
     setTimeout(() => setPinSuccess(false), 3000)
   }
 
-  const handleDueDaysChange = (val) => {
-    const n = parseInt(val, 10)
-    if (!isNaN(n) && n > 0) updateSetting('defaultDueDays', n)
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <PageHeader title={t('settings_title')} />
@@ -74,7 +69,20 @@ export function Settings() {
             type="number"
             inputMode="numeric"
             value={settings.defaultDueDays || 14}
-            onChange={e => handleDueDaysChange(e.target.value)}
+            onChange={e => { const n = parseInt(e.target.value, 10); if (!isNaN(n) && n > 0) updateSetting('defaultDueDays', n) }}
+            min="1"
+            max="365"
+          />
+        </section>
+
+        {/* Quote validity */}
+        <section className="bg-white rounded-2xl p-5 shadow-sm">
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('label_default_valid_days')}</h2>
+          <BigInput
+            type="number"
+            inputMode="numeric"
+            value={settings.defaultValidDays || 30}
+            onChange={e => { const n = parseInt(e.target.value, 10); if (!isNaN(n) && n > 0) updateSetting('defaultValidDays', n) }}
             min="1"
             max="365"
           />

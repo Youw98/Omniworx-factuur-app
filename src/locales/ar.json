@@ -68,7 +68,7 @@
     "settings_title": "الإعدادات",
     "settings_company": "بيانات الشركة",
     "settings_app_info": "معلومات التطبيق",
-    "settings_version": "الإصدار 1.0.0",
+    "settings_version": "الإصدار 0.1",
     "confirm_delete_invoice": "هل تريد حذف هذه الفاتورة؟",
     "confirm_delete_client": "هل تريد حذف هذا العميل؟",
     "error_required": "هذا الحقل مطلوب",

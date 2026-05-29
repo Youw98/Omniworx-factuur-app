@@ -3,6 +3,7 @@ import { useLocalStorage } from './useLocalStorage'
 const DEFAULT_SETTINGS = {
   uiLanguage: 'nl',
   defaultDueDays: 14,
+  defaultValidDays: 30,
   defaultBtwRate: 21,
   defaultInvoiceLanguage: 'nl',
   pinHash: null,

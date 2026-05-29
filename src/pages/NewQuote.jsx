@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
+import { useSettings } from '../hooks/useSettings'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
 
@@ -18,9 +19,10 @@ export function NewQuote() {
   const { t } = useTranslation('ui')
   const navigate = useNavigate()
   const { createQuote } = useQuotes()
+  const { settings } = useSettings()
+  const validDays = settings.defaultValidDays ?? 30
 
   const handleSave = (data) => {
-    // data.dueDate is used as validUntil
     const quote = createQuote({
       date: data.date,
       validUntil: data.dueDate,
@@ -34,7 +36,7 @@ export function NewQuote() {
 
   const initialData = {
     date: todayIso(),
-    dueDate: addDays(todayIso(), 30),
+    dueDate: addDays(todayIso(), validDays),
   }
 
   return (
@@ -46,7 +48,7 @@ export function NewQuote() {
           onSave={handleSave}
           onCancel={() => navigate('/offerten')}
           dueDateLabel={t('label_valid_until')}
-          defaultDays={30}
+          defaultDays={validDays}
         />
       </div>
     </div>
