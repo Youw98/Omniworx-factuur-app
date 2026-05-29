@@ -23,7 +23,7 @@ export function useInvoices() {
   const createInvoice = (data) => {
     const invoice = {
       id: crypto.randomUUID(),
-      invoiceNumber: generateInvoiceNumber(),
+      invoiceNumber: generateInvoiceNumber(invoices),
       status: 'unpaid',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

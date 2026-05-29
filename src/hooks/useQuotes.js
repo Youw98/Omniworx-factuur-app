@@ -27,7 +27,7 @@ export function useQuotes() {
   const createQuote = (data) => {
     const quote = {
       id: crypto.randomUUID(),
-      quoteNumber: generateQuoteNumber(),
+      quoteNumber: generateQuoteNumber(quotes),
       status: 'pending',
       invoiceId: null,
       createdAt: new Date().toISOString(),
