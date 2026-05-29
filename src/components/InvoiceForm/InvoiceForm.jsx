@@ -24,6 +24,13 @@ function newLineItem() {
 
 const INVOICE_LANGS = ['nl', 'ar', 'en']
 
+const NOTE_SNIPPETS = [
+  { key: 'excl_mat',  label: 'Excl. materiaal',    text: 'Prijzen zijn exclusief materiaalkosten.' },
+  { key: 'betaling',  label: 'Betaling 14 dagen',   text: 'Betaling binnen 14 dagen na factuurdatum op IBAN NL40INGB0675253160 t.n.v. Omniworx.' },
+  { key: 'garantie',  label: '12 mnd garantie',     text: 'Op alle uitgevoerde werkzaamheden geldt een garantie van 12 maanden.' },
+  { key: 'meerwerk',  label: 'Meerwerk op akkoord', text: 'Meerwerk wordt uitsluitend uitgevoerd na schriftelijk akkoord.' },
+]
+
 export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDays }) {
   const { t, i18n } = useTranslation('ui')
   const { clients } = useClients()
@@ -47,6 +54,16 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
 
   const markDirty = () => setDirty(true)
+
+  const toggleSnippet = (text) => {
+    setNotes(prev => {
+      if (prev.includes(text)) {
+        return prev.split('\n').filter(line => line !== text).join('\n').trim()
+      }
+      return prev ? prev + '\n' + text : text
+    })
+    markDirty()
+  }
 
   const selectedClient = clients.find(c => c.id === selectedClientId)
   const filteredClients = clients.filter(c =>
@@ -284,8 +301,27 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
       </section>
 
       {/* Notes */}
-      <section className="flex flex-col gap-1">
+      <section className="flex flex-col gap-2">
         <label className="text-lg font-medium text-gray-700">{t('label_notes')}</label>
+        <div className="flex flex-wrap gap-2">
+          {NOTE_SNIPPETS.map(s => {
+            const active = notes.includes(s.text)
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => toggleSnippet(s.text)}
+                className={`px-3 py-2 rounded-lg text-base font-medium border-2 transition-colors min-h-[40px] ${
+                  active
+                    ? 'bg-primary-700 text-gold-400 border-primary-700'
+                    : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400'
+                }`}
+              >
+                {active ? '✓ ' : '+ '}{s.label}
+              </button>
+            )
+          })}
+        </div>
         <textarea
           value={notes}
           onChange={e => { setNotes(e.target.value); markDirty() }}
