@@ -1,20 +1,15 @@
-// OW monogram path data
-// O ring: center (130,150), outer R=115, inner R=70  — viewBox "0 0 400 300"
-// Rendered in three layers so the W appears to weave through the O ring:
-//   bottom half of O (behind W) → W → top half of O (in front of W)
-const OW_O_BOTTOM = "M 15 150 A 115 115 0 0 1 245 150 L 200 150 A 70 70 0 0 1 60 150 Z"
-const OW_O_TOP    = "M 245 150 A 115 115 0 0 0 15 150 L 60 150 A 70 70 0 0 0 200 150 L 245 150 Z"
-const OW_W        = "M 195 28 L 242 194 L 282 50 L 338 194 L 383 28 L 371 28 L 328 208 L 294 62 L 254 208 L 207 28 Z"
-
-export function OWMonogram({ size = 56, color = '#E7B260', bg = null, bgRadius = 14, className = '' }) {
-  const h = Math.round(size * 300 / 400)
+// dark: true = dark green background (for dark headers/splash), false = white/transparent (for light backgrounds)
+export function OWMonogram({ size = 56, dark = true, className = '' }) {
+  const src = dark ? '/monogram-green.jpg' : '/monogram.webp'
   return (
-    <svg width={size} height={h} viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" className={className} aria-label="Omniworx logo">
-      {bg && <rect x="0" y="0" width="400" height="300" rx={bgRadius} fill={bg}/>}
-      <path d={OW_O_BOTTOM} fill={color}/>
-      <path d={OW_W}        fill={color}/>
-      <path d={OW_O_TOP}    fill={color}/>
-    </svg>
+    <img
+      src={src}
+      alt="Omniworx monogram"
+      width={size}
+      height={size}
+      style={{ width: size, height: size, display: 'block', borderRadius: Math.round(size * 0.18) }}
+      className={className}
+    />
   )
 }
 
