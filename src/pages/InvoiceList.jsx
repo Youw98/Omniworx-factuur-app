@@ -72,7 +72,16 @@ export function InvoiceList() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <PageHeader title={t('nav_invoices')} />
+      <PageHeader
+        title={t('nav_invoices')}
+        rightAction={
+          <button
+            onClick={() => navigate('/nieuw')}
+            className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl hover:bg-white/20 transition-colors text-gold-300 text-3xl"
+            aria-label={t('btn_new_invoice')}
+          >＋</button>
+        }
+      />
 
       {/* Filter tabs */}
       <div className="relative bg-white border-b border-gray-200">
