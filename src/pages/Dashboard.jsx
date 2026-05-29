@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
+import { useQuotes } from '../hooks/useQuotes'
 import { calcBtw, formatEuro } from '../utils/btwCalc'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { BigButton } from '../components/UI/BigButton'
@@ -17,6 +18,7 @@ export function Dashboard() {
   const { t } = useTranslation('ui')
   const navigate = useNavigate()
   const { invoices, unpaidInvoices, overdueInvoices } = useInvoices()
+  const { pendingQuotes } = useQuotes()
 
   const unpaidTotal = unpaidInvoices.reduce((s, inv) => s + calcBtw(inv.lineItems || []).grandTotal, 0)
   const recent = invoices.slice(0, 5)
@@ -55,9 +57,22 @@ export function Dashboard() {
         </div>
 
         {/* New invoice CTA */}
-        <BigButton onClick={() => navigate('/nieuw')} className="!text-2xl !min-h-[72px] shadow-lg">
-          ➕ {t('btn_new_invoice')}
-        </BigButton>
+        <div className="grid grid-cols-2 gap-3">
+          <BigButton onClick={() => navigate('/nieuw')} className="!text-xl !min-h-[64px] shadow-lg">
+            ➕ {t('btn_new_invoice')}
+          </BigButton>
+          <button
+            onClick={() => navigate('/offerten/nieuw')}
+            className="min-h-[64px] bg-white border-2 border-primary-700 text-primary-700 font-semibold text-xl rounded-2xl flex items-center justify-center gap-2 shadow-sm hover:bg-primary-50 transition-colors relative"
+          >
+            📋 {t('btn_new_quote')}
+            {pendingQuotes.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-gold-500 text-white text-xs font-bold rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1">
+                {pendingQuotes.length}
+              </span>
+            )}
+          </button>
+        </div>
 
         {/* Recent invoices */}
         <div>
