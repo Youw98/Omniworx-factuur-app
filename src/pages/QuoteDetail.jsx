@@ -11,7 +11,7 @@ import { BigButton } from '../components/UI/BigButton'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
 import { ScaledPreview } from '../components/UI/ScaledPreview'
-import { generateInvoicePdf } from '../utils/pdf'
+import { generateQuotePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
 
 function addDays(dateStr, days) {
@@ -49,7 +49,7 @@ export function QuoteDetail() {
     setSharing(true)
     setShareError('')
     try {
-      const blob = await generateInvoicePdf(previewRef.current, quote.quoteNumber)
+      const blob = await generateQuotePdf(previewRef.current, quote.quoteNumber)
       const shared = await shareInvoicePdf(blob, quote.quoteNumber)
       if (!shared) setShareError(t('error_share'))
     } catch (e) {
