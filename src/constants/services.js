@@ -1,14 +1,17 @@
-// BTW-tarieven op werkzaamheden aan woningen (Belastingdienst.nl):
+// BTW-tarieven op werkzaamheden aan woningen — geldig 2026 (Belastingdienst.nl):
 //
 // 9% — woningen ouder dan 2 jaar (Tabel I, post b-7, Wet OB 1968):
 //   Schilderen · stukadoren · behangen · isoleren
 //   Vloerbedekking leggen (laminaat, parket, tapijt, PVC — GEEN tegels)
+//   Let op: bij gemengde panden (woon/werk) geldt 9% alleen voor het
+//   aantoonbaar woongedeelte; commercieel deel 21% (wijziging per 1-7-2025).
 //
 // 9% — geen leeftijdseis:
 //   Schoonmaakwerk in woningen
 //
-// 0% — bijzonder tarief:
+// 0% — bijzonder tarief (ongewijzigd in 2026):
 //   Levering + installatie van zonnepanelen op of bij woningen
+//   (Uitzondering: geïntegreerde panelen op nieuwbouw → 21%)
 //
 // 21% — alles overige bouw- en installatiewerk:
 //   Tegelzetten · metselwerk · dakdekken · kozijnen/ramen · CV-installatie
