@@ -1,0 +1,13 @@
+<svg width="2732" height="2732" viewBox="0 0 2732 2732" xmlns="http://www.w3.org/2000/svg">
+  <!-- Full-bleed splash background -->
+  <rect width="2732" height="2732" fill="#0C3C3A"/>
+  <!-- CW Monogram centered, ~900px wide -->
+  <!-- scale = 900/380 = 2.368, offset_x=(2732-900)/2=916, offset_y=(2732-568)/2=1082 -->
+  <g transform="translate(916, 1082) scale(2.368)">
+    <path d="M 220 44 A 130 130 0 1 0 220 256 L 189 212 A 76 76 0 1 1 189 88 Z" fill="#E7B260"/>
+    <path d="M 195 28 L 242 194 L 282 50 L 338 194 L 383 28 L 371 28 L 328 208 L 294 62 L 254 208 L 207 28 Z" fill="#E7B260"/>
+  </g>
+  <!-- Wordmark below logo -->
+  <text x="1366" y="1840" font-family="Arial, sans-serif" font-size="120" font-weight="700" fill="#E7B260" text-anchor="middle" letter-spacing="20">OMNIWORX</text>
+  <text x="1366" y="1940" font-family="Arial, sans-serif" font-size="56" font-weight="400" fill="#E7B260" opacity="0.6" text-anchor="middle" letter-spacing="14">ONDERHOUD EN RENOVATIES</text>
+</svg>

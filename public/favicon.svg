@@ -1,7 +1,7 @@
-<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" rx="16" fill="#0C3C3A"/>
-  <!-- C/O shape -->
-  <path d="M52 18 C29 18 15 31 15 50 C15 69 29 82 52 82 C59 82 66 80 72 76 L64 67 C60 69.5 56 71 52 71 C34 71 25 62 25 50 C25 38 34 29 52 29 C56 29 60 30.5 64 33 L72 24 C66 20 59 18 52 18 Z" fill="#E7B260"/>
-  <!-- W shape -->
-  <path d="M55 29 L62 58 L72 38 L82 58 L89 29 L83 29 L76 51 L69.5 36 L63.5 51 L57 29 Z" fill="#E7B260"/>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="5" fill="#0C3C3A"/>
+  <g transform="translate(-0.67, 5.9) scale(0.0842)">
+    <path d="M 220 44 A 130 130 0 1 0 220 256 L 189 212 A 76 76 0 1 1 189 88 Z" fill="#E7B260"/>
+    <path d="M 195 28 L 242 194 L 282 50 L 338 194 L 383 28 L 371 28 L 328 208 L 294 62 L 254 208 L 207 28 Z" fill="#E7B260"/>
+  </g>
 </svg>

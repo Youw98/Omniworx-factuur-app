@@ -1,0 +1,9 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Foreground only (for adaptive icon) - transparent background, gold CW -->
+  <!-- Android adaptive icons use 108dp canvas, safe zone is inner 72dp circle -->
+  <!-- We put the logo in the safe zone (roughly 67% of canvas) -->
+  <g transform="translate(162, 291) scale(1.842)">
+    <path d="M 220 44 A 130 130 0 1 0 220 256 L 189 212 A 76 76 0 1 1 189 88 Z" fill="#E7B260"/>
+    <path d="M 195 28 L 242 194 L 282 50 L 338 194 L 383 28 L 371 28 L 328 208 L 294 62 L 254 208 L 207 28 Z" fill="#E7B260"/>
+  </g>
+</svg>
