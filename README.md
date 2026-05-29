@@ -51,12 +51,51 @@ npm run build      # production build
 npm run preview    # preview production build
 ```
 
-### Android (Capacitor)
+---
+
+## Android Studio (Capacitor)
+
+**Requirements:**
+- [Android Studio](https://developer.android.com/studio) (Hedgehog 2023.1 or newer)
+- Android SDK 36 (install via Android Studio → SDK Manager)
+- JDK 17+ (bundled with Android Studio)
+
+### Preview in Android Studio — one command
 
 ```bash
-npm run android:build   # build + sync + build APK
-npm run android:open    # open in Android Studio
+npm install
+npm run android:studio   # build web → sync to Android → open Android Studio
 ```
+
+This runs `vite build` → `cap sync android` → `cap open android` in one step.
+Android Studio will open the `android/` folder as a Gradle project.
+
+**Then in Android Studio:**
+1. Wait for Gradle sync to finish (first run downloads dependencies — can take a few minutes)
+2. Select a device: **Run → Select Device** — pick an emulator (Pixel 8, API 35+) or a connected Samsung phone
+3. Press **▶ Run** (Shift+F10) to install and launch the app
+
+### Other scripts
+
+```bash
+npm run android:sync    # rebuild web + sync (without opening Android Studio)
+npm run android:build   # build web + sync + export APK to releases/
+npm run android:open    # open existing android/ project in Android Studio (no rebuild)
+```
+
+### First-time Gradle setup
+
+Android Studio creates `android/local.properties` automatically with your SDK path. If it asks, point it to your Android SDK folder (typically `~/Library/Android/sdk` on Mac or `C:\Users\<you>\AppData\Local\Android\Sdk` on Windows).
+
+### Specs
+
+| Setting | Value |
+|---|---|
+| App ID | `nl.omniworx.factuur` |
+| Min SDK | 24 (Android 7.0) |
+| Target SDK | 36 (Android 16) |
+| Gradle | 8.14.3 |
+| AGP | 8.13.0 |
 
 ---
 
