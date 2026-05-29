@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { COMPANY } from '../../constants/company'
-import { SERVICES } from '../../constants/services'
+import { SERVICES, UNITS } from '../../constants/services'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
 
 const BRAND_GREEN = '#0C3C3A'
@@ -24,6 +24,10 @@ function getServiceLabel(item, lang) {
   return item.description || ''
 }
 
+function getUnitLabel(unit, lang) {
+  const u = UNITS.find(x => x.value === unit)
+  return u ? (u[lang] || u.nl) : (unit || '')
+}
 
 export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
   const quoteLang = quote.invoiceLanguage || 'nl'
@@ -260,7 +264,9 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
                   }}
                 >
                   <td style={{ padding: '13px 12px', color: '#1f2937', fontWeight: 500 }}>{desc}</td>
-                  <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151' }}>{item.quantity}</td>
+                  <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151', whiteSpace: 'nowrap' }}>
+                    {item.quantity}{item.unit ? ` ${getUnitLabel(item.unit, quoteLang)}` : ''}
+                  </td>
                   <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151' }}>{formatEuro(item.unitPrice || 0)}</td>
                   <td style={{ padding: '13px 8px', textAlign: 'center', color: BRAND_GREEN, fontWeight: 600, fontSize: 12 }}>
                     {item.btwRate ?? 21}%

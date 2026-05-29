@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { COMPANY } from '../../constants/company'
-import { SERVICES } from '../../constants/services'
+import { SERVICES, UNITS } from '../../constants/services'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
 
 const BRAND_GREEN = '#0C3C3A'
@@ -16,15 +16,17 @@ function formatDate(iso, lang) {
   )
 }
 
-// Translate a line item description to the invoice language.
-// For known services (serviceId matches SERVICES), use the service's own translation.
-// For custom/other entries, fall back to the stored description text.
 function getServiceLabel(item, lang) {
   if (item.serviceId && item.serviceId !== 'other') {
     const svc = SERVICES.find(s => s.id === item.serviceId)
     if (svc) return svc[lang] || svc.en || svc.nl
   }
   return item.description || ''
+}
+
+function getUnitLabel(unit, lang) {
+  const u = UNITS.find(x => x.value === unit)
+  return u ? (u[lang] || u.nl) : (unit || '')
 }
 
 
@@ -245,7 +247,9 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
                   }}
                 >
                   <td style={{ padding: '13px 12px', color: '#1f2937', fontWeight: 500 }}>{desc}</td>
-                  <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151' }}>{item.quantity}</td>
+                  <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151', whiteSpace: 'nowrap' }}>
+                    {item.quantity}{item.unit ? ` ${getUnitLabel(item.unit, invoiceLang)}` : ''}
+                  </td>
                   <td style={{ padding: '13px 8px', textAlign: 'center', color: '#374151' }}>{formatEuro(item.unitPrice || 0)}</td>
                   <td style={{ padding: '13px 8px', textAlign: 'center', color: BRAND_GREEN, fontWeight: 600, fontSize: 12 }}>
                     {item.btwRate ?? 21}%

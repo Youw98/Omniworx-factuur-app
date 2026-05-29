@@ -19,7 +19,7 @@ function addDays(dateStr, days) {
 }
 
 function newLineItem() {
-  return { id: crypto.randomUUID(), serviceId: '', description: '', quantity: 1, unitPrice: 0, btwRate: 21 }
+  return { id: crypto.randomUUID(), serviceId: '', description: '', quantity: 1, unit: 'uur', unitPrice: 0, btwRate: 21 }
 }
 
 const INVOICE_LANGS = ['nl', 'ar', 'en']

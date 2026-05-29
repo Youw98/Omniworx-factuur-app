@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { SERVICES, BTW_RATES } from '../../constants/services'
+import { SERVICES, UNITS, BTW_RATES } from '../../constants/services'
 import { formatEuro } from '../../utils/btwCalc'
 import { BigInput } from '../UI/BigInput'
 import { PaintRollerIcon, FaucetIcon } from '../UI/OmniworxLogo'
@@ -18,7 +18,9 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
   const handleServiceChange = (e) => {
     const id = e.target.value
     if (id === 'other') {
-      onChange(index, { ...item, serviceId: 'other', description: '', btwRate: 21 })
+      onChange(index, { ...item, serviceId: 'other', description: '', unit: item.unit || 'uur', btwRate: 21 })
+    } else if (!id) {
+      onChange(index, { ...item, serviceId: '', description: '' })
     } else {
       const svc = SERVICES.find(s => s.id === id)
       onChange(index, {
@@ -26,9 +28,13 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         serviceId: id,
         description: svc ? (svc[uiLanguage] || svc.nl) : '',
         btwRate: svc?.defaultBtwRate ?? 21,
+        unit: svc?.unit || item.unit || 'uur',
+        unitPrice: svc?.defaultPrice || item.unitPrice || 0,
       })
     }
   }
+
+  const currentUnit = item.unit || 'uur'
 
   return (
     <div className="bg-white border-2 border-gray-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
@@ -75,7 +81,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         />
       )}
 
-      {/* Quantity + Price */}
+      {/* Quantity + Unit */}
       <div className="grid grid-cols-2 gap-3">
         <BigInput
           label={t('label_quantity')}
@@ -87,17 +93,31 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           onChange={e => update('quantity', parseFloat(e.target.value) || 0)}
           placeholder="1"
         />
-        <BigInput
-          label={t('label_unit_price_short')}
-          type="number"
-          inputMode="decimal"
-          min="0"
-          step="0.01"
-          value={item.unitPrice || ''}
-          onChange={e => update('unitPrice', parseFloat(e.target.value) || 0)}
-          placeholder="0,00"
-        />
+        <div className="flex flex-col gap-1">
+          <label className="text-lg font-semibold text-gray-700 font-poppins">{t('label_unit')}</label>
+          <select
+            value={currentUnit}
+            onChange={e => update('unit', e.target.value)}
+            className="w-full min-h-[56px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white"
+          >
+            {UNITS.map(u => (
+              <option key={u.value} value={u.value}>{u.value}</option>
+            ))}
+          </select>
+        </div>
       </div>
+
+      {/* Unit price */}
+      <BigInput
+        label={`${t('label_unit_price_short')} / ${currentUnit}`}
+        type="number"
+        inputMode="decimal"
+        min="0"
+        step="0.01"
+        value={item.unitPrice || ''}
+        onChange={e => update('unitPrice', parseFloat(e.target.value) || 0)}
+        placeholder="0,00"
+      />
 
       {/* BTW rate selection */}
       <div className="flex flex-col gap-2">
