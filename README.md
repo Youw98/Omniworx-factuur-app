@@ -106,7 +106,7 @@ src/
 
 ## Pre-defined Services
 
-### Hoofddiensten
+### Hoofddiensten (primair)
 
 | NL | EN | AR | BTW |
 |---|---|---|---|
@@ -118,26 +118,44 @@ src/
 | Loodgieterwerk | Plumbing Services | أعمال السباكة | 21% |
 | Elektra | Electrical Work | أعمال الكهرباء | 21% |
 
-### Overige diensten
+### Overige diensten — 9% BTW
 
-| NL | EN | AR | BTW |
+| NL | EN | AR | Voorwaarde |
 |---|---|---|---|
-| Behangen | Wallpapering | تركيب ورق الجدران | 9% |
-| Isolatiewerk | Insulation Work | أعمال العزل الحراري | 9% |
-| Schoonmaakwerk | Cleaning Services | خدمات التنظيف | 9% |
-| Sloopwerk | Demolition | أعمال الهدم | 21% |
-| Timmerwerk | Carpentry | النجارة | 21% |
-| Tuinonderhoud | Landscaping | تنسيق الحدائق | 21% |
-| Bouwvoorbereiding | Site Preparation | تحضير الموقع | 21% |
-| Fundering | Foundation Work | أعمال الأساسات | 21% |
-| Raamwerk | Framing | الهيكل الإنشائي | 21% |
-| Anders (vrije tekst) | Other (custom) | أخرى (نص حر) | 21% |
+| Behangen | Wallpapering | تركيب ورق الجدران | woning ouder dan 2 jaar |
+| Tapijt / PVC-vloer leggen | Carpet / PVC Floor Installation | تركيب السجاد والأرضيات البلاستيكية | woning ouder dan 2 jaar |
+| Isolatiewerk | Insulation Work | أعمال العزل الحراري | woning ouder dan 2 jaar |
+| Schoonmaakwerk | Cleaning Services | خدمات التنظيف | geen leeftijdseis |
 
-**BTW 9% rules** (Tabel I, post b-7 Wet OB 1968, Belastingdienst):
-- Schilderen, stukadoren, behangen, isoleren en laminaat/parket leggen in woningen **ouder dan 2 jaar** → 9%
+### Overige diensten — 0% BTW
+
+| NL | EN | AR | Voorwaarde |
+|---|---|---|---|
+| Zonnepanelen installeren | Solar Panel Installation | تركيب الألواح الشمسية | op of bij woning |
+
+### Overige diensten — 21% BTW
+
+| NL | EN | AR |
+|---|---|---|
+| Metselwerk | Masonry / Bricklaying | أعمال البناء والبنّاء |
+| Dakdekken / Dakwerk | Roofing | أعمال السطح والتسقيف |
+| Kozijnen / Ramen plaatsen | Window Frame Installation | تركيب النوافذ والإطارات |
+| CV-installatie / Verwarming | Central Heating Installation | تركيب نظام التدفئة المركزية |
+| Ventilatie | Ventilation | تركيب نظام التهوية |
+| Sloopwerk | Demolition | أعمال الهدم |
+| Timmerwerk | Carpentry | النجارة |
+| Tuinonderhoud | Landscaping | تنسيق الحدائق |
+| Bouwvoorbereiding | Site Preparation | تحضير الموقع |
+| Fundering | Foundation Work | أعمال الأساسات |
+| Raamwerk | Framing | الهيكل الإنشائي |
+| Anders (vrije tekst) | Other (custom) | أخرى (نص حر) |
+
+**BTW-regels** (Tabel I, post b-7 Wet OB 1968 · Belastingdienst.nl):
+- Schilderen, stukadoren, behangen, isoleren en vloerbedekking leggen (laminaat/parket/tapijt/PVC — **geen tegels**) in woningen **ouder dan 2 jaar** → 9%
 - Schoonmaakwerk in woningen → 9% (**geen leeftijdseis**)
-- Tegelzetten valt niet onder het verlaagde tarief → 21%
-- Als hoofdaannemer die werk uitbesteedt: splits werkzaamheden op 9%- en 21%-regels in offerte en factuur
+- Levering + installatie zonnepanelen op of bij woning → **0%**
+- Tegelzetten, metselwerk, dakdekken, kozijnen, CV, ventilatie en alle overige bouw-/installatiewerkzaamheden → **21%**
+- Als hoofdaannemer die werk uitbesteedt: splits 9%- en 21%-posten apart op offerte en factuur
 
 ---
 
