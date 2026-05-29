@@ -120,7 +120,9 @@
     "confirm_delete_quote": "Weet je zeker dat je deze offerte wilt verwijderen?",
     "confirm_convert_quote": "Offerte omzetten naar factuur?",
     "quote_converted": "Factuur aangemaakt!",
-    "btn_export_excel": "Exporteer naar Excel"
+    "btn_export_excel": "Exporteer naar Excel",
+    "btn_confirm_convert": "Ja, omzetten",
+    "pin_forgot": "Wachtwoord vergeten?"
   },
   "invoice": {
     "invoice_title": "FACTUUR",

@@ -42,7 +42,7 @@ export function Quotes() {
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`min-h-[44px] px-4 rounded-xl text-lg font-semibold whitespace-nowrap transition-colors ${
+              className={`min-h-[56px] px-4 rounded-xl text-lg font-semibold whitespace-nowrap transition-colors ${
                 tab === key ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-600'
               }`}
             >

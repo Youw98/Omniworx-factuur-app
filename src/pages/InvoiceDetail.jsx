@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
@@ -7,41 +7,9 @@ import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
+import { ScaledPreview } from '../components/UI/ScaledPreview'
 import { generateInvoicePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
-
-const INVOICE_WIDTH = 780
-
-function ScaledPreview({ children }) {
-  const containerRef = useRef(null)
-  const [scale, setScale] = useState(1)
-
-  useLayoutEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const observer = new ResizeObserver(() => {
-      setScale(el.clientWidth / INVOICE_WIDTH)
-    })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div ref={containerRef} className="w-full">
-      <div
-        className="bg-white shadow-lg rounded-2xl overflow-hidden origin-top-left"
-        style={{
-          width: INVOICE_WIDTH,
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
-          marginBottom: `calc((${INVOICE_WIDTH}px * ${scale}) - ${INVOICE_WIDTH}px)`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
 
 export function InvoiceDetail() {
   const { t } = useTranslation('ui')
