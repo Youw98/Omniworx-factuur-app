@@ -139,7 +139,19 @@
     "toast_marked_paid": "✅ Gemarkeerd als betaald",
     "toast_marked_unpaid": "↩ Gemarkeerd als onbetaald",
     "toast_marked_accepted": "✅ Offerte geaccepteerd",
-    "toast_marked_rejected": "❌ Offerte afgewezen"
+    "toast_marked_rejected": "❌ Offerte afgewezen",
+    "toast_invoice_deleted": "🗑️ Factuur verwijderd",
+    "toast_quote_deleted": "🗑️ Offerte verwijderd",
+    "clients_search_empty": "Geen klanten gevonden",
+    "pin_error_length": "PIN moet 4 cijfers zijn",
+    "pin_changed": "✅ PIN gewijzigd!",
+    "label_new_pin": "Nieuwe PIN (4 cijfers)",
+    "label_confirm_pin": "Bevestig PIN",
+    "confirm_reject_quote": "Offerte als afgewezen markeren? Dit kan niet ongedaan worden gemaakt.",
+    "btn_confirm_reject": "Ja, afwijzen",
+    "btn_confirm_convert": "Ja, omzetten",
+    "required_fields_legend": "* = verplicht veld",
+    "error_storage_full": "⚠️ Opslag vol! Gegevens konden niet worden opgeslagen."
   },
   "invoice": {
     "invoice_title": "FACTUUR",

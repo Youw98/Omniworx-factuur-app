@@ -100,7 +100,7 @@ export function Clients() {
           rightAction={
             <button
               onClick={() => setDeleteId(editingClient.id)}
-              className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl"
+              className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl"
             >🗑️</button>
           }
         />
@@ -136,14 +136,14 @@ export function Clients() {
         {filtered.length === 0 && clients.length === 0 ? (
           <EmptyState icon={<WorkerIcon size={56} color="#E7B260"/>} message={t('clients_empty')} />
         ) : filtered.length === 0 ? (
-          <p className="text-center text-gray-400 text-xl py-8">Geen klanten gevonden</p>
+          <p className="text-center text-gray-400 text-xl py-8">{t('clients_search_empty')}</p>
         ) : (
           <div className="flex flex-col gap-2">
             {filtered.map(c => (
               <button
                 key={c.id}
                 onClick={() => { setEditingId(c.id); setMode('edit') }}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-gold-400 transition-colors"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-gold-400 transition-colors min-h-[56px]"
               >
                 <p className="text-xl font-bold text-gray-800">{c.name}</p>
                 {(c.address || c.city) && (

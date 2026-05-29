@@ -19,15 +19,17 @@ export function useLocalStorage(key, initialValue) {
           return next
         } catch (e) {
           console.error('localStorage write error:', e)
+          window.dispatchEvent(new CustomEvent('omniworx:storage-error'))
           return prev
         }
       })
     } else {
       try {
-        setStoredValue(value)
         localStorage.setItem(key, JSON.stringify(value))
+        setStoredValue(value)
       } catch (e) {
         console.error('localStorage write error:', e)
+        window.dispatchEvent(new CustomEvent('omniworx:storage-error'))
       }
     }
   }

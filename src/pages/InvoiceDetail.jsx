@@ -27,8 +27,8 @@ export function InvoiceDetail() {
   if (!invoice) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <p className="text-2xl text-gray-500">Factuur niet gevonden</p>
-        <BigButton onClick={() => navigate('/facturen')} className="mt-6 max-w-xs">Terug</BigButton>
+        <p className="text-2xl text-gray-500">{t('invoice_detail')} {t('error_required')}</p>
+        <BigButton onClick={() => navigate('/facturen')} className="mt-6 max-w-xs">{t('btn_back')}</BigButton>
       </div>
     )
   }
@@ -50,6 +50,7 @@ export function InvoiceDetail() {
 
   const handleDelete = () => {
     deleteInvoice(id)
+    showToast(t('toast_invoice_deleted'))
     navigate('/facturen', { replace: true })
   }
 
@@ -74,7 +75,7 @@ export function InvoiceDetail() {
         {shareError && (
           <div className="flex items-center gap-3">
             <p className="text-red-600 text-base flex-1 text-center">{shareError}</p>
-            <button onClick={handleShare} className="min-h-[44px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
+            <button onClick={handleShare} className="min-h-[56px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
               {t('btn_retry')}
             </button>
           </div>

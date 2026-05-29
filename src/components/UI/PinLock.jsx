@@ -128,7 +128,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
       {!isSettingUp && (
         <button
           onClick={() => setShowReset(true)}
-          className="text-gold-300/60 text-lg underline mt-2 min-h-[44px] px-4"
+          className="text-gold-300/60 text-lg underline mt-2 min-h-[56px] px-4"
         >
           {t('pin_forgot')}
         </button>

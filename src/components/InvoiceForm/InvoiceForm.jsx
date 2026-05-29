@@ -119,6 +119,9 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
         </div>
       </section>
 
+      {/* Required fields legend */}
+      <p className="text-sm text-gray-400">{t('required_fields_legend')}</p>
+
       {/* Dates */}
       <section className="grid grid-cols-2 gap-3">
         <BigInput

@@ -78,7 +78,12 @@ export function Dashboard() {
         <div>
           <h2 className="text-xl font-bold text-primary-700 mb-3 font-poppins">{t('dashboard_recent')}</h2>
           {recent.length === 0 ? (
-            <div className="text-center py-10 text-gray-400 text-xl">{t('dashboard_no_invoices')}</div>
+            <div className="flex flex-col items-center py-8 gap-4">
+              <p className="text-gray-400 text-xl text-center">{t('dashboard_no_invoices')}</p>
+              <BigButton onClick={() => navigate('/nieuw')} className="max-w-xs">
+                ➕ {t('btn_new_invoice')}
+              </BigButton>
+            </div>
           ) : (
             <div className="flex flex-col gap-2">
               {recent.map(inv => {

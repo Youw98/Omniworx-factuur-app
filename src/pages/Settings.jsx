@@ -19,13 +19,12 @@ export function Settings() {
   const handleLangChange = (lang) => {
     updateSetting('uiLanguage', lang)
     i18n.changeLanguage(lang)
-    localStorage.setItem('omniworx_ui_language', lang)
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
     document.documentElement.lang = lang
   }
 
   const handleSavePin = async () => {
-    if (newPin.length !== 4) { setPinError('PIN moet 4 cijfers zijn'); return }
+    if (newPin.length !== 4) { setPinError(t('pin_error_length')); return }
     if (newPin !== confirmPin) { setPinError(t('pin_error_match')); return }
     const hash = await hashPin(newPin)
     updateSetting('pinHash', hash)
@@ -91,7 +90,7 @@ export function Settings() {
         {/* PIN */}
         <section className="bg-white rounded-2xl p-5 shadow-sm">
           <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">{t('label_change_pin')}</h2>
-          {pinSuccess && <p className="text-green-600 text-lg mb-3">✅ PIN gewijzigd!</p>}
+          {pinSuccess && <p className="text-green-600 text-lg mb-3">{t('pin_changed')}</p>}
           {!changingPin ? (
             <BigButton variant="outline" onClick={() => setChangingPin(true)}>
               🔐 {t('label_change_pin')}
@@ -99,7 +98,7 @@ export function Settings() {
           ) : (
             <div className="flex flex-col gap-3">
               <BigInput
-                label="Nieuwe PIN (4 cijfers)"
+                label={t('label_new_pin')}
                 type="password"
                 inputMode="numeric"
                 maxLength={4}
@@ -108,7 +107,7 @@ export function Settings() {
                 placeholder="• • • •"
               />
               <BigInput
-                label="Bevestig PIN"
+                label={t('label_confirm_pin')}
                 type="password"
                 inputMode="numeric"
                 maxLength={4}

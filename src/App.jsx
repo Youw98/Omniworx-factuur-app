@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from './hooks/useSettings'
 import { useOnlineStatus } from './hooks/useOnlineStatus'
-import { ToastProvider } from './hooks/useToast'
+import { ToastProvider, useToast } from './hooks/useToast'
 import { PinLock } from './components/UI/PinLock'
 import { BottomNav } from './components/layout/BottomNav'
 import { Dashboard } from './pages/Dashboard'
@@ -30,8 +30,9 @@ function OfflineBanner() {
 
 function AppContent() {
   const { settings, updateSetting } = useSettings()
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation('ui')
   const [unlocked, setUnlocked] = useState(false)
+  const showToast = useToast()
 
   useEffect(() => {
     const lang = settings.uiLanguage || 'nl'
@@ -39,6 +40,12 @@ function AppContent() {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
     document.documentElement.lang = lang
   }, [settings.uiLanguage]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const handler = () => showToast(t('error_storage_full'), 'error')
+    window.addEventListener('omniworx:storage-error', handler)
+    return () => window.removeEventListener('omniworx:storage-error', handler)
+  }, [showToast, t])
 
   const handleSetPin = (hash) => {
     updateSetting('pinHash', hash)

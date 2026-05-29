@@ -139,7 +139,19 @@
     "toast_marked_paid": "✅ تم التحديد كمدفوعة",
     "toast_marked_unpaid": "↩ تم التحديد كغير مدفوعة",
     "toast_marked_accepted": "✅ تم قبول العرض",
-    "toast_marked_rejected": "❌ تم رفض العرض"
+    "toast_marked_rejected": "❌ تم رفض العرض",
+    "toast_invoice_deleted": "🗑️ تم حذف الفاتورة",
+    "toast_quote_deleted": "🗑️ تم حذف العرض",
+    "clients_search_empty": "لم يتم العثور على عملاء",
+    "pin_error_length": "يجب أن يكون PIN مكون من 4 أرقام",
+    "pin_changed": "✅ تم تغيير PIN!",
+    "label_new_pin": "PIN الجديد (4 أرقام)",
+    "label_confirm_pin": "تأكيد PIN",
+    "confirm_reject_quote": "تحديد العرض كمرفوض؟ لا يمكن التراجع عن هذا.",
+    "btn_confirm_reject": "نعم، رفض",
+    "btn_confirm_convert": "نعم، تحويل",
+    "required_fields_legend": "* = حقل مطلوب",
+    "error_storage_full": "⚠️ التخزين ممتلئ! لم يتم حفظ البيانات."
   },
   "invoice": {
     "invoice_title": "فاتورة",
