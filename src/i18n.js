@@ -4,7 +4,13 @@ import nl from './locales/nl.json'
 import ar from './locales/ar.json'
 import en from './locales/en.json'
 
-const savedLanguage = localStorage.getItem('omniworx_ui_language') || 'nl'
+const savedLanguage = (() => {
+  try {
+    return JSON.parse(localStorage.getItem('omniworx_settings') || '{}')?.uiLanguage || 'nl'
+  } catch {
+    return 'nl'
+  }
+})()
 
 i18n.use(initReactI18next).init({
   resources: {

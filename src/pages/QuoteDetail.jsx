@@ -44,7 +44,7 @@ export function QuoteDetail() {
   if (!quote) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <p className="text-2xl text-gray-500">{t('new_quote')} {t('error_required')}</p>
+        <p className="text-2xl text-gray-500">Offerte niet gevonden</p>
         <BigButton onClick={() => navigate('/offerten')} className="mt-6 max-w-xs">{t('btn_back')}</BigButton>
       </div>
     )

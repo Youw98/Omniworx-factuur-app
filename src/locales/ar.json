@@ -152,7 +152,8 @@
     "btn_confirm_reject": "نعم، رفض",
     "btn_confirm_convert": "نعم، تحويل",
     "required_fields_legend": "* = حقل مطلوب",
-    "error_storage_full": "⚠️ التخزين ممتلئ! لم يتم حفظ البيانات."
+    "error_storage_full": "⚠️ التخزين ممتلئ! لم يتم حفظ البيانات.",
+    "pin_too_many_attempts": "محاولات كثيرة. حاول مجدداً بعد {{seconds}} ثانية."
   },
   "invoice": {
     "invoice_title": "فاتورة",

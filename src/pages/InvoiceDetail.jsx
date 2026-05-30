@@ -32,7 +32,7 @@ export function InvoiceDetail() {
   if (!invoice) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <p className="text-2xl text-gray-500">{t('invoice_detail')} {t('error_required')}</p>
+        <p className="text-2xl text-gray-500">Factuur niet gevonden</p>
         <BigButton onClick={() => navigate('/facturen')} className="mt-6 max-w-xs">{t('btn_back')}</BigButton>
       </div>
     )

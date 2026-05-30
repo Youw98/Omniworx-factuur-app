@@ -152,7 +152,8 @@
     "btn_confirm_reject": "Ja, afwijzen",
     "btn_confirm_convert": "Ja, omzetten",
     "required_fields_legend": "* = verplicht veld",
-    "error_storage_full": "⚠️ Opslag vol! Gegevens konden niet worden opgeslagen."
+    "error_storage_full": "⚠️ Opslag vol! Gegevens konden niet worden opgeslagen.",
+    "pin_too_many_attempts": "Te veel pogingen. Probeer opnieuw over {{seconds}} seconden."
   },
   "invoice": {
     "invoice_title": "FACTUUR",

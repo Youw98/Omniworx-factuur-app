@@ -1,7 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { hashPin, verifyPin } from '../../utils/pinHash'
 import { OmniworxWordmark } from './OmniworxLogo'
+
+const MAX_ATTEMPTS = 5
+const LOCKOUT_MS = 30_000
+const LOCKOUT_KEY = 'omniworx_pin_lockout'
+
+function readLockout() {
+  try { return JSON.parse(localStorage.getItem(LOCKOUT_KEY) || '{}') } catch { return {} }
+}
+function writeLockout(data) {
+  try { localStorage.setItem(LOCKOUT_KEY, JSON.stringify(data)) } catch {}
+}
 
 export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const { t } = useTranslation('ui')
@@ -13,6 +24,30 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
   const [showReset, setShowReset] = useState(false)
 
   const isSettingUp = !pinHash
+
+  // Brute-force lockout (only applies during login, not setup)
+  const lockoutRef = useRef(readLockout())
+  const now = Date.now()
+  const initialUntil = lockoutRef.current.until || 0
+  const [attempts, setAttempts] = useState(lockoutRef.current.attempts || 0)
+  const [lockoutUntil, setLockoutUntil] = useState(initialUntil)
+  const [secondsLeft, setSecondsLeft] = useState(
+    !isSettingUp && initialUntil > now ? Math.ceil((initialUntil - now) / 1000) : 0
+  )
+
+  useEffect(() => {
+    if (isSettingUp || lockoutUntil <= Date.now()) return
+    const tick = () => {
+      const left = Math.ceil((lockoutUntil - Date.now()) / 1000)
+      setSecondsLeft(Math.max(0, left))
+    }
+    tick()
+    const id = setInterval(tick, 500)
+    return () => clearInterval(id)
+  }, [lockoutUntil, isSettingUp])
+
+  const isLocked = !isSettingUp && secondsLeft > 0
+
   const currentTarget = step === 'confirm' ? confirmPin : pin
   const setCurrentTarget = step === 'confirm' ? setConfirmPin : setPin
   const title = isSettingUp
@@ -20,7 +55,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
     : t('pin_title')
 
   const handleDigit = async (digit) => {
-    if (loading) return
+    if (loading || isLocked) return
     const next = currentTarget + digit
     setCurrentTarget(next)
     setError('')
@@ -46,14 +81,23 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
       } else {
         const { valid, legacy } = await verifyPin(next, pinHash)
         if (valid) {
-          // Auto-upgrade legacy SHA-256 hash to PBKDF2 on successful login
+          writeLockout({})
           if (legacy) {
             const upgraded = await hashPin(next)
             onSetPin(upgraded)
           }
           onUnlock()
         } else {
-          setError(t('pin_error_wrong'))
+          const newAttempts = attempts + 1
+          const shouldLock = newAttempts >= MAX_ATTEMPTS
+          const until = shouldLock ? Date.now() + LOCKOUT_MS : (lockoutUntil || 0)
+          writeLockout({ attempts: newAttempts, until })
+          setAttempts(newAttempts)
+          if (shouldLock) {
+            setLockoutUntil(until)
+            setSecondsLeft(Math.ceil(LOCKOUT_MS / 1000))
+          }
+          setError(shouldLock ? '' : t('pin_error_wrong'))
           setPin('')
         }
         setLoading(false)
@@ -70,7 +114,6 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
     Object.keys(localStorage)
       .filter(k => k.startsWith('omniworx'))
       .forEach(k => localStorage.removeItem(k))
-    // Also wipe Firebase IndexedDB offline cache so synced data doesn't persist
     indexedDB.databases?.().then(dbs =>
       dbs.forEach(db => indexedDB.deleteDatabase(db.name))
     ).catch(() => {})
@@ -99,9 +142,13 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
         ))}
       </div>
 
-      {error && <p className="text-red-300 text-xl font-semibold text-center">{error}</p>}
+      {isLocked && (
+        <p className="text-orange-300 text-xl font-semibold text-center px-4">
+          {t('pin_too_many_attempts', { seconds: secondsLeft })}
+        </p>
+      )}
+      {!isLocked && error && <p className="text-red-300 text-xl font-semibold text-center">{error}</p>}
 
-      {/* Loading indicator */}
       {loading && <p className="text-gold-300/70 text-lg animate-pulse">{t('pin_checking')}</p>}
 
       {/* Number pad */}
@@ -110,7 +157,7 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
           <button
             key={d}
             onClick={() => handleDigit(String(d))}
-            disabled={loading || displayPin.length >= 4}
+            disabled={loading || displayPin.length >= 4 || isLocked}
             className="min-h-[72px] text-3xl font-bold text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50 font-poppins"
           >
             {d}
@@ -119,14 +166,14 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
         <div />
         <button
           onClick={() => handleDigit('0')}
-          disabled={loading || displayPin.length >= 4}
+          disabled={loading || displayPin.length >= 4 || isLocked}
           className="min-h-[72px] text-3xl font-bold text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50 font-poppins"
         >
           0
         </button>
         <button
           onClick={handleDelete}
-          disabled={loading}
+          disabled={loading || isLocked}
           className="min-h-[72px] text-3xl text-white bg-white/20 rounded-2xl active:bg-white/40 transition-colors disabled:opacity-50"
         >
           ⌫
