@@ -1,9 +1,11 @@
-async function mergeWithAV(invoiceBlob) {
+// Merge an invoice/quote PDF blob with the algemene-voorwaarden PDF.
+// Used when SHARING — not for the in-app preview.
+export async function mergeWithAV(invoiceBlob) {
   try {
     const { PDFDocument } = await import('pdf-lib')
 
     const avResponse = await fetch('/algemene-voorwaarden.pdf')
-    if (!avResponse.ok) return invoiceBlob // AV not available — send invoice only
+    if (!avResponse.ok) return invoiceBlob
 
     const [invoiceBytes, avBytes] = await Promise.all([
       invoiceBlob.arrayBuffer(),
@@ -25,26 +27,29 @@ async function mergeWithAV(invoiceBlob) {
     const mergedBytes = await merged.save()
     return new Blob([mergedBytes], { type: 'application/pdf' })
   } catch {
-    return invoiceBlob // Fallback: return just the invoice PDF
+    return invoiceBlob
   }
 }
 
-// Clones the element to document.body so it escapes any overflow-hidden or
-// transform:scale parents (like ScaledPreview), then captures at full A4 width.
+// Clone the element to position (0,0) of the viewport so html2canvas can
+// capture it. The previous approach (top: -9999px) placed the clone ABOVE
+// the viewport, which html2canvas cannot capture — resulting in blank PDFs.
+// z-index: -1 keeps the clone behind all page content so the user never sees it.
 async function captureElement(element, filename) {
   const html2pdf = (await import('html2pdf.js')).default
 
   const clone = element.cloneNode(true)
   Object.assign(clone.style, {
     position: 'fixed',
-    top: '-9999px',
+    top: '0',
     left: '0',
     width: '794px',
     minWidth: '794px',
     maxWidth: '794px',
     transform: 'none',
     background: 'white',
-    zIndex: '-9999',
+    zIndex: '-1',
+    pointerEvents: 'none',
   })
   document.body.appendChild(clone)
 
@@ -63,12 +68,12 @@ async function captureElement(element, filename) {
   }
 }
 
+// Returns invoice-only PDF blob (no AV). Used for the in-app preview.
+// Call mergeWithAV(blob) before sharing if AV is needed.
 export async function generateInvoicePdf(element, invoiceNumber) {
-  const blob = await captureElement(element, `Factuur-${invoiceNumber}.pdf`)
-  return mergeWithAV(blob)
+  return captureElement(element, `Factuur-${invoiceNumber}.pdf`)
 }
 
 export async function generateQuotePdf(element, quoteNumber) {
-  const blob = await captureElement(element, `Offerte-${quoteNumber}.pdf`)
-  return mergeWithAV(blob)
+  return captureElement(element, `Offerte-${quoteNumber}.pdf`)
 }

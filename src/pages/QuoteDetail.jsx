@@ -12,7 +12,7 @@ import { StatusBadge } from '../components/UI/StatusBadge'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
 import { ScaledPreview } from '../components/UI/ScaledPreview'
 import { PdfViewerModal } from '../components/UI/PdfViewerModal'
-import { generateQuotePdf } from '../utils/pdf'
+import { generateQuotePdf, mergeWithAV } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
 
 function addDays(dateStr, days) {
@@ -70,9 +70,10 @@ export function QuoteDetail() {
     if (!pdfBlob) return
     setSharing(true)
     try {
-      const shared = await shareInvoicePdf(pdfBlob, quote.quoteNumber)
+      const blobToShare = await mergeWithAV(pdfBlob)
+      const shared = await shareInvoicePdf(blobToShare, quote.quoteNumber)
       if (!shared) setError(t('error_share'))
-    } catch (e) {
+    } catch {
       setError(t('error_pdf'))
     } finally {
       setSharing(false)
