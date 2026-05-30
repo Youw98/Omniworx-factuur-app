@@ -98,6 +98,7 @@ export function QuoteDetail() {
   }
 
   const handleConvert = () => {
+    if (quote.invoiceId) return
     const invoice = createInvoice({
       date: new Date().toISOString().split('T')[0],
       dueDate: addDays(new Date().toISOString().split('T')[0], settings.defaultDueDays || 14),

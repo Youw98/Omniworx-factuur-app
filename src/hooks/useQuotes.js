@@ -13,7 +13,7 @@ function isExpired(quote) {
 export function useQuotes() {
   const { items: quotes, upsertItem, removeItem, setItems } = useSyncedCollection('omniworx_quotes', 'quotes')
 
-  // Auto-expire quotes on mount
+  // Auto-expire quotes on mount and when item count changes (Firestore sync)
   useEffect(() => {
     setItems(prev => {
       const updated = prev.map(q =>
@@ -22,7 +22,7 @@ export function useQuotes() {
       const hasChanges = updated.some((q, i) => q.status !== prev[i].status)
       return hasChanges ? updated : prev
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [quotes.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const createQuote = (data) => {
     const quote = {

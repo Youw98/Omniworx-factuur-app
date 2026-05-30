@@ -9,7 +9,7 @@ function isOverdue(invoice) {
 export function useInvoices() {
   const { items: invoices, upsertItem, removeItem, setItems } = useSyncedCollection('omniworx_invoices', 'invoices')
 
-  // Auto-update overdue status on mount
+  // Auto-update overdue status on mount and when item count changes (Firestore sync)
   useEffect(() => {
     setItems(prev => {
       const updated = prev.map(inv =>
@@ -18,7 +18,7 @@ export function useInvoices() {
       const hasChanges = updated.some((inv, i) => inv.status !== prev[i].status)
       return hasChanges ? updated : prev
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [invoices.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const createInvoice = (data) => {
     const invoice = {

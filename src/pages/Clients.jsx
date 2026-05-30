@@ -82,7 +82,7 @@ export function Clients() {
           const mapped = {}
           for (const [col, val] of Object.entries(row)) {
             const key = COLUMN_MAP[col.toLowerCase().trim()]
-            if (key) mapped[key] = String(val).trim()
+            if (key) mapped[key] = String(val).trim().slice(0, 200)
           }
           if (!mapped.name) continue
           const exists = clients.some(
