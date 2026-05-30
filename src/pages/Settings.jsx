@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
+import { useWorkspace } from '../hooks/useWorkspace'
 import { hashPin } from '../utils/pinHash'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
@@ -10,11 +11,49 @@ import { COMPANY } from '../constants/company'
 export function Settings() {
   const { t, i18n } = useTranslation('ui')
   const { settings, updateSetting } = useSettings()
+  const { workspaceId, createWorkspace, joinWorkspace, leaveWorkspace, copyCode, syncStatus } = useWorkspace()
+
+  // Sync section state
+  const [showJoinInput, setShowJoinInput] = useState(false)
+  const [joinCode, setJoinCode] = useState('')
+  const [joinError, setJoinError] = useState('')
+  const [copySuccess, setCopySuccess] = useState(false)
+
   const [changingPin, setChangingPin] = useState(false)
   const [newPin, setNewPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [pinError, setPinError] = useState('')
   const [pinSuccess, setPinSuccess] = useState(false)
+
+  const handleCreateWorkspace = async () => {
+    await createWorkspace()
+  }
+
+  const handleJoinWorkspace = async () => {
+    setJoinError('')
+    const result = await joinWorkspace(joinCode)
+    if (result.ok) {
+      setShowJoinInput(false)
+      setJoinCode('')
+    } else {
+      setJoinError(result.error)
+    }
+  }
+
+  const handleCopyCode = async () => {
+    await copyCode()
+    setCopySuccess(true)
+    setTimeout(() => setCopySuccess(false), 2000)
+  }
+
+  const formatJoinCode = (value) => {
+    // Auto-format input: uppercase, insert dash after OWX if needed
+    const raw = value.toUpperCase().replace(/[^A-Z0-9-]/g, '')
+    // Strip existing dashes and rebuild
+    const stripped = raw.replace(/-/g, '')
+    if (stripped.length <= 3) return stripped
+    return stripped.slice(0, 3) + '-' + stripped.slice(3, 9)
+  }
 
   const handleLangChange = (lang) => {
     updateSetting('uiLanguage', lang)
@@ -85,6 +124,79 @@ export function Settings() {
             min="1"
             max="365"
           />
+        </section>
+
+        {/* Sync & samenwerking */}
+        <section className="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-gold-500">
+          <h2 className="text-xl font-bold text-primary-700 mb-2 font-poppins">☁️ Sync &amp; samenwerking</h2>
+
+          {!workspaceId ? (
+            <>
+              <p className="text-base text-gray-600 mb-4">
+                Deel facturen, offertes en klanten in real-time met je vader of collega.
+              </p>
+              {!showJoinInput ? (
+                <div className="flex flex-col gap-3">
+                  <BigButton
+                    onClick={handleCreateWorkspace}
+                    disabled={syncStatus === 'loading'}
+                  >
+                    {syncStatus === 'loading' ? 'Bezig…' : '🔗 Werkruimte aanmaken'}
+                  </BigButton>
+                  <BigButton
+                    variant="outline"
+                    onClick={() => { setShowJoinInput(true); setJoinError('') }}
+                  >
+                    📲 Verbinden met werkruimte
+                  </BigButton>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <p className="text-base text-gray-700 font-medium">Voer de werkruimte code in:</p>
+                  <BigInput
+                    value={joinCode}
+                    onChange={e => {
+                      setJoinCode(formatJoinCode(e.target.value))
+                      setJoinError('')
+                    }}
+                    placeholder="OWX-______"
+                    maxLength={10}
+                  />
+                  {joinError && <p className="text-red-600 text-base">{joinError}</p>}
+                  <BigButton
+                    onClick={handleJoinWorkspace}
+                    disabled={syncStatus === 'loading'}
+                  >
+                    {syncStatus === 'loading' ? 'Bezig…' : '✅ Verbinden'}
+                  </BigButton>
+                  <BigButton
+                    variant="secondary"
+                    onClick={() => { setShowJoinInput(false); setJoinCode(''); setJoinError('') }}
+                  >
+                    Annuleren
+                  </BigButton>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-green-600 font-bold text-lg">✅ Verbonden</span>
+              </div>
+              <p className="text-base text-gray-700">
+                Werkruimte: <span className="font-mono font-bold text-primary-700">{workspaceId}</span>
+              </p>
+              <BigButton onClick={handleCopyCode}>
+                {copySuccess ? '✅ Code gekopieerd!' : '📋 Kopieer code'}
+              </BigButton>
+              <BigButton variant="outline" onClick={leaveWorkspace}>
+                🔌 Verbinding verbreken
+              </BigButton>
+              <p className="text-sm text-gray-500">
+                Wijzigingen worden gesynchroniseerd met alle verbonden apparaten.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* PIN */}

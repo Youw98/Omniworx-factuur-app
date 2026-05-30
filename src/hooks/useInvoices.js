@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocalStorage } from './useLocalStorage'
+import { useSyncedCollection } from './useSyncedCollection'
 import { generateInvoiceNumber } from '../utils/invoiceNumber'
 
 function isOverdue(invoice) {
@@ -7,11 +7,11 @@ function isOverdue(invoice) {
 }
 
 export function useInvoices() {
-  const [invoices, setInvoices] = useLocalStorage('omniworx_invoices', [])
+  const { items: invoices, upsertItem, removeItem, setItems } = useSyncedCollection('omniworx_invoices', 'invoices')
 
   // Auto-update overdue status on mount
   useEffect(() => {
-    setInvoices(prev => {
+    setItems(prev => {
       const updated = prev.map(inv =>
         isOverdue(inv) ? { ...inv, status: 'overdue' } : inv
       )
@@ -29,20 +29,18 @@ export function useInvoices() {
       updatedAt: new Date().toISOString(),
       ...data,
     }
-    setInvoices(prev => [invoice, ...prev])
+    upsertItem(invoice)
     return invoice
   }
 
   const updateInvoice = (id, data) => {
-    setInvoices(prev =>
-      prev.map(inv =>
-        inv.id === id ? { ...inv, ...data, updatedAt: new Date().toISOString() } : inv
-      )
-    )
+    const existing = invoices.find(inv => inv.id === id)
+    if (!existing) return
+    upsertItem({ ...existing, ...data, updatedAt: new Date().toISOString() })
   }
 
   const deleteInvoice = (id) => {
-    setInvoices(prev => prev.filter(inv => inv.id !== id))
+    removeItem(id)
   }
 
   const getInvoice = (id) => invoices.find(inv => inv.id === id)

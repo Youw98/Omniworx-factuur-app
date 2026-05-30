@@ -1,7 +1,7 @@
-import { useLocalStorage } from './useLocalStorage'
+import { useSyncedCollection } from './useSyncedCollection'
 
 export function useClients() {
-  const [clients, setClients] = useLocalStorage('omniworx_clients', [])
+  const { items: clients, upsertItem, removeItem } = useSyncedCollection('omniworx_clients', 'clients')
 
   const addClient = (data) => {
     const client = {
@@ -9,16 +9,18 @@ export function useClients() {
       createdAt: new Date().toISOString(),
       ...data,
     }
-    setClients(prev => [client, ...prev])
+    upsertItem(client)
     return client
   }
 
   const updateClient = (id, data) => {
-    setClients(prev => prev.map(c => c.id === id ? { ...c, ...data } : c))
+    const existing = clients.find(c => c.id === id)
+    if (!existing) return
+    upsertItem({ ...existing, ...data })
   }
 
   const deleteClient = (id) => {
-    setClients(prev => prev.filter(c => c.id !== id))
+    removeItem(id)
   }
 
   const getClient = (id) => clients.find(c => c.id === id)

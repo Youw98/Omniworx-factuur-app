@@ -9,6 +9,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon-192.png', 'icon-512.png', 'monogram-green.jpg', 'monogram.webp', 'logo-horizontal.webp', 'logo-stacked.webp', 'logo-horizontal-green.jpg', 'logo-stacked-green.jpg', 'algemene-voorwaarden.pdf'],
       manifest: {
+        id: '/',
         name: 'Omniworx Factuur',
         short_name: 'Factuur',
         description: 'Facturatie app voor Omniworx',
@@ -16,6 +17,7 @@ export default defineConfig({
         background_color: '#0C3C3A',
         display: 'standalone',
         orientation: 'portrait',
+        scope: '/',
         start_url: '/',
         icons: [
           {

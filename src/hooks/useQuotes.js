@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocalStorage } from './useLocalStorage'
+import { useSyncedCollection } from './useSyncedCollection'
 import { generateQuoteNumber } from '../utils/quoteNumber'
 
 function todayIso() {
@@ -11,11 +11,11 @@ function isExpired(quote) {
 }
 
 export function useQuotes() {
-  const [quotes, setQuotes] = useLocalStorage('omniworx_quotes', [])
+  const { items: quotes, upsertItem, removeItem, setItems } = useSyncedCollection('omniworx_quotes', 'quotes')
 
   // Auto-expire quotes on mount
   useEffect(() => {
-    setQuotes(prev => {
+    setItems(prev => {
       const updated = prev.map(q =>
         isExpired(q) ? { ...q, status: 'expired' } : q
       )
@@ -34,20 +34,18 @@ export function useQuotes() {
       updatedAt: new Date().toISOString(),
       ...data,
     }
-    setQuotes(prev => [quote, ...prev])
+    upsertItem(quote)
     return quote
   }
 
   const updateQuote = (id, data) => {
-    setQuotes(prev =>
-      prev.map(q =>
-        q.id === id ? { ...q, ...data, updatedAt: new Date().toISOString() } : q
-      )
-    )
+    const existing = quotes.find(q => q.id === id)
+    if (!existing) return
+    upsertItem({ ...existing, ...data, updatedAt: new Date().toISOString() })
   }
 
   const deleteQuote = (id) => {
-    setQuotes(prev => prev.filter(q => q.id !== id))
+    removeItem(id)
   }
 
   const getQuote = (id) => quotes.find(q => q.id === id)

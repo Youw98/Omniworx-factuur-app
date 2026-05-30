@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSettings } from './hooks/useSettings'
 import { useOnlineStatus } from './hooks/useOnlineStatus'
 import { ToastProvider, useToast } from './hooks/useToast'
+import { WorkspaceProvider } from './contexts/WorkspaceContext'
 import { PinLock } from './components/UI/PinLock'
 import { BottomNav } from './components/layout/BottomNav'
 import { Dashboard } from './pages/Dashboard'
@@ -88,9 +89,11 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
+      <WorkspaceProvider>
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
+      </WorkspaceProvider>
     </BrowserRouter>
   )
 }
