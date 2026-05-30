@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
 import { useToast } from '../hooks/useToast'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
+import { isNative } from '../utils/platform'
 
 export function EditQuote() {
   const { t } = useTranslation('ui')
@@ -12,6 +14,10 @@ export function EditQuote() {
   const { getQuote, updateQuote } = useQuotes()
   const showToast = useToast()
   const quote = getQuote(id)
+
+  useEffect(() => {
+    if (!isNative()) navigate(`/offerten/${id}`, { replace: true })
+  }, [navigate, id])
 
   if (!quote) return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 gap-4">

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
@@ -5,6 +6,7 @@ import { useSettings } from '../hooks/useSettings'
 import { useToast } from '../hooks/useToast'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
+import { isNative } from '../utils/platform'
 
 function addDays(dateStr, days) {
   const d = new Date(dateStr)
@@ -23,6 +25,10 @@ export function NewQuote() {
   const { settings } = useSettings()
   const showToast = useToast()
   const validDays = settings.defaultValidDays ?? 30
+
+  useEffect(() => {
+    if (!isNative()) navigate('/offerten', { replace: true })
+  }, [navigate])
 
   const handleSave = (data) => {
     const quote = createQuote({

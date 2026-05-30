@@ -1,16 +1,18 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { isNative } from '../../utils/platform'
 
-const tabs = [
+const allTabs = [
   { to: '/', label: 'nav_dashboard', icon: '🏠' },
   { to: '/facturen', label: 'nav_invoices', icon: '📄' },
-  { to: '/nieuw', label: 'nav_new', icon: '➕' },
+  { to: '/nieuw', label: 'nav_new', icon: '➕', nativeOnly: true },
   { to: '/offerten', label: 'nav_quotes', icon: '📋' },
   { to: '/klanten', label: 'nav_clients', icon: '👥' },
 ]
 
 export function BottomNav() {
   const { t } = useTranslation('ui')
+  const tabs = isNative() ? allTabs : allTabs.filter(tab => !tab.nativeOnly)
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white border-t-2 border-gray-200 z-40 safe-area-bottom">
@@ -29,7 +31,7 @@ export function BottomNav() {
             {({ isActive }) => (
               <>
                 <span className={`text-xl ${
-                  tab.label === 'nav_new'
+                  tab.nativeOnly
                     ? 'bg-gold-500 text-primary-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-lg'
                     : ''
                 }`}>

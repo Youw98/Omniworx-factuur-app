@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import * as XLSX from 'xlsx'
 import { useClients } from '../hooks/useClients'
 import { useToast } from '../hooks/useToast'
+import { isNative } from '../utils/platform'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
 import { BigInput } from '../components/UI/BigInput'
@@ -54,6 +56,55 @@ export function Clients() {
   const [mode, setMode] = useState('list') // 'list' | 'add' | 'edit'
   const [editingId, setEditingId] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
+  const importRef = useRef(null)
+
+  const COLUMN_MAP = {
+    naam: 'name', name: 'name',
+    bedrijf: 'name', company: 'name',
+    adres: 'address', address: 'address', straat: 'address', street: 'address',
+    postcode: 'postalCode', 'postal code': 'postalCode', 'zip code': 'postalCode',
+    stad: 'city', woonplaats: 'city', city: 'city', plaats: 'city', town: 'city',
+    email: 'email', 'e-mail': 'email',
+    telefoon: 'phone', phone: 'phone', tel: 'phone', mobiel: 'phone', mobile: 'phone',
+  }
+
+  const handleImport = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      try {
+        const data = new Uint8Array(evt.target.result)
+        const wb = XLSX.read(data, { type: 'array' })
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
+        let imported = 0
+        let skipped = 0
+        for (const row of rows) {
+          const mapped = {}
+          for (const [col, val] of Object.entries(row)) {
+            const key = COLUMN_MAP[col.toLowerCase().trim()]
+            if (key) mapped[key] = String(val).trim()
+          }
+          if (!mapped.name) continue
+          const exists = clients.some(
+            c => c.name.toLowerCase() === mapped.name.toLowerCase()
+          )
+          if (exists) { skipped++; continue }
+          addClient(mapped)
+          imported++
+        }
+        if (imported > 0) {
+          showToast(`✅ ${imported} klant(en) geïmporteerd${skipped > 0 ? `, ${skipped} overgeslagen` : ''}`)
+        } else {
+          showToast('Geen nieuwe klanten gevonden', 'error')
+        }
+      } catch {
+        showToast('Importfout: controleer het bestandsformaat', 'error')
+      }
+      e.target.value = ''
+    }
+    reader.readAsArrayBuffer(file)
+  }
 
   const filtered = clients.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -123,7 +174,23 @@ export function Clients() {
       <PageHeader title={t('clients_title')} />
 
       <div className="p-4 flex flex-col gap-4 pb-24">
-        <BigButton onClick={() => setMode('add')}>➕ {t('btn_add_client')}</BigButton>
+        {isNative() && (
+          <>
+            <div className="flex gap-3">
+              <BigButton onClick={() => setMode('add')} className="flex-1">➕ {t('btn_add_client')}</BigButton>
+              <BigButton variant="outline" onClick={() => importRef.current?.click()} className="flex-1">
+                📥 Importeren
+              </BigButton>
+            </div>
+            <input
+              ref={importRef}
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              className="hidden"
+              onChange={handleImport}
+            />
+          </>
+        )}
 
         {clients.length > 0 && (
           <BigInput
@@ -142,8 +209,8 @@ export function Clients() {
             {filtered.map(c => (
               <button
                 key={c.id}
-                onClick={() => { setEditingId(c.id); setMode('edit') }}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-gold-400 transition-colors min-h-[56px]"
+                onClick={() => { if (isNative()) { setEditingId(c.id); setMode('edit') } }}
+                className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left transition-colors min-h-[56px] ${isNative() ? 'hover:border-gold-400 cursor-pointer' : 'cursor-default'}`}
               >
                 <p className="text-xl font-bold text-gray-800">{c.name}</p>
                 {(c.address || c.city) && (

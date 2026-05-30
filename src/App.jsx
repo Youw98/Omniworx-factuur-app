@@ -5,6 +5,7 @@ import { useSettings } from './hooks/useSettings'
 import { useOnlineStatus } from './hooks/useOnlineStatus'
 import { ToastProvider, useToast } from './hooks/useToast'
 import { WorkspaceProvider } from './contexts/WorkspaceContext'
+import { isNative } from './utils/platform'
 import { PinLock } from './components/UI/PinLock'
 import { BottomNav } from './components/layout/BottomNav'
 import { Dashboard } from './pages/Dashboard'
@@ -25,6 +26,15 @@ function OfflineBanner() {
   return (
     <div className="fixed top-0 left-0 right-0 max-w-lg mx-auto bg-orange-500 text-white text-center text-lg font-semibold py-2 z-[60] shadow-lg">
       📵 Geen internetverbinding
+    </div>
+  )
+}
+
+function ReadOnlyBanner() {
+  if (isNative()) return null
+  return (
+    <div className="sticky top-0 left-0 right-0 bg-primary-700 text-gold-300 text-center text-base font-semibold py-2 px-4 z-[59] shadow">
+      👁️ Leesmodus — bewerken alleen mogelijk in de app
     </div>
   )
 }
@@ -66,6 +76,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-gray-50 max-w-lg mx-auto relative">
       <OfflineBanner />
+      <ReadOnlyBanner />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/facturen" element={<InvoiceList />} />

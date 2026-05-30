@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useClients } from '../../hooks/useClients'
 import { useSettings } from '../../hooks/useSettings'
+import { useToast } from '../../hooks/useToast'
 import { calcBtw, formatEuro } from '../../utils/btwCalc'
 import { BigButton } from '../UI/BigButton'
 import { BigInput } from '../UI/BigInput'
@@ -31,8 +32,9 @@ const NOTE_SNIPPETS = [
 
 export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDays }) {
   const { t, i18n } = useTranslation('ui')
-  const { clients } = useClients()
+  const { clients, addClient } = useClients()
   const { settings } = useSettings()
+  const showToast = useToast()
   const uiLang = i18n.language
 
   const [date, setDate] = useState(initial?.date || todayIso())
@@ -86,6 +88,18 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
   const handleSave = () => {
     if (!validate()) return
     const clientSnapshot = clientMode === 'saved' ? { ...selectedClient } : { ...manualClient, id: null }
+
+    // Auto-add manually entered client to saved clients list if not already there
+    if (clientMode === 'manual' && manualClient.name.trim()) {
+      const exists = clients.some(
+        c => c.name.toLowerCase().trim() === manualClient.name.toLowerCase().trim()
+      )
+      if (!exists) {
+        addClient({ ...manualClient })
+        showToast('✅ Klant toegevoegd aan klantenlijst')
+      }
+    }
+
     onSave({ date, dueDate, invoiceLanguage, lineItems, notes, client: clientSnapshot })
   }
 

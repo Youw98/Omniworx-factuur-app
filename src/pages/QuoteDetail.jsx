@@ -14,6 +14,7 @@ import { ScaledPreview } from '../components/UI/ScaledPreview'
 import { PdfViewerModal } from '../components/UI/PdfViewerModal'
 import { generateQuotePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
+import { isNative } from '../utils/platform'
 
 function addDays(dateStr, days) {
   const d = new Date(dateStr)
@@ -131,22 +132,26 @@ export function QuoteDetail() {
         </BigButton>
         {error && <p className="text-red-600 text-base text-center">{error}</p>}
 
-        <div className="grid grid-cols-2 gap-3">
-          {quote.status === 'pending' && (
-            <BigButton variant="success" onClick={() => { markAccepted(id); showToast(t('toast_marked_accepted')) }}>{t('btn_mark_accepted')}</BigButton>
-          )}
-          <BigButton variant="secondary" onClick={() => navigate(`/offerten/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
-        </div>
+        {isNative() && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              {quote.status === 'pending' && (
+                <BigButton variant="success" onClick={() => { markAccepted(id); showToast(t('toast_marked_accepted')) }}>{t('btn_mark_accepted')}</BigButton>
+              )}
+              <BigButton variant="secondary" onClick={() => navigate(`/offerten/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
+            </div>
 
-        {quote.status === 'pending' && (
-          <BigButton variant="danger" onClick={() => setShowReject(true)}>{t('btn_mark_rejected')}</BigButton>
+            {quote.status === 'pending' && (
+              <BigButton variant="danger" onClick={() => setShowReject(true)}>{t('btn_mark_rejected')}</BigButton>
+            )}
+
+            {quote.status === 'accepted' && !quote.invoiceId && (
+              <BigButton variant="dark" onClick={() => setShowConvert(true)}>📄 {t('btn_convert_to_invoice')}</BigButton>
+            )}
+
+            <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
+          </>
         )}
-
-        {quote.status === 'accepted' && !quote.invoiceId && (
-          <BigButton variant="dark" onClick={() => setShowConvert(true)}>📄 {t('btn_convert_to_invoice')}</BigButton>
-        )}
-
-        <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
       </div>
 
       {/* Quote preview scaled to fit screen */}

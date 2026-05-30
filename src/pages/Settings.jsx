@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
 import { useWorkspace } from '../hooks/useWorkspace'
 import { hashPin } from '../utils/pinHash'
+import { isNative } from '../utils/platform'
+import { downloadLocalBackup, saveFirebaseBackup, getLastBackupDate, formatBackupDate } from '../utils/backup'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
 import { BigInput } from '../components/UI/BigInput'
@@ -24,6 +26,34 @@ export function Settings() {
   const [confirmPin, setConfirmPin] = useState('')
   const [pinError, setPinError] = useState('')
   const [pinSuccess, setPinSuccess] = useState(false)
+
+  const [backupStatus, setBackupStatus] = useState('')
+  const [lastBackup, setLastBackup] = useState(() => getLastBackupDate())
+
+  const handleLocalBackup = () => {
+    try {
+      downloadLocalBackup()
+      setLastBackup(getLastBackupDate())
+      setBackupStatus('local')
+      setTimeout(() => setBackupStatus(''), 3000)
+    } catch {
+      setBackupStatus('error')
+      setTimeout(() => setBackupStatus(''), 3000)
+    }
+  }
+
+  const handleFirebaseBackup = async () => {
+    setBackupStatus('saving')
+    try {
+      await saveFirebaseBackup(workspaceId)
+      setLastBackup(getLastBackupDate())
+      setBackupStatus('firebase')
+      setTimeout(() => setBackupStatus(''), 3000)
+    } catch {
+      setBackupStatus('error')
+      setTimeout(() => setBackupStatus(''), 3000)
+    }
+  }
 
   const handleCreateWorkspace = async () => {
     await createWorkspace()
@@ -80,6 +110,16 @@ export function Settings() {
       <PageHeader title={t('settings_title')} />
 
       <div className="p-4 pb-24 flex flex-col gap-6">
+
+        {/* Viewer mode notice */}
+        {!isNative() && (
+          <section className="bg-primary-700 rounded-2xl p-5">
+            <p className="text-gold-300 font-bold text-lg mb-1">👁️ Leesmodus</p>
+            <p className="text-white/80 text-base">
+              U bekijkt de gegevens via de webapp. Facturen aanmaken, bewerken en verwijderen is alleen mogelijk in de app op de Samsung telefoon.
+            </p>
+          </section>
+        )}
 
         {/* UI Language */}
         <section className="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-gold-500">
@@ -230,6 +270,56 @@ export function Settings() {
               {pinError && <p className="text-red-600 text-base">{pinError}</p>}
               <BigButton onClick={handleSavePin}>{t('btn_save')}</BigButton>
               <BigButton variant="secondary" onClick={() => { setChangingPin(false); setNewPin(''); setConfirmPin(''); setPinError('') }}>{t('btn_cancel')}</BigButton>
+            </div>
+          )}
+        </section>
+
+        {/* Backup */}
+        <section className="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-gold-500">
+          <h2 className="text-xl font-bold text-primary-700 mb-4 font-poppins">💾 Backup &amp; herstel</h2>
+
+          {lastBackup && (
+            <p className="text-base text-gray-500 mb-3">
+              Laatste backup: <span className="font-semibold text-gray-700">{formatBackupDate(lastBackup)}</span>
+            </p>
+          )}
+
+          {backupStatus === 'local' && <p className="text-green-600 text-base font-semibold mb-3">✅ Backup gedownload</p>}
+          {backupStatus === 'firebase' && <p className="text-green-600 text-base font-semibold mb-3">✅ Firebase backup opgeslagen</p>}
+          {backupStatus === 'error' && <p className="text-red-600 text-base font-semibold mb-3">❌ Backup mislukt</p>}
+
+          {isNative() ? (
+            <div className="flex flex-col gap-3">
+              <BigButton variant="outline" onClick={handleLocalBackup}>
+                📥 Backup naar telefoon (JSON)
+              </BigButton>
+              {workspaceId ? (
+                <BigButton
+                  variant="outline"
+                  onClick={handleFirebaseBackup}
+                  disabled={backupStatus === 'saving'}
+                >
+                  {backupStatus === 'saving' ? 'Bezig...' : '☁️ Backup naar Firebase'}
+                </BigButton>
+              ) : (
+                <p className="text-base text-gray-400 text-center">
+                  Verbind met een werkruimte voor Firebase backup
+                </p>
+              )}
+              <p className="text-sm text-gray-400">
+                Werkruimte synchronisatie is een doorlopende live backup. De knoppen hierboven maken een extra momentopname.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-base text-gray-500 text-center">
+                🔒 Backups zijn alleen beschikbaar in de app op de Samsung telefoon.
+              </p>
+              {workspaceId && (
+                <p className="text-sm text-gray-400 text-center mt-2">
+                  Uw gegevens worden real-time gesynchroniseerd via de werkruimte.
+                </p>
+              )}
             </div>
           )}
         </section>
