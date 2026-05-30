@@ -164,7 +164,22 @@
     "label_delete_row": "Verwijder regel",
     "pdf_btn_close": "Sluiten",
     "pdf_pinch_zoom": "Knijp om in te zoomen",
-    "pdf_btn_share": "Delen"
+    "pdf_btn_share": "Delen",
+    "label_loading": "Bezig…",
+    "sync_create": "🔗 Werkruimte aanmaken",
+    "sync_join": "📲 Verbinden met werkruimte",
+    "sync_enter_code": "Voer de werkruimte code in:",
+    "sync_connect": "✅ Verbinden",
+    "sync_connected": "✅ Verbonden",
+    "sync_workspace_label": "Werkruimte:",
+    "sync_active_description": "Wijzigingen worden gesynchroniseerd met alle verbonden apparaten.",
+    "sync_disconnect": "🔌 Verbinding verbreken",
+    "sync_copy_code": "📋 Kopieer code",
+    "sync_code_copied": "✅ Code gekopieerd!",
+    "sync_description": "Deel facturen, offertes en klanten in real-time met je vader of collega.",
+    "backup_firebase_btn": "☁️ Backup naar Firebase",
+    "backup_no_workspace": "Verbind met een werkruimte voor Firebase backup",
+    "backup_sync_note": "Werkruimte synchronisatie is een doorlopende live backup. De knoppen hierboven maken een extra momentopname."
   },
   "invoice": {
     "invoice_title": "FACTUUR",

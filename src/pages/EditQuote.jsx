@@ -16,7 +16,7 @@ export function EditQuote() {
   if (!quote) return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 gap-4">
       <p className="text-2xl text-gray-500">Offerte niet gevonden</p>
-      <button onClick={() => navigate('/offerten')} className="min-h-[56px] px-8 bg-primary-700 text-white text-xl rounded-2xl">Terug</button>
+      <button onClick={() => navigate('/offerten')} className="min-h-[56px] px-8 bg-primary-700 text-white text-xl rounded-2xl">{t('btn_back')}</button>
     </div>
   )
 

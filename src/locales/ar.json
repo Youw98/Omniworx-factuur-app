@@ -164,7 +164,22 @@
     "label_delete_row": "حذف السطر",
     "pdf_btn_close": "إغلاق",
     "pdf_pinch_zoom": "قرص للتكبير",
-    "pdf_btn_share": "مشاركة"
+    "pdf_btn_share": "مشاركة",
+    "label_loading": "جارٍ…",
+    "sync_create": "🔗 إنشاء مساحة عمل",
+    "sync_join": "📲 الانضمام إلى مساحة عمل",
+    "sync_enter_code": "أدخل رمز مساحة العمل:",
+    "sync_connect": "✅ اتصال",
+    "sync_connected": "✅ متصل",
+    "sync_workspace_label": "مساحة العمل:",
+    "sync_active_description": "يتم مزامنة التغييرات مع جميع الأجهزة المتصلة.",
+    "sync_disconnect": "🔌 قطع الاتصال",
+    "sync_copy_code": "📋 نسخ الرمز",
+    "sync_code_copied": "✅ تم نسخ الرمز!",
+    "sync_description": "شارك الفواتير والعروض والعملاء في الوقت الفعلي مع والدك أو زميلك.",
+    "backup_firebase_btn": "☁️ نسخ احتياطي إلى Firebase",
+    "backup_no_workspace": "اتصل بمساحة عمل للنسخ الاحتياطي إلى Firebase",
+    "backup_sync_note": "مزامنة مساحة العمل نسخة احتياطية حية مستمرة. الأزرار أعلاه تنشئ لقطة إضافية."
   },
   "invoice": {
     "invoice_title": "فاتورة",

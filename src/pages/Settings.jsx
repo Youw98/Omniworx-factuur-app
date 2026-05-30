@@ -162,7 +162,7 @@ export function Settings() {
           {!workspaceId ? (
             <>
               <p className="text-base text-gray-600 mb-4">
-                Deel facturen, offertes en klanten in real-time met je vader of collega.
+                {t('sync_description')}
               </p>
               {!showJoinInput ? (
                 <div className="flex flex-col gap-3">
@@ -170,18 +170,18 @@ export function Settings() {
                     onClick={handleCreateWorkspace}
                     disabled={syncStatus === 'loading'}
                   >
-                    {syncStatus === 'loading' ? 'Bezig…' : '🔗 Werkruimte aanmaken'}
+                    {syncStatus === 'loading' ? t('label_loading') : t('sync_create')}
                   </BigButton>
                   <BigButton
                     variant="outline"
                     onClick={() => { setShowJoinInput(true); setJoinError('') }}
                   >
-                    📲 Verbinden met werkruimte
+                    {t('sync_join')}
                   </BigButton>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <p className="text-base text-gray-700 font-medium">Voer de werkruimte code in:</p>
+                  <p className="text-base text-gray-700 font-medium">{t('sync_enter_code')}</p>
                   <BigInput
                     value={joinCode}
                     onChange={e => {
@@ -196,13 +196,13 @@ export function Settings() {
                     onClick={handleJoinWorkspace}
                     disabled={syncStatus === 'loading'}
                   >
-                    {syncStatus === 'loading' ? 'Bezig…' : '✅ Verbinden'}
+                    {syncStatus === 'loading' ? t('label_loading') : t('sync_connect')}
                   </BigButton>
                   <BigButton
                     variant="secondary"
                     onClick={() => { setShowJoinInput(false); setJoinCode(''); setJoinError('') }}
                   >
-                    Annuleren
+                    {t('btn_cancel')}
                   </BigButton>
                 </div>
               )}
@@ -210,19 +210,19 @@ export function Settings() {
           ) : (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-green-600 font-bold text-lg">✅ Verbonden</span>
+                <span className="text-green-600 font-bold text-lg">{t('sync_connected')}</span>
               </div>
               <p className="text-base text-gray-700">
-                Werkruimte: <span className="font-mono font-bold text-primary-700">{workspaceId}</span>
+                {t('sync_workspace_label')} <span className="font-mono font-bold text-primary-700">{workspaceId}</span>
               </p>
               <BigButton onClick={handleCopyCode}>
-                {copySuccess ? '✅ Code gekopieerd!' : '📋 Kopieer code'}
+                {copySuccess ? t('sync_code_copied') : t('sync_copy_code')}
               </BigButton>
               <BigButton variant="outline" onClick={leaveWorkspace}>
-                🔌 Verbinding verbreken
+                {t('sync_disconnect')}
               </BigButton>
               <p className="text-sm text-gray-500">
-                Wijzigingen worden gesynchroniseerd met alle verbonden apparaten.
+                {t('sync_active_description')}
               </p>
             </div>
           )}
@@ -287,15 +287,15 @@ export function Settings() {
                 onClick={handleFirebaseBackup}
                 disabled={backupStatus === 'saving'}
               >
-                {backupStatus === 'saving' ? 'Bezig...' : '☁️ Backup naar Firebase'}
+                {backupStatus === 'saving' ? t('label_loading') : t('backup_firebase_btn')}
               </BigButton>
             ) : (
               <p className="text-base text-gray-400 text-center">
-                Verbind met een werkruimte voor Firebase backup
+                {t('backup_no_workspace')}
               </p>
             )}
             <p className="text-sm text-gray-400">
-              Werkruimte synchronisatie is een doorlopende live backup. De knoppen hierboven maken een extra momentopname.
+              {t('backup_sync_note')}
             </p>
           </div>
         </section>
