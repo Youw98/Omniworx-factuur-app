@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { hashPin } from '../../utils/pinHash'
+import { hashPin, verifyPin } from '../../utils/pinHash'
 import { OmniworxWordmark } from './OmniworxLogo'
 
 export function PinLock({ pinHash, onUnlock, onSetPin }) {
@@ -44,8 +44,13 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
           setLoading(false)
         }
       } else {
-        const hash = await hashPin(next)
-        if (hash === pinHash) {
+        const { valid, legacy } = await verifyPin(next, pinHash)
+        if (valid) {
+          // Auto-upgrade legacy SHA-256 hash to PBKDF2 on successful login
+          if (legacy) {
+            const upgraded = await hashPin(next)
+            onSetPin(upgraded)
+          }
           onUnlock()
         } else {
           setError(t('pin_error_wrong'))

@@ -1,25 +1,32 @@
 async function mergeWithAV(invoiceBlob) {
-  const { PDFDocument } = await import('pdf-lib')
+  try {
+    const { PDFDocument } = await import('pdf-lib')
 
-  const [invoiceBytes, avBytes] = await Promise.all([
-    invoiceBlob.arrayBuffer(),
-    fetch('/algemene-voorwaarden.pdf').then(r => r.arrayBuffer()),
-  ])
+    const avResponse = await fetch('/algemene-voorwaarden.pdf')
+    if (!avResponse.ok) return invoiceBlob // AV not available — send invoice only
 
-  const merged = await PDFDocument.create()
-  const [invoiceDoc, avDoc] = await Promise.all([
-    PDFDocument.load(invoiceBytes),
-    PDFDocument.load(avBytes),
-  ])
+    const [invoiceBytes, avBytes] = await Promise.all([
+      invoiceBlob.arrayBuffer(),
+      avResponse.arrayBuffer(),
+    ])
 
-  const invoicePages = await merged.copyPages(invoiceDoc, invoiceDoc.getPageIndices())
-  invoicePages.forEach(p => merged.addPage(p))
+    const merged = await PDFDocument.create()
+    const [invoiceDoc, avDoc] = await Promise.all([
+      PDFDocument.load(invoiceBytes),
+      PDFDocument.load(avBytes),
+    ])
 
-  const avPages = await merged.copyPages(avDoc, avDoc.getPageIndices())
-  avPages.forEach(p => merged.addPage(p))
+    const invoicePages = await merged.copyPages(invoiceDoc, invoiceDoc.getPageIndices())
+    invoicePages.forEach(p => merged.addPage(p))
 
-  const mergedBytes = await merged.save()
-  return new Blob([mergedBytes], { type: 'application/pdf' })
+    const avPages = await merged.copyPages(avDoc, avDoc.getPageIndices())
+    avPages.forEach(p => merged.addPage(p))
+
+    const mergedBytes = await merged.save()
+    return new Blob([mergedBytes], { type: 'application/pdf' })
+  } catch {
+    return invoiceBlob // Fallback: return just the invoice PDF
+  }
 }
 
 // Clones the element to document.body so it escapes any overflow-hidden or

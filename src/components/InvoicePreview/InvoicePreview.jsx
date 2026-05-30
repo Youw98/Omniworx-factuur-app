@@ -289,7 +289,6 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '12px 0 4px',
             fontSize: 20,
             fontWeight: 900,
             color: 'white',

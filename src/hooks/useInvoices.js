@@ -46,7 +46,12 @@ export function useInvoices() {
   const getInvoice = (id) => invoices.find(inv => inv.id === id)
 
   const markPaid = (id) => updateInvoice(id, { status: 'paid' })
-  const markUnpaid = (id) => updateInvoice(id, { status: 'unpaid' })
+  const markUnpaid = (id) => {
+    const inv = invoices.find(i => i.id === id)
+    if (!inv) return
+    const status = isOverdue(inv) ? 'overdue' : 'unpaid'
+    updateInvoice(id, { status })
+  }
 
   const unpaidInvoices = invoices.filter(inv => inv.status !== 'paid')
   const overdueInvoices = invoices.filter(inv => inv.status === 'overdue')

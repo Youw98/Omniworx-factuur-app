@@ -70,7 +70,7 @@ export function useWorkspace() {
   const joinWorkspace = async (code) => {
     const normalised = code.trim().toUpperCase()
     if (!WORKSPACE_CODE_REGEX.test(normalised)) {
-      return { ok: false, error: 'Ongeldige code. Gebruik het formaat OWX-XXXXXX.' }
+      return { ok: false, error: 'Ongeldige code. Gebruik het formaat OWX-XXXXXXXX.' }
     }
 
     setSyncStatus('loading')
