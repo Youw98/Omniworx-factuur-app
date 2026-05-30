@@ -20,9 +20,9 @@ Mobile-first PWA invoicing and quotation app for **Omniworx** — a Dutch constr
 
 ---
 
-## How sync works — iPhone ↔ Samsung
+## How sync works — APK phone ↔ iPhone (or any two devices)
 
-All data is stored locally on the device by default. When you create a workspace and share the 9-character code, both phones see the same invoices, quotes, and clients in real time.
+All data is stored locally on the device by default. When you create a workspace and share the 9-character code, both devices see the same invoices, quotes, and clients in real time.
 
 ### Step 1 — Create the workspace on one phone
 
@@ -47,30 +47,40 @@ All data is stored locally on the device by default. When you create a workspace
 
 ---
 
-## Install as an app on iPhone (PWA)
+## Install on Android / Samsung — APK
 
-**Safari is required** — Chrome on iPhone does not support PWA installation.
+The app builds as a real Android APK via GitHub Actions. Every push to the main branch triggers a build automatically.
 
-1. Open **Safari** on your iPhone
-2. Go to the app URL
-3. Tap the **Share button** (the box with an arrow pointing up, at the bottom of Safari)
-4. Scroll down in the share sheet → tap **Zet op beginscherm** (Add to Home Screen)
-5. Tap **Toevoegen** (Add) — the Omniworx icon appears on your home screen
-6. Open it from the home screen — it runs full-screen like a native app, with no browser bar
+### Download the APK
 
-After the first load, the app works fully offline. Sync with the other phone still requires an internet connection, but you can create and view invoices without internet.
+1. Go to the GitHub repository → **Actions** tab
+2. Click the latest **Build Android APK** run
+3. Scroll to **Artifacts** at the bottom → download **omniworx-factuur-debug**
+4. Unzip — you get `app-debug.apk`
 
----
+### Install on the Samsung phone
 
-## Install as an app on Android / Samsung (PWA)
+1. Transfer `app-debug.apk` to the phone (WhatsApp to yourself, Google Drive, USB cable — any method)
+2. Open the APK file on the phone
+3. If Android asks: **Instellingen → Onbekende apps → toestaan** (allow installing from this source)
+4. Tap **Installeren** — done
 
-1. Open **Chrome** on the Samsung phone
-2. Go to the app URL
-3. Chrome shows an install banner at the bottom — tap **Installeren** (Install)
-   Or: tap the three-dot menu (⋮) → **App toevoegen aan startscherm**
-4. The Omniworx icon appears on the home screen — tap it to open
+The app appears on the home screen as **Omniworx Factuur** with the full icon.
 
-The app behaves like a native app: full screen, works offline, no browser bar.
+### Update the app
+
+When the code changes and a new APK is built: download the new APK, install it over the old one — your data is preserved.
+
+### iPhone — PWA via Safari (no cost)
+
+No App Store needed. On iPhone:
+
+1. Open **Safari** → go to the app URL
+2. Tap the **Share button** (box with arrow, bottom of Safari)
+3. Tap **Zet op beginscherm** → **Toevoegen**
+4. The app icon appears on the home screen and runs full-screen
+
+This is a PWA, not a native app, but for this use case (invoicing, sharing PDFs) it works exactly the same.
 
 ---
 
