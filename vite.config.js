@@ -18,12 +18,16 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
-        start_url: '/',
+        start_url: '/?source=pwa',
+        lang: 'nl',
+        dir: 'ltr',
+        categories: ['business', 'finance', 'productivity'],
         icons: [
           {
             src: 'icon-192.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any',
           },
           {
             src: 'icon-512.png',
