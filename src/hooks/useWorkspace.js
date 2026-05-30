@@ -3,15 +3,13 @@ import { doc, getDoc, setDoc, writeBatch } from 'firebase/firestore'
 import { db } from '../firebase'
 import { WorkspaceContext } from '../contexts/WorkspaceContext'
 
-const WORKSPACE_CODE_REGEX = /^OWX-[A-Z0-9]{6}$/
+// Accept both old 6-char and new 8-char codes during transition
+const WORKSPACE_CODE_REGEX = /^OWX-[A-Z0-9]{6,8}$/
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let result = ''
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return 'OWX-' + result
+  const bytes = crypto.getRandomValues(new Uint8Array(8))
+  return 'OWX-' + Array.from(bytes).map(b => chars[b % chars.length]).join('')
 }
 
 function readLocalData(key) {

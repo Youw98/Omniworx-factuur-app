@@ -65,6 +65,10 @@ export function PinLock({ pinHash, onUnlock, onSetPin }) {
     Object.keys(localStorage)
       .filter(k => k.startsWith('omniworx'))
       .forEach(k => localStorage.removeItem(k))
+    // Also wipe Firebase IndexedDB offline cache so synced data doesn't persist
+    indexedDB.databases?.().then(dbs =>
+      dbs.forEach(db => indexedDB.deleteDatabase(db.name))
+    ).catch(() => {})
     window.location.reload()
   }
 
