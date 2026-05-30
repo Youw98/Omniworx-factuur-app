@@ -39,17 +39,24 @@ async function captureElement(element, filename) {
   const html2pdf = (await import('html2pdf.js')).default
 
   const clone = element.cloneNode(true)
+  // position: fixed so it doesn't affect document layout.
+  // top: 0 keeps it within the viewport's y-axis so html2canvas can measure it
+  // (top: -9999px puts it above the viewport → html2canvas captures blank).
+  // left: -9999px moves it off-screen horizontally so the user never sees it.
+  // No z-index: avoid the z-index:-1 pitfall where Chrome hides the element
+  // behind the body background and html2canvas gets a 0-height bounding rect.
   Object.assign(clone.style, {
     position: 'fixed',
     top: '0',
-    left: '0',
+    left: '-9999px',
     width: '794px',
     minWidth: '794px',
     maxWidth: '794px',
     transform: 'none',
     background: 'white',
-    zIndex: '-1',
     pointerEvents: 'none',
+    visibility: 'visible',
+    display: 'block',
   })
   document.body.appendChild(clone)
 
