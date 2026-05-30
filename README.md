@@ -1,237 +1,422 @@
 # Omniworx Factuur App
 
-Mobile-first PWA invoicing app for Omniworx — a one-person Dutch construction & renovation company. Built for a tech-illiterate user on a Samsung Android phone: large tap targets, big text, offline-first, share invoices via WhatsApp.
+Mobile-first PWA invoicing and quotation app for **Omniworx** — a Dutch construction and renovation company. Large accessible UI, fully offline, Dutch/Arabic interface, and real-time sync between two phones via a shared workspace code.
 
 ---
 
-## Features
+## What it does
 
-- **Invoices** — Create, edit, mark paid/unpaid, delete with confirm guard
-- **Quotes** — Create, accept, reject (with confirm), convert to invoice
-- **Clients** — Full CRUD with searchable list
-- **PDF generation** — Invoice rendered as styled HTML → PDF via html2pdf.js
-- **WhatsApp sharing** — Web Share API; falls back to direct download
-- **Excel export** — Export invoice list via xlsx
-- **Multilingual UI** — Dutch & Arabic (RTL) with a toggle in Settings
-- **Multilingual invoices** — Invoice documents in Dutch, English, or Arabic per invoice
-- **BTW calculation** — Dutch VAT at 0%, 9%, or 21% per line item with per-rate breakdown
-- **PIN lock** — SHA-256 hashed 4-digit PIN; "Forgot PIN" resets all data with warning
-- **Offline / PWA** — Service worker caches app shell; installable on Android home screen
-- **Offline indicator** — Banner shown when device has no internet connection
-- **Auto invoice numbering** — `YYYY-NNN` format, resets each year
-- **Input validation** — Required field errors, date order validation, confirm dialogs on destructive actions
-- **Success toasts** — Feedback after every save, update, or delete action
+- Create and manage **invoices** (facturen) and **quotations** (offerten)
+- Auto-fill service price, BTW rate, and unit from a built-in price list
+- Generate **PDF** documents, automatically merged with the terms & conditions (algemene voorwaarden)
+- **Share** PDFs directly via WhatsApp or any app (Web Share API), or download
+- **Export** all invoices to Excel (one sheet per month + year summary)
+- Convert accepted quotes directly into invoices in one tap
+- Manage a **client address book**
+- Full Dutch and Arabic interface (RTL for Arabic)
+- Invoices and quotes can be printed in **Dutch, English, or Arabic** per document
+- Works completely **offline** — all data stored on the device
+- **Sync in real time** between two phones (e.g. iPhone + Samsung) using a shared workspace code
 
 ---
 
-## Tech Stack
+## How sync works — iPhone ↔ Samsung
+
+All data is stored locally on the device by default. When you create a workspace and share the 9-character code, both phones see the same invoices, quotes, and clients in real time.
+
+### Step 1 — Create the workspace on one phone
+
+1. Open the app → tap **Instellingen** (the gear icon in the bottom navigation)
+2. Scroll to **Sync & samenwerking**
+3. Tap **Maak werkruimte aan** (Create workspace)
+4. The app generates a code like `OWX-A3K9Z2` and uploads all existing data to the cloud
+5. Tap **Kopieer code** and send it to the other phone via WhatsApp
+
+### Step 2 — Join on the second phone
+
+1. Open the app on the second phone → **Instellingen** → **Sync & samenwerking**
+2. Tap **Deelnemen** (Join)
+3. Enter the code received from step 1 (e.g. `OWX-A3K9Z2`) → tap **Verbinden**
+4. Both phones now share the same data and sync within seconds of any change
+
+### After connecting
+
+- Any invoice or quote created on one phone appears on the other almost instantly
+- Works offline too: changes are saved locally first and synced when internet returns
+- To disconnect: tap **Verbreken** in Settings — your local data stays on the device
+
+---
+
+## Install as an app on iPhone (PWA)
+
+**Safari is required** — Chrome on iPhone does not support PWA installation.
+
+1. Open **Safari** on your iPhone
+2. Go to the app URL
+3. Tap the **Share button** (the box with an arrow pointing up, at the bottom of Safari)
+4. Scroll down in the share sheet → tap **Zet op beginscherm** (Add to Home Screen)
+5. Tap **Toevoegen** (Add) — the Omniworx icon appears on your home screen
+6. Open it from the home screen — it runs full-screen like a native app, with no browser bar
+
+After the first load, the app works fully offline. Sync with the other phone still requires an internet connection, but you can create and view invoices without internet.
+
+---
+
+## Install as an app on Android / Samsung (PWA)
+
+1. Open **Chrome** on the Samsung phone
+2. Go to the app URL
+3. Chrome shows an install banner at the bottom — tap **Installeren** (Install)
+   Or: tap the three-dot menu (⋮) → **App toevoegen aan startscherm**
+4. The Omniworx icon appears on the home screen — tap it to open
+
+The app behaves like a native app: full screen, works offline, no browser bar.
+
+---
+
+## Pages and navigation
+
+| Route | Page | What it does |
+|---|---|---|
+| `/` | Dashboard | Daily greeting, unpaid/overdue stats, last 5 invoices, quick-create buttons |
+| `/facturen` | Factuurlijst | All invoices with filter tabs (alle / onbetaald / achterstallig / betaald), grouped by month |
+| `/facturen/nieuw` | Nieuwe factuur | Create a new invoice |
+| `/facturen/:id` | Factuurdetail | View invoice preview, share as PDF, mark paid/unpaid, edit, delete |
+| `/facturen/:id/bewerken` | Factuur bewerken | Edit an existing invoice |
+| `/offerten` | Offertenlijst | All quotes with filter tabs (alle / in behandeling / geaccepteerd / afgewezen) |
+| `/offerten/nieuw` | Nieuwe offerte | Create a new quotation |
+| `/offerten/:id` | Offertedetail | View quote, share PDF, accept/reject, convert to invoice |
+| `/offerten/:id/bewerken` | Offerte bewerken | Edit a quotation |
+| `/klanten` | Klanten | Client address book (add, edit, delete, search) |
+| `/instellingen` | Instellingen | Language, PIN, due-day defaults, sync, company info |
+
+---
+
+## Invoice and quote form
+
+- **Client** — pick from the address book or enter a name and address manually
+- **Date** — defaults to today
+- **Vervaldatum / Geldig tot** — defaults to today + 14 days (configurable per invoice, or change the default in Settings)
+- **Documenttaal** — the language of the printed document: NL / EN / AR (independent of the UI language)
+- **Regelitems** (line items) — add as many rows as needed, each with:
+  - Service picker (27 pre-defined construction services)
+  - Auto-fills the unit, price, and BTW rate from the price list on selection — all editable afterwards
+  - Quantity + unit (uur / m² / m / m³ / stuk / dag)
+  - Unit price (€)
+  - Market price hint under the price field: e.g. *Marktprijs: €22 – €45 / m²*
+  - BTW rate selector: 0% / 9% / 21%
+  - Contextual BTW-9% warnings (see below)
+  - Live line total per row
+- **Totaaloverzicht** — subtotaal, BTW per rate, grand total
+- **Opmerkingen** — free-text notes field
+
+---
+
+## Services and prices
+
+| Service | BTW | Eenheid | Standaardprijs | Marktbereik |
+|---|---|---|---|---|
+| Renovatie | 21% | uur | €65 | €50 – €95 |
+| Schilderwerk | 9% | m² | €28 | €18 – €45 |
+| Stukadoorwerk | 9% | m² | €32 | €22 – €55 |
+| Laminaat / Parket | 21% | m² | €14 | €10 – €25 |
+| Tegelzetten | 21% | m² | €40 | €30 – €65 |
+| Loodgieterwerk | 21% | uur | €75 | €60 – €110 |
+| Elektra | 21% | uur | €80 | €65 – €115 |
+| Behangen | 9% | m² | €18 | €12 – €32 |
+| Isoleren | 9% | m² | €22 | €15 – €40 |
+| Metselwerk | 21% | m² | €55 | €40 – €85 |
+| Dakwerk | 21% | m² | €85 | €60 – €130 |
+| Kozijnen | 21% | stuk | €350 | €250 – €600 |
+| CV-installatie | 21% | stuk | €1200 | €900 – €2000 |
+| Ventilatie | 21% | stuk | €450 | €300 – €750 |
+| Schoonmaakwerk | 9% | uur | €25 | €20 – €35 |
+| Sloopwerk | 21% | m² | €30 | €20 – €50 |
+| Timmerwerk | 21% | uur | €60 | €45 – €90 |
+| Tuinonderhoud | 21% | uur | €45 | €35 – €65 |
+| Bouwvoorbereiding | 21% | dag | €400 | €280 – €600 |
+| Fundering | 21% | m² | €120 | €80 – €200 |
+| Raamwerk | 21% | m² | €65 | €45 – €100 |
+| Zonnepanelen | 0% | stuk | €800 | €600 – €1200 |
+| Overig (vrije tekst) | 21% | uur | — | — |
+
+All prices and BTW rates are editable. The price list auto-fills the most common value as a starting point.
+
+### BTW-9% warnings
+
+The app shows a yellow warning when 9% is selected for services that have conditions under Dutch tax law (Tabel I, post b-7 Wet OB 1968):
+
+- **Schilderwerk, Stukadoorwerk, Behangen, Isoleren**: 9% is only valid for homes older than 2 years
+- **Schoonmaakwerk**: 9% is only valid for cleaning private homes (no age requirement)
+
+These reminders help avoid incorrect VAT rates without blocking the user.
+
+---
+
+## BTW rules (Dutch VAT)
+
+| Category | Rate | Condition |
+|---|---|---|
+| Schilderen, stukadoren, behangen, isoleren, laminaat/parket/tapijt/PVC vloer leggen | 9% | Woning ouder dan 2 jaar |
+| Schoonmaakwerk | 9% | Particuliere woning (geen leeftijdseis) |
+| Zonnepanelen op of bij woning | 0% | — |
+| Tegelzetten, metselwerk, dakdekken, kozijnen, CV, ventilatie, overige bouw | 21% | — |
+
+**Let op:** Tegelzetten valt niet onder de 9%-regeling — zelfs niet in oudere woningen.
+
+---
+
+## Invoice and quote numbering
+
+- Invoices: `2026-001`, `2026-002`, … — resets to `001` at the start of each year
+- Quotes: `OFF-2026-001`, `OFF-2026-002`, …
+- Numbers are derived from the highest existing number — no separate counter stored. If you delete invoice `2026-003`, the next invoice gets `2026-003` again.
+
+---
+
+## PDF and sharing
+
+When you tap **Delen** (Share) on an invoice or quote:
+
+1. The HTML preview is converted to a high-resolution A4 PDF
+2. The company's **algemene voorwaarden** (terms & conditions, `public/algemene-voorwaarden.pdf`) are automatically appended
+3. The native share sheet opens — pick WhatsApp, email, save to Files, etc.
+4. If the browser does not support native sharing (desktop), the PDF downloads automatically
+
+PDF filename format: `Factuur-2026-001.pdf` / `Offerte-OFF-2026-001.pdf`
+
+---
+
+## Excel export
+
+On the invoice list page, tap the Excel button (top right). The download contains:
+- One sheet per month with all invoices and a totals row
+- A **Samenvatting** (summary) sheet with monthly totals and a grand total for the year
+- File name: `Omniworx-Facturen-2026.xlsx`
+
+---
+
+## PIN security
+
+- On first launch you are prompted to set a 4-digit PIN
+- The PIN is stored as a SHA-256 hash — the PIN itself is never saved
+- Required every time the app is opened
+- To change: Settings → **Wijzig PIN**
+- To remove: Settings → **Verwijder PIN**
+- If you forget the PIN: Settings → **PIN vergeten** — this clears all local data
+
+---
+
+## Languages
+
+| Language | App UI | Invoice / Quote document |
+|---|---|---|
+| Nederlands | ✅ | ✅ |
+| العربية (RTL) | ✅ | ✅ |
+| English | ❌ (UI only in NL/AR) | ✅ |
+
+The **UI language** (Dutch or Arabic) is set once in Settings and applies to all buttons, menus, and labels. The **document language** is set per invoice/quote, so you can have a Dutch app interface but send an English invoice to a foreign client.
+
+When Arabic is selected, the entire app layout switches to right-to-left (`dir="rtl"` on `<html>`).
+
+---
+
+## Data storage
+
+All data lives locally in `localStorage`:
+
+| Key | Contents |
+|---|---|
+| `omniworx_invoices` | All invoices |
+| `omniworx_quotes` | All quotes |
+| `omniworx_clients` | Client address book |
+| `omniworx_settings` | Language, PIN hash, due-day defaults |
+| `omniworx_workspace_id` | Active workspace code (empty if not connected) |
+
+When a workspace is active, data is also stored in **Firebase Firestore** under:
+
+```
+/workspaces/{workspaceId}/invoices/{id}
+/workspaces/{workspaceId}/quotes/{id}
+/workspaces/{workspaceId}/clients/{id}
+```
+
+Firestore uses IndexedDB-based offline persistence, so synced data is available offline on both phones.
+
+---
+
+## Company information (in every invoice)
+
+```
+Omniworx
+Isidoor Opsomerstraat 7
+5702VD Helmond
+KVK: 85285064
+BTW-ID: NL004083540B58
+IBAN: NL40INGB0675253160
+```
+
+To change these details: edit `src/components/InvoicePreview/InvoicePreview.jsx` and `src/components/QuotePreview/QuotePreview.jsx`.
+
+---
+
+## Tech stack
 
 | Purpose | Library |
 |---|---|
 | Framework | React 19 + Vite 8 |
-| Styling | TailwindCSS 3 |
 | Routing | react-router-dom v7 |
+| Styling | Tailwind CSS 3 |
 | Translations | react-i18next + i18next |
-| PDF | html2pdf.js |
-| Excel | xlsx |
-| Sharing | Web Share API |
-| Offline / PWA | vite-plugin-pwa + Workbox |
-| Storage | localStorage (custom hooks) |
-| Native wrapper | Capacitor (Android) |
-| Tests | Playwright (headless Chromium) |
+| PDF generation | html2pdf.js + pdf-lib |
+| Excel export | xlsx |
+| Cloud sync | Firebase Firestore v12 |
+| PWA / service worker | vite-plugin-pwa + Workbox |
+| Native Android wrapper | Capacitor 8 |
 
 ---
 
-## Getting Started
+## Development
 
 ```bash
+# Install dependencies
 npm install
-npm run dev        # dev server on http://localhost:5173
-npm run build      # production build
-npm run preview    # preview production build
+
+# Start dev server with hot reload
+npm run dev          # → http://localhost:5173
+
+# Production build
+npm run build
+
+# Preview the production build
+npm run preview
+
+# Lint
+npm run lint
 ```
+
+### Android (Capacitor)
+
+```bash
+# Build web assets + open Android Studio
+npm run android:studio
+
+# Build web assets + sync only (no Android Studio)
+npm run android:sync
+
+# Build web + export APK
+npm run android:build
+
+# Open existing android/ project in Android Studio (no rebuild)
+npm run android:open
+```
+
+Requires Android Studio and the Android SDK. On first run, Gradle downloads dependencies — this can take a few minutes.
 
 ---
 
-## Android Studio (Capacitor)
+## Firebase / Firestore
 
-**Requirements:**
-- [Android Studio](https://developer.android.com/studio) (Hedgehog 2023.1 or newer)
-- Android SDK 36 (install via Android Studio → SDK Manager)
-- JDK 17+ (bundled with Android Studio)
+The Firebase project is `omniworxdb`. Config is in `src/firebase.js`. The workspace code acts as the shared secret — anyone with the code can read and write that workspace's data.
 
-### Preview in Android Studio — one command
+Firestore security rules:
 
-```bash
-npm install
-npm run android:studio   # build web → sync to Android → open Android Studio
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /workspaces/{workspaceId}/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
 ```
 
-This runs `vite build` → `cap sync android` → `cap open android` in one step.
-Android Studio will open the `android/` folder as a Gradle project.
-
-**Then in Android Studio:**
-1. Wait for Gradle sync to finish (first run downloads dependencies — can take a few minutes)
-2. Select a device: **Run → Select Device** — pick an emulator (Pixel 8, API 35+) or a connected Samsung phone
-3. Press **▶ Run** (Shift+F10) to install and launch the app
-
-### Other scripts
-
-```bash
-npm run android:sync    # rebuild web + sync (without opening Android Studio)
-npm run android:build   # build web + sync + export APK to releases/
-npm run android:open    # open existing android/ project in Android Studio (no rebuild)
-```
-
-### First-time Gradle setup
-
-Android Studio creates `android/local.properties` automatically with your SDK path. If it asks, point it to your Android SDK folder (typically `~/Library/Android/sdk` on Mac or `C:\Users\<you>\AppData\Local\Android\Sdk` on Windows).
-
-### Specs
-
-| Setting | Value |
-|---|---|
-| App ID | `nl.omniworx.factuur` |
-| Min SDK | 24 (Android 7.0) |
-| Target SDK | 36 (Android 16) |
-| Gradle | 8.14.3 |
-| AGP | 8.13.0 |
+To update rules: Firebase Console → Firestore → Rules.
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 src/
   components/
-    InvoiceForm/     # InvoiceForm, LineItemRow
-    InvoicePreview/  # Rendered invoice document (HTML → PDF)
-    layout/          # BottomNav, PageHeader
-    UI/              # BigButton, BigInput, BigSelect, PinLock,
-                     # StatusBadge, ConfirmDialog, Toast, EmptyState
+    InvoiceForm/         InvoiceForm.jsx, LineItemRow.jsx
+    InvoicePreview/      InvoicePreview.jsx (HTML → PDF)
+    QuotePreview/        QuotePreview.jsx
+    layout/              BottomNav.jsx, PageHeader.jsx
+    UI/                  BigButton, BigInput, BigSelect, PinLock,
+                         StatusBadge, ConfirmDialog, EmptyState, Toast
+  contexts/
+    WorkspaceContext.jsx  Provides workspaceId across the app
   pages/
-    Dashboard        # Stats + recent invoices + quick actions
-    InvoiceList      # Filterable invoice list
-    NewInvoice       # Invoice creation form
-    InvoiceDetail    # View + share + mark paid + edit + delete
-    EditInvoice      # Edit existing invoice
-    Quotes           # Filterable quote list
-    NewQuote         # Quote creation form
-    QuoteDetail      # View + accept + reject + convert + delete
-    EditQuote        # Edit existing quote
-    Clients          # CRUD client list
-    Settings         # Language, PIN, defaults
+    Dashboard, InvoiceList, NewInvoice, InvoiceDetail, EditInvoice
+    Quotes, NewQuote, QuoteDetail, EditQuote
+    Clients, Settings
   hooks/
-    useInvoices      # CRUD + auto-numbering
-    useQuotes        # CRUD + status transitions
-    useClients       # CRUD
-    useSettings      # Language, PIN hash, defaults
-    useLocalStorage  # Generic localStorage hook with error events
-    useToast         # Toast notification system
-    useOnlineStatus  # Online/offline detection
-  locales/
-    nl.json          # Dutch UI + invoice labels
-    ar.json          # Arabic UI + invoice labels
-    en.json          # English invoice labels
+    useSyncedCollection  Core dual-mode hook: localStorage ↔ Firestore
+    useInvoices          CRUD + auto-numbering + overdue detection
+    useQuotes            CRUD + auto-expiry + status transitions
+    useClients           CRUD
+    useWorkspace         Create/join/leave workspace, sync status
+    useSettings          Language, PIN hash, day defaults
+    useLocalStorage      Generic localStorage hook
+    useToast             Toast notification context
+    useOnlineStatus      Online/offline event listener
   utils/
-    btwCalc          # VAT calculation (subtotal, per-rate groups, grand total)
-    invoiceNumber    # YYYY-NNN auto-numbering with year reset
-    pinHash          # SHA-256 via Web Crypto API
-    pdf              # html2pdf.js wrapper
-    share            # Web Share API with download fallback
+    btwCalc.js           Subtotal, BTW per rate, grand total
+    invoiceNumber.js     YYYY-NNN auto-numbering
+    quoteNumber.js       OFF-YYYY-NNN auto-numbering
+    pdf.js               html2pdf.js wrapper + AV merge
+    share.js             Web Share API with download fallback
+    excelExport.js       xlsx multi-sheet export
+    pinHash.js           SHA-256 via Web Crypto API
+  constants/
+    services.js          27 services with prices, units, BTW rates
+  locales/
+    nl.json              Dutch UI + invoice/quote labels
+    ar.json              Arabic UI + invoice/quote labels (RTL)
+    en.json              English invoice/quote labels only
+  firebase.js            Firebase app + Firestore init
+  i18n.js                i18next init (NL default, AR RTL)
+  App.jsx                Router + PinLock + WorkspaceProvider
+public/
+  algemene-voorwaarden.pdf    Appended to every shared PDF
+  icon-192.png / icon-512.png PWA icons
+  logo-*.webp / logo-*.jpg    Company logos
 ```
-
----
-
-## Pre-defined Services
-
-### Hoofddiensten (primair)
-
-| NL | EN | AR | BTW |
-|---|---|---|---|
-| Renovatie | Renovation | أعمال التجديد | 21% |
-| Schilderwerk | Painting | أعمال الدهانات | 9% |
-| Stukadoorwerk | Plastering | أعمال الجبس والليّاسة | 9% |
-| Laminaat / Parket leggen | Laminate / Parquet Flooring | تركيب الباركيه والألواح الخشبية | 9% |
-| Tegelzetten | Tile Installation | تركيب البلاط والسيراميك | 21% |
-| Loodgieterwerk | Plumbing Services | أعمال السباكة | 21% |
-| Elektra | Electrical Work | أعمال الكهرباء | 21% |
-
-### Overige diensten — 9% BTW
-
-| NL | EN | AR | Voorwaarde |
-|---|---|---|---|
-| Behangen | Wallpapering | تركيب ورق الجدران | woning ouder dan 2 jaar |
-| Tapijt / PVC-vloer leggen | Carpet / PVC Floor Installation | تركيب السجاد والأرضيات البلاستيكية | woning ouder dan 2 jaar |
-| Isolatiewerk | Insulation Work | أعمال العزل الحراري | woning ouder dan 2 jaar |
-| Schoonmaakwerk | Cleaning Services | خدمات التنظيف | geen leeftijdseis |
-
-### Overige diensten — 0% BTW
-
-| NL | EN | AR | Voorwaarde |
-|---|---|---|---|
-| Zonnepanelen installeren | Solar Panel Installation | تركيب الألواح الشمسية | op of bij woning |
-
-### Overige diensten — 21% BTW
-
-| NL | EN | AR |
-|---|---|---|
-| Metselwerk | Masonry / Bricklaying | أعمال البناء والبنّاء |
-| Dakdekken / Dakwerk | Roofing | أعمال السطح والتسقيف |
-| Kozijnen / Ramen plaatsen | Window Frame Installation | تركيب النوافذ والإطارات |
-| CV-installatie / Verwarming | Central Heating Installation | تركيب نظام التدفئة المركزية |
-| Ventilatie | Ventilation | تركيب نظام التهوية |
-| Sloopwerk | Demolition | أعمال الهدم |
-| Timmerwerk | Carpentry | النجارة |
-| Tuinonderhoud | Landscaping | تنسيق الحدائق |
-| Bouwvoorbereiding | Site Preparation | تحضير الموقع |
-| Fundering | Foundation Work | أعمال الأساسات |
-| Raamwerk | Framing | الهيكل الإنشائي |
-| Anders (vrije tekst) | Other (custom) | أخرى (نص حر) |
-
-**BTW-regels** (Tabel I, post b-7 Wet OB 1968 · Belastingdienst.nl):
-- Schilderen, stukadoren, behangen, isoleren en vloerbedekking leggen (laminaat/parket/tapijt/PVC — **geen tegels**) in woningen **ouder dan 2 jaar** → 9%
-- Schoonmaakwerk in woningen → 9% (**geen leeftijdseis**)
-- Levering + installatie zonnepanelen op of bij woning → **0%**
-- Tegelzetten, metselwerk, dakdekken, kozijnen, CV, ventilatie en alle overige bouw-/installatiewerkzaamheden → **21%**
-- Als hoofdaannemer die werk uitbesteedt: splits 9%- en 21%-posten apart op offerte en factuur
 
 ---
 
 ## Accessibility
 
-Designed for a tech-illiterate user on a large Android phone:
+Designed for a tech-unfamiliar user on a large phone:
 
-- All interactive elements: minimum 56px height
-- Base font size: 18px (`text-lg` minimum throughout)
-- Arabic UI: full RTL layout (`dir="rtl"` on `<html>`)
-- Viewport allows zoom up to 5× (`maximum-scale=5`)
-- WCAG AA colour contrast on all text
+- All interactive elements: minimum 56 px height
+- Base font size 18 px (`text-lg` minimum throughout)
+- Arabic UI: full RTL layout via `dir="rtl"` on `<html>`
+- Viewport allows pinch-zoom up to 5× (`maximum-scale=5`)
+- WCAG AA colour contrast on all text and badges
+- Bottom navigation shows icon + text label (never icon alone)
 
 ---
 
-## Company Details (hardcoded in invoice)
+## Verification (last run: 2026-05-30)
 
-| Field | Value |
+All 11 automated checks pass against the live dev server:
+
+| Check | Result |
 |---|---|
-| Name | Omniworx |
-| Address | Isidoor Opsomerstraat 7, 5702VD Helmond |
-| KVK | 85285064 |
-| BTW-ID | NL004083540B58 |
-| IBAN | NL40INGB0675253160 |
+| PIN lock screen on first load | ✅ |
+| Dashboard loads after unlock | ✅ |
+| `/facturen/nieuw` shows invoice form, not invoice detail | ✅ |
+| Service auto-fill activates on selection | ✅ |
+| New quote form loads | ✅ |
+| Clients page loads | ✅ |
+| Sync section visible in Settings | ✅ |
+| Create / Join workspace buttons present | ✅ |
+| BTW / Subtotaal / Totaal visible in invoice form | ✅ |
+| Bad invoice ID handled gracefully without crash | ✅ |
+| No JavaScript errors in console | ✅ |
 
----
-
-## Testing
-
-End-to-end Playwright test suite covering all 12 feature areas (56 checks):
-
-```bash
-# Start dev server first
-npm run dev &
-
-# Run tests (requires Playwright Chromium)
-node test-all.js
-```
-
-Covers: PIN setup / wrong PIN / forgot PIN, dashboard empty + data states, clients CRUD, invoice create/edit/pay/delete, invoice list filters, quote create/accept/convert/reject/delete, settings PIN change + Arabic RTL toggle.
+Firebase connection errors in headless test environments are expected (no network access) and do not affect local-only operation.
