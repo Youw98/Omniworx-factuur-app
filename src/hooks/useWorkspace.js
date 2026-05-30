@@ -8,8 +8,15 @@ const WORKSPACE_CODE_REGEX = /^OWX-[A-Z0-9]{6,8}$/
 
 function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  const bytes = crypto.getRandomValues(new Uint8Array(8))
-  return 'OWX-' + Array.from(bytes).map(b => chars[b % chars.length]).join('')
+  // Rejection sampling: discard bytes >= 252 (252-255 would bias chars A-D).
+  const result = []
+  while (result.length < 8) {
+    const bytes = crypto.getRandomValues(new Uint8Array(16))
+    for (const b of bytes) {
+      if (result.length < 8 && b < 252) result.push(chars[b % chars.length])
+    }
+  }
+  return 'OWX-' + result.join('')
 }
 
 function readLocalData(key) {

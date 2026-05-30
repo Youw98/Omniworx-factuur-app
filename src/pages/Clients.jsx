@@ -76,6 +76,7 @@ export function Clients() {
         const data = new Uint8Array(evt.target.result)
         const wb = XLSX.read(data, { type: 'array' })
         const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
+        if (rows.length > 500) { showToast('Bestand heeft meer dan 500 rijen — importeer maximaal 500 klanten tegelijk', 'error'); e.target.value = ''; return }
         let imported = 0
         let skipped = 0
         for (const row of rows) {

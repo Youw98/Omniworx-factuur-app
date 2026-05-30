@@ -14,6 +14,14 @@ async function pbkdf2Hash(pin, saltHex) {
   return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
+// Constant-time hex string comparison to avoid timing side-channels.
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return diff === 0
+}
+
 // Hash a PIN using PBKDF2 + random salt. Returns "salt:hash".
 export async function hashPin(pin) {
   const saltBytes = crypto.getRandomValues(new Uint8Array(16))
@@ -32,10 +40,10 @@ export async function verifyPin(pin, storedHash) {
     const enc = new TextEncoder()
     const buf = await crypto.subtle.digest('SHA-256', enc.encode(pin))
     const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
-    return { valid: hash === storedHash, legacy: true }
+    return { valid: timingSafeEqual(hash, storedHash), legacy: true }
   }
 
   const [salt] = storedHash.split(':')
   const computed = await pbkdf2Hash(pin, salt)
-  return { valid: `${salt}:${computed}` === storedHash, legacy: false }
+  return { valid: timingSafeEqual(`${salt}:${computed}`, storedHash), legacy: false }
 }
