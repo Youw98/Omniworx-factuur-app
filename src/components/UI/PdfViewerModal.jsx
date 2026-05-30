@@ -74,7 +74,7 @@ export function PdfViewerModal({ url, onClose, onShare, sharing }) {
       <iframe
         src={url}
         style={{ flex: 1, width: '100%', border: 'none', background: '#555' }}
-        sandbox="allow-same-origin"
+        sandbox="allow-same-origin allow-scripts"
         title="PDF voorbeeld"
       />
     </div>
