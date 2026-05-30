@@ -49,6 +49,9 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
   const textAlign = isRtl ? 'right' : 'left'
   const textAlignEnd = isRtl ? 'left' : 'right'
   const flexDir = isRtl ? 'row-reverse' : 'row'
+  const bodyFont = isRtl
+    ? '"Noto Sans Arabic", "Cairo", Arial, sans-serif'
+    : '"Open Sans", Arial, sans-serif'
 
   // "PAID" watermark label in invoice language
   const paidLabel = invoiceLang === 'ar' ? 'مدفوعة' : invoiceLang === 'en' ? 'PAID' : 'BETAALD'
@@ -58,7 +61,7 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
       ref={ref}
       dir={dir}
       style={{
-        fontFamily: '"Open Sans", Arial, sans-serif',
+        fontFamily: bodyFont,
         background: 'white',
         color: '#1a1a1a',
         maxWidth: 800,

@@ -22,46 +22,46 @@ async function mergeWithAV(invoiceBlob) {
   return new Blob([mergedBytes], { type: 'application/pdf' })
 }
 
-export async function generateInvoicePdf(element, invoiceNumber) {
+// Clones the element to document.body so it escapes any overflow-hidden or
+// transform:scale parents (like ScaledPreview), then captures at full A4 width.
+async function captureElement(element, filename) {
   const html2pdf = (await import('html2pdf.js')).default
-  const prevWidth = element.style.width
-  const prevMinWidth = element.style.minWidth
-  element.style.width = '794px'
-  element.style.minWidth = '794px'
+
+  const clone = element.cloneNode(true)
+  Object.assign(clone.style, {
+    position: 'fixed',
+    top: '-9999px',
+    left: '0',
+    width: '794px',
+    minWidth: '794px',
+    maxWidth: '794px',
+    transform: 'none',
+    background: 'white',
+    zIndex: '-9999',
+  })
+  document.body.appendChild(clone)
+
   const options = {
-    margin: [10, 10, 10, 10],
-    filename: `Factuur-${invoiceNumber}.pdf`,
+    margin: [8, 0, 8, 0],
+    filename,
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false },
+    html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
   }
+
   try {
-    const invoiceBlob = await html2pdf().set(options).from(element).outputPdf('blob')
-    return await mergeWithAV(invoiceBlob)
+    return await html2pdf().set(options).from(clone).outputPdf('blob')
   } finally {
-    element.style.width = prevWidth
-    element.style.minWidth = prevMinWidth
+    document.body.removeChild(clone)
   }
 }
 
+export async function generateInvoicePdf(element, invoiceNumber) {
+  const blob = await captureElement(element, `Factuur-${invoiceNumber}.pdf`)
+  return mergeWithAV(blob)
+}
+
 export async function generateQuotePdf(element, quoteNumber) {
-  const html2pdf = (await import('html2pdf.js')).default
-  const prevWidth = element.style.width
-  const prevMinWidth = element.style.minWidth
-  element.style.width = '794px'
-  element.style.minWidth = '794px'
-  const options = {
-    margin: [10, 10, 10, 10],
-    filename: `Offerte-${quoteNumber}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  }
-  try {
-    const quoteBlob = await html2pdf().set(options).from(element).outputPdf('blob')
-    return await mergeWithAV(quoteBlob)
-  } finally {
-    element.style.width = prevWidth
-    element.style.minWidth = prevMinWidth
-  }
+  const blob = await captureElement(element, `Offerte-${quoteNumber}.pdf`)
+  return mergeWithAV(blob)
 }

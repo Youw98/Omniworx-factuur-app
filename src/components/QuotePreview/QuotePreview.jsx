@@ -45,6 +45,9 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
   const textAlign = isRtl ? 'right' : 'left'
   const textAlignEnd = isRtl ? 'left' : 'right'
   const flexDir = isRtl ? 'row-reverse' : 'row'
+  const bodyFont = isRtl
+    ? '"Noto Sans Arabic", "Cairo", Arial, sans-serif'
+    : '"Open Sans", Arial, sans-serif'
 
   const acceptedLabel = quoteLang === 'ar' ? 'مقبول' : quoteLang === 'en' ? 'ACCEPTED' : 'GEACCEPTEERD'
   const expiredLabel = quoteLang === 'ar' ? 'منتهية' : quoteLang === 'en' ? 'EXPIRED' : 'VERLOPEN'
@@ -54,7 +57,7 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
       ref={ref}
       dir={dir}
       style={{
-        fontFamily: '"Open Sans", Arial, sans-serif',
+        fontFamily: bodyFont,
         background: 'white',
         color: '#1a1a1a',
         maxWidth: 800,

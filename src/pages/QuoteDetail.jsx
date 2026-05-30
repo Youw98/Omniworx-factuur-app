@@ -11,6 +11,7 @@ import { BigButton } from '../components/UI/BigButton'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
 import { ScaledPreview } from '../components/UI/ScaledPreview'
+import { PdfViewerModal } from '../components/UI/PdfViewerModal'
 import { generateQuotePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
 
@@ -30,8 +31,12 @@ export function QuoteDetail() {
   const showToast = useToast()
   const quote = getQuote(id)
   const previewRef = useRef(null)
+
+  const [generating, setGenerating] = useState(false)
+  const [pdfBlob, setPdfBlob] = useState(null)
+  const [pdfUrl, setPdfUrl] = useState(null)
   const [sharing, setSharing] = useState(false)
-  const [shareError, setShareError] = useState('')
+  const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
   const [showConvert, setShowConvert] = useState(false)
   const [showReject, setShowReject] = useState(false)
@@ -45,19 +50,39 @@ export function QuoteDetail() {
     )
   }
 
-  const handleShare = async () => {
-    setSharing(true)
-    setShareError('')
+  const handlePreview = async () => {
+    setGenerating(true)
+    setError('')
     try {
       const blob = await generateQuotePdf(previewRef.current, quote.quoteNumber)
-      const shared = await shareInvoicePdf(blob, quote.quoteNumber)
-      if (!shared) setShareError(t('error_share'))
+      const url = URL.createObjectURL(blob)
+      setPdfBlob(blob)
+      setPdfUrl(url)
     } catch (e) {
       console.error(e)
-      setShareError(t('error_pdf'))
+      setError(t('error_pdf'))
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleShare = async () => {
+    if (!pdfBlob) return
+    setSharing(true)
+    try {
+      const shared = await shareInvoicePdf(pdfBlob, quote.quoteNumber)
+      if (!shared) setError(t('error_share'))
+    } catch (e) {
+      setError(t('error_pdf'))
     } finally {
       setSharing(false)
     }
+  }
+
+  const handleCloseViewer = () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+    setPdfUrl(null)
+    setPdfBlob(null)
   }
 
   const handleDelete = () => {
@@ -96,26 +121,16 @@ export function QuoteDetail() {
 
       {/* Action buttons */}
       <div className="bg-white border-b border-gray-200 p-4 flex flex-col gap-3">
-        {/* Status row */}
         <div className="flex items-center justify-between">
           <StatusBadge status={quote.status} />
           <span className="text-lg font-bold text-primary-700 font-poppins">#{quote.quoteNumber}</span>
         </div>
 
-        {/* Share button */}
-        <BigButton onClick={handleShare} disabled={sharing}>
-          {sharing ? t('btn_generating_pdf') : `📤 ${t('btn_share')}`}
+        <BigButton onClick={handlePreview} disabled={generating}>
+          {generating ? t('btn_generating_pdf') : `👁️ Bekijken & Delen`}
         </BigButton>
-        {shareError && (
-          <div className="flex items-center gap-3">
-            <p className="text-red-600 text-base flex-1 text-center">{shareError}</p>
-            <button onClick={handleShare} className="min-h-[56px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
-              {t('btn_retry')}
-            </button>
-          </div>
-        )}
+        {error && <p className="text-red-600 text-base text-center">{error}</p>}
 
-        {/* Accept + Edit row */}
         <div className="grid grid-cols-2 gap-3">
           {quote.status === 'pending' && (
             <BigButton variant="success" onClick={() => { markAccepted(id); showToast(t('toast_marked_accepted')) }}>{t('btn_mark_accepted')}</BigButton>
@@ -123,26 +138,32 @@ export function QuoteDetail() {
           <BigButton variant="secondary" onClick={() => navigate(`/offerten/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
         </div>
 
-        {/* Reject button — only if pending, guarded by confirm dialog */}
         {quote.status === 'pending' && (
           <BigButton variant="danger" onClick={() => setShowReject(true)}>{t('btn_mark_rejected')}</BigButton>
         )}
 
-        {/* Convert to invoice — only if accepted and not yet converted */}
         {quote.status === 'accepted' && !quote.invoiceId && (
           <BigButton variant="dark" onClick={() => setShowConvert(true)}>📄 {t('btn_convert_to_invoice')}</BigButton>
         )}
 
-        {/* Delete button */}
         <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
       </div>
 
-      {/* Quote preview — rendered at A4 width (780px), scaled down to fit screen */}
+      {/* Quote preview scaled to fit screen */}
       <div className="flex-1 p-4 pb-24 overflow-hidden">
         <ScaledPreview>
           <QuotePreview ref={previewRef} quote={quote} />
         </ScaledPreview>
       </div>
+
+      {pdfUrl && (
+        <PdfViewerModal
+          url={pdfUrl}
+          onClose={handleCloseViewer}
+          onShare={handleShare}
+          sharing={sharing}
+        />
+      )}
 
       {showDelete && (
         <ConfirmDialog

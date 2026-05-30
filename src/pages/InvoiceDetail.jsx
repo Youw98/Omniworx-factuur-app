@@ -9,6 +9,7 @@ import { BigButton } from '../components/UI/BigButton'
 import { StatusBadge } from '../components/UI/StatusBadge'
 import { ConfirmDialog } from '../components/UI/ConfirmDialog'
 import { ScaledPreview } from '../components/UI/ScaledPreview'
+import { PdfViewerModal } from '../components/UI/PdfViewerModal'
 import { generateInvoicePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
 
@@ -20,8 +21,12 @@ export function InvoiceDetail() {
   const showToast = useToast()
   const invoice = getInvoice(id)
   const previewRef = useRef(null)
+
+  const [generating, setGenerating] = useState(false)
+  const [pdfBlob, setPdfBlob] = useState(null)
+  const [pdfUrl, setPdfUrl] = useState(null)
   const [sharing, setSharing] = useState(false)
-  const [shareError, setShareError] = useState('')
+  const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
 
   if (!invoice) {
@@ -33,19 +38,39 @@ export function InvoiceDetail() {
     )
   }
 
-  const handleShare = async () => {
-    setSharing(true)
-    setShareError('')
+  const handlePreview = async () => {
+    setGenerating(true)
+    setError('')
     try {
       const blob = await generateInvoicePdf(previewRef.current, invoice.invoiceNumber)
-      const shared = await shareInvoicePdf(blob, invoice.invoiceNumber)
-      if (!shared) setShareError(t('error_share'))
+      const url = URL.createObjectURL(blob)
+      setPdfBlob(blob)
+      setPdfUrl(url)
     } catch (e) {
       console.error(e)
-      setShareError(t('error_pdf'))
+      setError(t('error_pdf'))
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleShare = async () => {
+    if (!pdfBlob) return
+    setSharing(true)
+    try {
+      const shared = await shareInvoicePdf(pdfBlob, invoice.invoiceNumber)
+      if (!shared) setError(t('error_share'))
+    } catch (e) {
+      setError(t('error_pdf'))
     } finally {
       setSharing(false)
     }
+  }
+
+  const handleCloseViewer = () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+    setPdfUrl(null)
+    setPdfBlob(null)
   }
 
   const handleDelete = () => {
@@ -64,22 +89,16 @@ export function InvoiceDetail() {
 
       {/* Action buttons */}
       <div className="bg-white border-b border-gray-200 p-4 flex flex-col gap-3">
-        {/* Status row */}
         <div className="flex items-center justify-between">
           <StatusBadge status={invoice.status} />
           <span className="text-lg font-bold text-primary-700 font-poppins">#{invoice.invoiceNumber}</span>
         </div>
-        <BigButton onClick={handleShare} disabled={sharing}>
-          {sharing ? t('btn_generating_pdf') : `📤 ${t('btn_share')}`}
+
+        <BigButton onClick={handlePreview} disabled={generating}>
+          {generating ? t('btn_generating_pdf') : `👁️ Bekijken & Delen`}
         </BigButton>
-        {shareError && (
-          <div className="flex items-center gap-3">
-            <p className="text-red-600 text-base flex-1 text-center">{shareError}</p>
-            <button onClick={handleShare} className="min-h-[56px] px-4 text-base font-semibold text-primary-700 border border-primary-700 rounded-xl">
-              {t('btn_retry')}
-            </button>
-          </div>
-        )}
+        {error && <p className="text-red-600 text-base text-center">{error}</p>}
+
         <div className="grid grid-cols-2 gap-3">
           {invoice.status !== 'paid' ? (
             <BigButton variant="success" onClick={() => { markPaid(id); showToast(t('toast_marked_paid')) }}>{t('btn_mark_paid_short')}</BigButton>
@@ -91,12 +110,21 @@ export function InvoiceDetail() {
         <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
       </div>
 
-      {/* Invoice preview — rendered at A4 width (780px), scaled down to fit screen */}
+      {/* Invoice preview scaled to fit screen */}
       <div className="flex-1 p-4 pb-24 overflow-hidden">
         <ScaledPreview>
           <InvoicePreview ref={previewRef} invoice={invoice} />
         </ScaledPreview>
       </div>
+
+      {pdfUrl && (
+        <PdfViewerModal
+          url={pdfUrl}
+          onClose={handleCloseViewer}
+          onShare={handleShare}
+          sharing={sharing}
+        />
+      )}
 
       {showDelete && (
         <ConfirmDialog
