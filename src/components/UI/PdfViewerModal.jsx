@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 const BRAND_GREEN = '#0C3C3A'
 const BRAND_GOLD = '#E7B260'
 
-export function PdfViewerModal({ url, onClose, onShare, sharing }) {
+export function PdfViewerModal({ previewDataUrl, onClose, onShare, sharing }) {
   const { t } = useTranslation('ui')
   useEffect(() => {
     const prev = document.body.style.overflow
@@ -72,12 +72,15 @@ export function PdfViewerModal({ url, onClose, onShare, sharing }) {
         </button>
       </div>
 
-      {/* PDF viewer */}
-      <iframe
-        src={url}
-        style={{ flex: 1, width: '100%', border: 'none', background: '#555' }}
-        title="PDF voorbeeld"
-      />
+      {/* PDF viewer — image scroll for Android PWA compatibility */}
+      <div style={{ flex: 1, overflow: 'auto', background: '#222', WebkitOverflowScrolling: 'touch' }}>
+        <img
+          src={previewDataUrl}
+          style={{ width: '100%', display: 'block' }}
+          alt="Factuur preview"
+          draggable={false}
+        />
+      </div>
     </div>
   )
 }

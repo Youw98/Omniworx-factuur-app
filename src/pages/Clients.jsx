@@ -152,6 +152,7 @@ export function Clients() {
             <button
               onClick={() => setDeleteId(editingClient.id)}
               className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl hover:bg-white/20 text-2xl"
+              aria-label={t('btn_delete')}
             >🗑️</button>
           }
         />

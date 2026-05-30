@@ -24,7 +24,7 @@ export function InvoiceDetail() {
 
   const [generating, setGenerating] = useState(false)
   const [pdfBlob, setPdfBlob] = useState(null)
-  const [pdfUrl, setPdfUrl] = useState(null)
+  const [previewDataUrl, setPreviewDataUrl] = useState(null)
   const [sharing, setSharing] = useState(false)
   const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
@@ -42,10 +42,9 @@ export function InvoiceDetail() {
     setGenerating(true)
     setError('')
     try {
-      const blob = await generateInvoicePdf(previewRef.current, invoice.invoiceNumber)
-      const url = URL.createObjectURL(blob)
+      const { blob, previewDataUrl: dataUrl } = await generateInvoicePdf(previewRef.current, invoice.invoiceNumber)
       setPdfBlob(blob)
-      setPdfUrl(url)
+      setPreviewDataUrl(dataUrl)
     } catch (e) {
       console.error(e)
       setError(t('error_pdf'))
@@ -69,8 +68,7 @@ export function InvoiceDetail() {
   }
 
   const handleCloseViewer = () => {
-    if (pdfUrl) URL.revokeObjectURL(pdfUrl)
-    setPdfUrl(null)
+    setPreviewDataUrl(null)
     setPdfBlob(null)
   }
 
@@ -118,9 +116,9 @@ export function InvoiceDetail() {
         </ScaledPreview>
       </div>
 
-      {pdfUrl && (
+      {previewDataUrl && (
         <PdfViewerModal
-          url={pdfUrl}
+          previewDataUrl={previewDataUrl}
           onClose={handleCloseViewer}
           onShare={handleShare}
           sharing={sharing}

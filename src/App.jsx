@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from './hooks/useSettings'
 import { useOnlineStatus } from './hooks/useOnlineStatus'
@@ -33,6 +33,7 @@ function OfflineBanner() {
 function AppContent() {
   const { settings, updateSetting } = useSettings()
   const { i18n, t } = useTranslation('ui')
+  const location = useLocation()
   const [unlocked, setUnlocked] = useState(false)
   const showToast = useToast()
 
@@ -70,12 +71,12 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/facturen" element={<InvoiceList />} />
-        <Route path="/facturen/nieuw" element={<NewInvoice />} />
+        <Route path="/facturen/nieuw" element={<NewInvoice key={location.key} />} />
         <Route path="/facturen/:id" element={<InvoiceDetail />} />
         <Route path="/facturen/:id/bewerken" element={<EditInvoice />} />
-        <Route path="/nieuw" element={<NewInvoice />} />
+        <Route path="/nieuw" element={<NewInvoice key={location.key} />} />
         <Route path="/offerten" element={<Quotes />} />
-        <Route path="/offerten/nieuw" element={<NewQuote />} />
+        <Route path="/offerten/nieuw" element={<NewQuote key={location.key} />} />
         <Route path="/offerten/:id" element={<QuoteDetail />} />
         <Route path="/offerten/:id/bewerken" element={<EditQuote />} />
         <Route path="/klanten" element={<Clients />} />

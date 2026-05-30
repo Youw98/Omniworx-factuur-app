@@ -82,8 +82,8 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         )}
       </div>
 
-      {/* Custom description if 'other' */}
-      {item.serviceId === 'other' && (
+      {/* Custom description if 'other' or no service selected */}
+      {(item.serviceId === 'other' || !item.serviceId) && (
         <BigInput
           label={t('label_custom_service')}
           value={item.description || ''}

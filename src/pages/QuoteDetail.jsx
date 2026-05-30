@@ -34,7 +34,7 @@ export function QuoteDetail() {
 
   const [generating, setGenerating] = useState(false)
   const [pdfBlob, setPdfBlob] = useState(null)
-  const [pdfUrl, setPdfUrl] = useState(null)
+  const [previewDataUrl, setPreviewDataUrl] = useState(null)
   const [sharing, setSharing] = useState(false)
   const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
@@ -54,10 +54,9 @@ export function QuoteDetail() {
     setGenerating(true)
     setError('')
     try {
-      const blob = await generateQuotePdf(previewRef.current, quote.quoteNumber)
-      const url = URL.createObjectURL(blob)
+      const { blob, previewDataUrl: dataUrl } = await generateQuotePdf(previewRef.current, quote.quoteNumber)
       setPdfBlob(blob)
-      setPdfUrl(url)
+      setPreviewDataUrl(dataUrl)
     } catch (e) {
       console.error(e)
       setError(t('error_pdf'))
@@ -81,8 +80,7 @@ export function QuoteDetail() {
   }
 
   const handleCloseViewer = () => {
-    if (pdfUrl) URL.revokeObjectURL(pdfUrl)
-    setPdfUrl(null)
+    setPreviewDataUrl(null)
     setPdfBlob(null)
   }
 
@@ -158,9 +156,9 @@ export function QuoteDetail() {
         </ScaledPreview>
       </div>
 
-      {pdfUrl && (
+      {previewDataUrl && (
         <PdfViewerModal
-          url={pdfUrl}
+          previewDataUrl={previewDataUrl}
           onClose={handleCloseViewer}
           onShare={handleShare}
           sharing={sharing}

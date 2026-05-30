@@ -74,6 +74,8 @@ async function captureElement(element, filename) {
       windowWidth: 794,
     })
 
+    const previewDataUrl = canvas.toDataURL('image/jpeg', 0.88)
+
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
 
     const pageW = pdf.internal.pageSize.getWidth()
@@ -109,7 +111,8 @@ async function captureElement(element, filename) {
     }
 
     pdf.setProperties({ title: filename })
-    return pdf.output('blob')
+    const blob = pdf.output('blob')
+    return { blob, previewDataUrl }
   } finally {
     document.body.removeChild(clone)
     document.body.removeChild(overlay)
