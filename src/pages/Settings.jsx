@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSettings } from '../hooks/useSettings'
 import { useWorkspace } from '../hooks/useWorkspace'
 import { hashPin } from '../utils/pinHash'
-import { isNative } from '../utils/platform'
 import { downloadLocalBackup, saveFirebaseBackup, getLastBackupDate, formatBackupDate } from '../utils/backup'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
@@ -110,16 +109,6 @@ export function Settings() {
       <PageHeader title={t('settings_title')} />
 
       <div className="p-4 pb-24 flex flex-col gap-6">
-
-        {/* Viewer mode notice */}
-        {!isNative() && (
-          <section className="bg-primary-700 rounded-2xl p-5">
-            <p className="text-gold-300 font-bold text-lg mb-1">👁️ Leesmodus</p>
-            <p className="text-white/80 text-base">
-              U bekijkt de gegevens via de webapp. Facturen aanmaken, bewerken en verwijderen is alleen mogelijk in de app op de Samsung telefoon.
-            </p>
-          </section>
-        )}
 
         {/* UI Language */}
         <section className="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-gold-500">
@@ -288,40 +277,27 @@ export function Settings() {
           {backupStatus === 'firebase' && <p className="text-green-600 text-base font-semibold mb-3">✅ Firebase backup opgeslagen</p>}
           {backupStatus === 'error' && <p className="text-red-600 text-base font-semibold mb-3">❌ Backup mislukt</p>}
 
-          {isNative() ? (
-            <div className="flex flex-col gap-3">
-              <BigButton variant="outline" onClick={handleLocalBackup}>
-                📥 Backup naar telefoon (JSON)
+          <div className="flex flex-col gap-3">
+            <BigButton variant="outline" onClick={handleLocalBackup}>
+              📥 Backup downloaden (JSON)
+            </BigButton>
+            {workspaceId ? (
+              <BigButton
+                variant="outline"
+                onClick={handleFirebaseBackup}
+                disabled={backupStatus === 'saving'}
+              >
+                {backupStatus === 'saving' ? 'Bezig...' : '☁️ Backup naar Firebase'}
               </BigButton>
-              {workspaceId ? (
-                <BigButton
-                  variant="outline"
-                  onClick={handleFirebaseBackup}
-                  disabled={backupStatus === 'saving'}
-                >
-                  {backupStatus === 'saving' ? 'Bezig...' : '☁️ Backup naar Firebase'}
-                </BigButton>
-              ) : (
-                <p className="text-base text-gray-400 text-center">
-                  Verbind met een werkruimte voor Firebase backup
-                </p>
-              )}
-              <p className="text-sm text-gray-400">
-                Werkruimte synchronisatie is een doorlopende live backup. De knoppen hierboven maken een extra momentopname.
+            ) : (
+              <p className="text-base text-gray-400 text-center">
+                Verbind met een werkruimte voor Firebase backup
               </p>
-            </div>
-          ) : (
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-base text-gray-500 text-center">
-                🔒 Backups zijn alleen beschikbaar in de app op de Samsung telefoon.
-              </p>
-              {workspaceId && (
-                <p className="text-sm text-gray-400 text-center mt-2">
-                  Uw gegevens worden real-time gesynchroniseerd via de werkruimte.
-                </p>
-              )}
-            </div>
-          )}
+            )}
+            <p className="text-sm text-gray-400">
+              Werkruimte synchronisatie is een doorlopende live backup. De knoppen hierboven maken een extra momentopname.
+            </p>
+          </div>
         </section>
 
         {/* Company info */}

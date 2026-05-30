@@ -12,7 +12,6 @@ import { ScaledPreview } from '../components/UI/ScaledPreview'
 import { PdfViewerModal } from '../components/UI/PdfViewerModal'
 import { generateInvoicePdf } from '../utils/pdf'
 import { shareInvoicePdf } from '../utils/share'
-import { isNative } from '../utils/platform'
 
 export function InvoiceDetail() {
   const { t } = useTranslation('ui')
@@ -100,19 +99,15 @@ export function InvoiceDetail() {
         </BigButton>
         {error && <p className="text-red-600 text-base text-center">{error}</p>}
 
-        {isNative() && (
-          <>
-            <div className="grid grid-cols-2 gap-3">
-              {invoice.status !== 'paid' ? (
-                <BigButton variant="success" onClick={() => { markPaid(id); showToast(t('toast_marked_paid')) }}>{t('btn_mark_paid_short')}</BigButton>
-              ) : (
-                <BigButton variant="secondary" onClick={() => { markUnpaid(id); showToast(t('toast_marked_unpaid')) }}>{t('btn_mark_unpaid_short')}</BigButton>
-              )}
-              <BigButton variant="secondary" onClick={() => navigate(`/facturen/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
-            </div>
-            <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
-          </>
-        )}
+        <div className="grid grid-cols-2 gap-3">
+          {invoice.status !== 'paid' ? (
+            <BigButton variant="success" onClick={() => { markPaid(id); showToast(t('toast_marked_paid')) }}>{t('btn_mark_paid_short')}</BigButton>
+          ) : (
+            <BigButton variant="secondary" onClick={() => { markUnpaid(id); showToast(t('toast_marked_unpaid')) }}>{t('btn_mark_unpaid_short')}</BigButton>
+          )}
+          <BigButton variant="secondary" onClick={() => navigate(`/facturen/${id}/bewerken`)}>✏️ {t('btn_edit')}</BigButton>
+        </div>
+        <BigButton variant="danger" onClick={() => setShowDelete(true)}>🗑️ {t('btn_delete')}</BigButton>
       </div>
 
       {/* Invoice preview scaled to fit screen */}

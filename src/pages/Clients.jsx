@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import * as XLSX from 'xlsx'
 import { useClients } from '../hooks/useClients'
 import { useToast } from '../hooks/useToast'
-import { isNative } from '../utils/platform'
 import { PageHeader } from '../components/layout/PageHeader'
 import { BigButton } from '../components/UI/BigButton'
 import { BigInput } from '../components/UI/BigInput'
@@ -174,23 +173,19 @@ export function Clients() {
       <PageHeader title={t('clients_title')} />
 
       <div className="p-4 flex flex-col gap-4 pb-24">
-        {isNative() && (
-          <>
-            <div className="flex gap-3">
-              <BigButton onClick={() => setMode('add')} className="flex-1">➕ {t('btn_add_client')}</BigButton>
-              <BigButton variant="outline" onClick={() => importRef.current?.click()} className="flex-1">
-                📥 Importeren
-              </BigButton>
-            </div>
-            <input
-              ref={importRef}
-              type="file"
-              accept=".csv,.xlsx,.xls"
-              className="hidden"
-              onChange={handleImport}
-            />
-          </>
-        )}
+        <div className="flex gap-3">
+          <BigButton onClick={() => setMode('add')} className="flex-1">➕ {t('btn_add_client')}</BigButton>
+          <BigButton variant="outline" onClick={() => importRef.current?.click()} className="flex-1">
+            📥 Importeren
+          </BigButton>
+        </div>
+        <input
+          ref={importRef}
+          type="file"
+          accept=".csv,.xlsx,.xls"
+          className="hidden"
+          onChange={handleImport}
+        />
 
         {clients.length > 0 && (
           <BigInput
@@ -209,8 +204,8 @@ export function Clients() {
             {filtered.map(c => (
               <button
                 key={c.id}
-                onClick={() => { if (isNative()) { setEditingId(c.id); setMode('edit') } }}
-                className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left transition-colors min-h-[56px] ${isNative() ? 'hover:border-gold-400 cursor-pointer' : 'cursor-default'}`}
+                onClick={() => { setEditingId(c.id); setMode('edit') }}
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-left hover:border-gold-400 transition-colors min-h-[56px]"
               >
                 <p className="text-xl font-bold text-gray-800">{c.name}</p>
                 {(c.address || c.city) && (

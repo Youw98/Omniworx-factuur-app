@@ -1,11 +1,9 @@
-import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
 import { useToast } from '../hooks/useToast'
 import { InvoiceForm } from '../components/InvoiceForm/InvoiceForm'
 import { PageHeader } from '../components/layout/PageHeader'
-import { isNative } from '../utils/platform'
 
 export function EditInvoice() {
   const { t } = useTranslation('ui')
@@ -14,10 +12,6 @@ export function EditInvoice() {
   const { getInvoice, updateInvoice } = useInvoices()
   const showToast = useToast()
   const invoice = getInvoice(id)
-
-  useEffect(() => {
-    if (!isNative()) navigate(`/facturen/${id}`, { replace: true })
-  }, [navigate, id])
 
   if (!invoice) return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 gap-4">
