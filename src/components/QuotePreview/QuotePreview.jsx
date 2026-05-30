@@ -131,11 +131,11 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
             {t('quote_title')}
           </h1>
           <div style={{
-            display: 'inline-flex', alignItems: 'center',
+            display: 'inline-block',
             background: BRAND_GREEN, color: BRAND_GOLD,
             fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 14,
-            padding: '4px 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
-            lineHeight: 1,
+            height: 28, lineHeight: '28px',
+            padding: '0 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
           }}>
             #{quote.quoteNumber}
           </div>
