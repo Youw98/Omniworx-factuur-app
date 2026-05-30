@@ -131,9 +131,11 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
             {t('quote_title')}
           </h1>
           <div style={{
-            display: 'inline-block', background: BRAND_GREEN, color: BRAND_GOLD,
+            display: 'inline-flex', alignItems: 'center',
+            background: BRAND_GREEN, color: BRAND_GOLD,
             fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 14,
-            padding: '3px 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
+            padding: '4px 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
+            lineHeight: 1,
           }}>
             #{quote.quoteNumber}
           </div>
@@ -274,18 +276,21 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
       {quote.notes && (
         <div style={{ padding: PAD, paddingBottom: 24 }}>
           <div style={{
-            fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-            color: BRAND_GREEN, letterSpacing: 2, marginBottom: 8,
-            fontFamily: 'Poppins, sans-serif',
+            borderRadius: 8, border: `1px solid ${BRAND_GOLD}44`,
+            background: '#fefce8', overflow: 'hidden',
           }}>
-            {t('notes')}
-          </div>
-          <div style={{
-            fontSize: 13, color: '#374151', background: '#fefce8',
-            padding: '12px 16px', borderRadius: 8,
-            borderLeft: `3px solid ${BRAND_GOLD}`, lineHeight: 1.65,
-          }}>
-            {quote.notes}
+            <div style={{
+              fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+              color: BRAND_GREEN, letterSpacing: 2,
+              fontFamily: 'Poppins, sans-serif',
+              padding: '8px 16px',
+              borderBottom: `1px solid ${BRAND_GOLD}33`,
+            }}>
+              {t('notes')}
+            </div>
+            <div style={{ fontSize: 13, color: '#374151', padding: '12px 16px', lineHeight: 1.65 }}>
+              {quote.notes}
+            </div>
           </div>
         </div>
       )}
