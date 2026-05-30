@@ -52,7 +52,7 @@ export function Settings() {
     // Strip existing dashes and rebuild
     const stripped = raw.replace(/-/g, '')
     if (stripped.length <= 3) return stripped
-    return stripped.slice(0, 3) + '-' + stripped.slice(3, 9)
+    return stripped.slice(0, 3) + '-' + stripped.slice(3, 11)
   }
 
   const handleLangChange = (lang) => {
@@ -159,8 +159,8 @@ export function Settings() {
                       setJoinCode(formatJoinCode(e.target.value))
                       setJoinError('')
                     }}
-                    placeholder="OWX-______"
-                    maxLength={10}
+                    placeholder="OWX-________"
+                    maxLength={12}
                   />
                   {joinError && <p className="text-red-600 text-base">{joinError}</p>}
                   <BigButton
