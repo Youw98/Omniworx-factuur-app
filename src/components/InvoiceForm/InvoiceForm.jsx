@@ -96,7 +96,7 @@ export function InvoiceForm({ initial, onSave, onCancel, dueDateLabel, defaultDa
       )
       if (!exists) {
         addClient({ ...manualClient })
-        showToast('✅ Klant toegevoegd aan klantenlijst')
+        showToast(t('toast_client_auto_added'))
       }
     }
 

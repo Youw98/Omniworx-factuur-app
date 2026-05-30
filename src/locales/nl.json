@@ -153,7 +153,18 @@
     "btn_confirm_convert": "Ja, omzetten",
     "required_fields_legend": "* = verplicht veld",
     "error_storage_full": "⚠️ Opslag vol! Gegevens konden niet worden opgeslagen.",
-    "pin_too_many_attempts": "Te veel pogingen. Probeer opnieuw over {{seconds}} seconden."
+    "pin_too_many_attempts": "Te veel pogingen. Probeer opnieuw over {{seconds}} seconden.",
+    "toast_client_auto_added": "✅ Klant toegevoegd aan klantenlijst",
+    "btn_import_clients": "📥 Importeren",
+    "label_choose_service": "— Kies dienst —",
+    "label_primary_services": "⭐ Hoofddiensten",
+    "label_other_services": "Overige diensten",
+    "label_service_placeholder": "Omschrijving van de werkzaamheden",
+    "label_market_price": "Marktprijs",
+    "label_delete_row": "Verwijder regel",
+    "pdf_btn_close": "Sluiten",
+    "pdf_pinch_zoom": "Knijp om in te zoomen",
+    "pdf_btn_share": "Delen"
   },
   "invoice": {
     "invoice_title": "FACTUUR",

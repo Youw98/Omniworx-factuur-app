@@ -5,8 +5,6 @@ import {
   onSnapshot,
   setDoc,
   deleteDoc,
-  orderBy,
-  query,
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { WorkspaceContext } from '../contexts/WorkspaceContext'
@@ -74,14 +72,16 @@ export function useSyncedCollection(localKey, collectionName) {
       return
     }
 
-    // Set up Firestore listener
+    // Set up Firestore listener — no server-side orderBy so documents
+    // missing createdAt are not silently excluded; sort client-side instead.
     const colRef = collection(db, 'workspaces', workspaceId, collectionName)
-    const q = query(colRef, orderBy('createdAt', 'desc'))
 
     const unsub = onSnapshot(
-      q,
+      colRef,
       (snapshot) => {
-        const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+        const docs = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.createdAt || '') > (a.createdAt || '') ? 1 : -1)
         setFirestoreItems(docs)
         // Keep localStorage in sync as an offline cache
         writeLocalStorage(localKey, docs)

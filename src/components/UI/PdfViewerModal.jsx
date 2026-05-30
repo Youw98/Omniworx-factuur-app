@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const BRAND_GREEN = '#0C3C3A'
 const BRAND_GOLD = '#E7B260'
 
 export function PdfViewerModal({ url, onClose, onShare, sharing }) {
+  const { t } = useTranslation('ui')
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -43,11 +45,11 @@ export function PdfViewerModal({ url, onClose, onShare, sharing }) {
             minHeight: 52,
           }}
         >
-          ✕ Sluiten
+          ✕ {t('pdf_btn_close')}
         </button>
 
         <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, textAlign: 'center', flex: 1 }}>
-          Knijp om in te zoomen
+          {t('pdf_pinch_zoom')}
         </div>
 
         <button
@@ -66,7 +68,7 @@ export function PdfViewerModal({ url, onClose, onShare, sharing }) {
             whiteSpace: 'nowrap',
           }}
         >
-          {sharing ? 'Bezig...' : '📤 Delen'}
+          {sharing ? `⏳ ${t('pdf_btn_share')}` : `📤 ${t('pdf_btn_share')}`}
         </button>
       </div>
 

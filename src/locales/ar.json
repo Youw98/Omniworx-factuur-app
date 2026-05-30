@@ -153,7 +153,18 @@
     "btn_confirm_convert": "نعم، تحويل",
     "required_fields_legend": "* = حقل مطلوب",
     "error_storage_full": "⚠️ التخزين ممتلئ! لم يتم حفظ البيانات.",
-    "pin_too_many_attempts": "محاولات كثيرة. حاول مجدداً بعد {{seconds}} ثانية."
+    "pin_too_many_attempts": "محاولات كثيرة. حاول مجدداً بعد {{seconds}} ثانية.",
+    "toast_client_auto_added": "✅ تمت إضافة العميل إلى قائمة العملاء",
+    "btn_import_clients": "📥 استيراد",
+    "label_choose_service": "— اختر خدمة —",
+    "label_primary_services": "⭐ الخدمات الرئيسية",
+    "label_other_services": "خدمات أخرى",
+    "label_service_placeholder": "وصف الأعمال المنفذة",
+    "label_market_price": "نطاق السوق",
+    "label_delete_row": "حذف السطر",
+    "pdf_btn_close": "إغلاق",
+    "pdf_pinch_zoom": "قرص للتكبير",
+    "pdf_btn_share": "مشاركة"
   },
   "invoice": {
     "invoice_title": "فاتورة",

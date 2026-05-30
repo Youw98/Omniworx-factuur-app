@@ -57,13 +57,13 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           onChange={handleServiceChange}
           className="w-full min-h-[56px] text-xl px-4 py-3 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary-700 bg-white"
         >
-          <option value="">— Kies dienst —</option>
-          <optgroup label="⭐ Hoofddiensten">
+          <option value="">{t('label_choose_service')}</option>
+          <optgroup label={t('label_primary_services')}>
             {primaryServices.map(s => (
               <option key={s.id} value={s.id}>{serviceLabel(s)}</option>
             ))}
           </optgroup>
-          <optgroup label="Overige diensten">
+          <optgroup label={t('label_other_services')}>
             {secondaryServices.map(s => (
               <option key={s.id} value={s.id}>{serviceLabel(s)}</option>
             ))}
@@ -88,7 +88,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           label={t('label_custom_service')}
           value={item.description || ''}
           onChange={e => update('description', e.target.value)}
-          placeholder="Omschrijving van de werkzaamheden"
+          placeholder={t('label_service_placeholder')}
         />
       )}
 
@@ -132,7 +132,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
         />
         {showPriceRange && (
           <p className="text-sm text-gray-400 px-1">
-            Marktprijs: {formatEuro(svc.minPrice)} – {formatEuro(svc.maxPrice)} / {currentUnit}
+            {t('label_market_price')}: {formatEuro(svc.minPrice)} – {formatEuro(svc.maxPrice)} / {currentUnit}
           </p>
         )}
       </div>
@@ -178,7 +178,7 @@ export function LineItemRow({ item, index, onChange, onDelete, uiLanguage }) {
           type="button"
           onClick={() => onDelete(index)}
           className="min-w-[56px] min-h-[56px] flex items-center justify-center rounded-xl bg-red-50 text-red-600 text-2xl hover:bg-red-100 transition-colors"
-          aria-label="Verwijder regel"
+          aria-label={t('label_delete_row')}
         >
           🗑️
         </button>

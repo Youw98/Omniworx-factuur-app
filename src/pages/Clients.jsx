@@ -176,7 +176,7 @@ export function Clients() {
         <div className="flex gap-3">
           <BigButton onClick={() => setMode('add')} className="flex-1">➕ {t('btn_add_client')}</BigButton>
           <BigButton variant="outline" onClick={() => importRef.current?.click()} className="flex-1">
-            📥 Importeren
+            {t('btn_import_clients')}
           </BigButton>
         </div>
         <input
