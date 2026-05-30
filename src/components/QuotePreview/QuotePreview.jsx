@@ -134,7 +134,7 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
             display: 'inline-block',
             background: BRAND_GREEN, color: BRAND_GOLD,
             fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 14,
-            height: 28, lineHeight: '22px',
+            height: 28, lineHeight: '18px',
             padding: '0 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
           }}>
             #{quote.quoteNumber}
