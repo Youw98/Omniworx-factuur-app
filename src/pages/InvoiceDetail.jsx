@@ -43,7 +43,9 @@ export function InvoiceDetail() {
     setError('')
     try {
       const { blob, previewDataUrl: dataUrl } = await generateInvoicePdf(previewRef.current, invoice.invoiceNumber)
-      setPdfBlob(blob)
+      // Pre-merge AV so share fires instantly from the button tap (no async gap)
+      const merged = await mergeWithAV(blob)
+      setPdfBlob(merged)
       setPreviewDataUrl(dataUrl)
     } catch (e) {
       console.error(e)
@@ -57,8 +59,7 @@ export function InvoiceDetail() {
     if (!pdfBlob) return
     setSharing(true)
     try {
-      const blobToShare = await mergeWithAV(pdfBlob)
-      const shared = await shareInvoicePdf(blobToShare, invoice.invoiceNumber)
+      const shared = await shareInvoicePdf(pdfBlob, invoice.invoiceNumber)
       if (!shared) setError(t('error_share'))
     } catch {
       setError(t('error_pdf'))

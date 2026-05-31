@@ -9,6 +9,8 @@
 html {
   font-size: 18px;
   -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+  overflow-x: hidden;
 }
 
 body {
@@ -17,6 +19,8 @@ body {
   background: #f9fafb;
   color: #1f2937;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, button, .font-poppins {
