@@ -60,11 +60,13 @@ export function InvoiceList() {
 
   const tabLabel = { all: t('invoices_all'), unpaid: t('invoices_unpaid'), overdue: t('invoices_overdue'), paid: t('invoices_paid') }
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (invoices.length === 0) return
     setExporting(true)
     try {
-      exportInvoicesToExcel(invoices)
+      await exportInvoicesToExcel(invoices)
+    } catch {
+      // silent — download failure is non-critical
     } finally {
       setExporting(false)
     }

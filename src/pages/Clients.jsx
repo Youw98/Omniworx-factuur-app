@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 import { useClients } from '../hooks/useClients'
 import { useToast } from '../hooks/useToast'
 import { PageHeader } from '../components/layout/PageHeader'
@@ -67,43 +67,76 @@ export function Clients() {
     telefoon: 'phone', phone: 'phone', tel: 'phone', mobiel: 'phone', mobile: 'phone',
   }
 
-  const handleImport = (e) => {
+  const handleImport = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = (evt) => {
-      try {
-        const data = new Uint8Array(evt.target.result)
-        const wb = XLSX.read(data, { type: 'array' })
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
-        if (rows.length > 500) { showToast('Bestand heeft meer dan 500 rijen — importeer maximaal 500 klanten tegelijk', 'error'); e.target.value = ''; return }
-        let imported = 0
-        let skipped = 0
-        for (const row of rows) {
-          const mapped = {}
-          for (const [col, val] of Object.entries(row)) {
-            const key = COLUMN_MAP[col.toLowerCase().trim()]
-            if (key) mapped[key] = String(val).trim().slice(0, 200)
-          }
-          if (!mapped.name) continue
-          const exists = clients.some(
-            c => c.name.toLowerCase() === mapped.name.toLowerCase()
-          )
-          if (exists) { skipped++; continue }
-          addClient(mapped)
-          imported++
-        }
-        if (imported > 0) {
-          showToast(`✅ ${imported} klant(en) geïmporteerd${skipped > 0 ? `, ${skipped} overgeslagen` : ''}`)
-        } else {
-          showToast('Geen nieuwe klanten gevonden', 'error')
-        }
-      } catch {
-        showToast('Importfout: controleer het bestandsformaat', 'error')
+    try {
+      let rows = []
+
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        // Simple CSV parser — handles quoted fields
+        const text = await file.text()
+        const lines = text.split(/\r?\n/).filter(Boolean)
+        if (lines.length < 2) throw new Error('empty')
+        const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim().toLowerCase())
+        rows = lines.slice(1).map(line => {
+          const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || line.split(',')
+          const obj = {}
+          headers.forEach((h, i) => { if (h) obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim() })
+          return obj
+        })
+      } else {
+        const buffer = await file.arrayBuffer()
+        const wb = new ExcelJS.Workbook()
+        await wb.xlsx.load(buffer)
+        const ws = wb.worksheets[0]
+        if (!ws) throw new Error('No worksheet found')
+
+        const headers = {}
+        ws.getRow(1).eachCell((cell, col) => {
+          headers[col] = String(cell.value ?? '').toLowerCase().trim()
+        })
+
+        ws.eachRow((row, rowNum) => {
+          if (rowNum === 1) return
+          const obj = {}
+          row.eachCell((cell, col) => {
+            const h = headers[col]
+            if (h) obj[h] = String(cell.value ?? '').trim()
+          })
+          rows.push(obj)
+        })
       }
-      e.target.value = ''
+
+      if (rows.length > 500) {
+        showToast('Bestand heeft meer dan 500 rijen — importeer maximaal 500 klanten tegelijk', 'error')
+        e.target.value = ''
+        return
+      }
+
+      let imported = 0, skipped = 0
+      for (const row of rows) {
+        const mapped = {}
+        for (const [col, val] of Object.entries(row)) {
+          const key = COLUMN_MAP[col.toLowerCase().trim()]
+          if (key) mapped[key] = String(val).trim().slice(0, 200)
+        }
+        if (!mapped.name) continue
+        const exists = clients.some(c => c.name.toLowerCase() === mapped.name.toLowerCase())
+        if (exists) { skipped++; continue }
+        addClient(mapped)
+        imported++
+      }
+
+      if (imported > 0) {
+        showToast(`✅ ${imported} klant(en) geïmporteerd${skipped > 0 ? `, ${skipped} overgeslagen` : ''}`)
+      } else {
+        showToast('Geen nieuwe klanten gevonden', 'error')
+      }
+    } catch {
+      showToast('Importfout: controleer het bestandsformaat', 'error')
     }
-    reader.readAsArrayBuffer(file)
+    e.target.value = ''
   }
 
   const filtered = clients.filter(c =>

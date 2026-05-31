@@ -1,9 +1,19 @@
-import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
 import { calcBtw } from './btwCalc'
 
 const NL_MONTHS = [
   'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
   'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December',
+]
+
+const COLS = [
+  { header: 'Naam',              key: 'naam',    width: 28 },
+  { header: 'Factuurnummer',     key: 'nummer',  width: 16 },
+  { header: 'Datum',             key: 'datum',   width: 12 },
+  { header: 'Excl. BTW',        key: 'excl',    width: 14 },
+  { header: 'BTW bedrag',       key: 'btw',     width: 14 },
+  { header: 'Totaal incl. BTW', key: 'totaal',  width: 18 },
+  { header: 'Status',            key: 'status',  width: 12 },
 ]
 
 function monthKey(dateStr) {
@@ -20,18 +30,36 @@ function invoiceToRow(inv) {
   const { subtotal, btwGroups, grandTotal } = calcBtw(inv.lineItems || [])
   const btwTotal = Object.values(btwGroups).reduce((s, v) => s + v, 0)
   return {
-    Naam: inv.client?.name || '',
-    Factuurnummer: inv.invoiceNumber,
-    Datum: inv.date,
-    'Excl. BTW': +subtotal.toFixed(2),
-    'BTW bedrag': +btwTotal.toFixed(2),
-    'Totaal incl. BTW': +grandTotal.toFixed(2),
-    Status: inv.status,
+    naam:   inv.client?.name || '',
+    nummer: inv.invoiceNumber,
+    datum:  inv.date,
+    excl:   +subtotal.toFixed(2),
+    btw:    +btwTotal.toFixed(2),
+    totaal: +grandTotal.toFixed(2),
+    status: inv.status,
   }
 }
 
-export function exportInvoicesToExcel(invoices) {
-  const wb = XLSX.utils.book_new()
+function addSheet(wb, name, rows, totalsRow) {
+  const ws = wb.addWorksheet(name.substring(0, 31))
+  ws.columns = COLS
+  ws.getRow(1).font = { bold: true }
+  rows.forEach(r => ws.addRow(r))
+  if (totalsRow) {
+    const tr = ws.addRow(totalsRow)
+    tr.font = { bold: true }
+  }
+  return ws
+}
+
+function sumRows(rows, key) {
+  return +rows.reduce((s, r) => s + (r[key] || 0), 0).toFixed(2)
+}
+
+export async function exportInvoicesToExcel(invoices) {
+  const wb = new ExcelJS.Workbook()
+  wb.creator = 'Omniworx Factuur'
+  wb.created = new Date()
 
   // Group by month
   const groups = {}
@@ -40,81 +68,43 @@ export function exportInvoicesToExcel(invoices) {
     if (!groups[key]) groups[key] = { label: monthLabel(inv.date), items: [] }
     groups[key].items.push(inv)
   }
-
   const sortedKeys = Object.keys(groups).sort()
 
   // One sheet per month
   for (const key of sortedKeys) {
     const { label, items } = groups[key]
     const rows = items.map(invoiceToRow)
-
-    // Totals row
-    const totalsRow = {
-      Naam: 'TOTAAL',
-      Factuurnummer: '',
-      Datum: '',
-      'Excl. BTW': +rows.reduce((s, r) => s + r['Excl. BTW'], 0).toFixed(2),
-      'BTW bedrag': +rows.reduce((s, r) => s + r['BTW bedrag'], 0).toFixed(2),
-      'Totaal incl. BTW': +rows.reduce((s, r) => s + r['Totaal incl. BTW'], 0).toFixed(2),
-      Status: '',
-    }
-
-    const ws = XLSX.utils.json_to_sheet([...rows, totalsRow])
-    applyColumnWidths(ws, rows)
-    XLSX.utils.book_append_sheet(wb, ws, label.substring(0, 31))
+    const totalsRow = { naam: 'TOTAAL', nummer: '', datum: '', excl: sumRows(rows, 'excl'), btw: sumRows(rows, 'btw'), totaal: sumRows(rows, 'totaal'), status: '' }
+    addSheet(wb, label, rows, totalsRow)
   }
 
-  // Summary sheet with all invoices + grand totals
-  const allRows = invoices.map(invoiceToRow)
-  const summaryRows = []
+  // Summary sheet
+  const summaryWs = wb.addWorksheet('Overzicht')
+  summaryWs.columns = COLS
+  summaryWs.getRow(1).font = { bold: true }
 
+  const allRows = []
   for (const key of sortedKeys) {
     const { label, items } = groups[key]
-    summaryRows.push({ Naam: `── ${label} ──`, Factuurnummer: '', Datum: '', 'Excl. BTW': '', 'BTW bedrag': '', 'Totaal incl. BTW': '', Status: '' })
-    for (const inv of items) {
-      summaryRows.push(invoiceToRow(inv))
-    }
     const monthRows = items.map(invoiceToRow)
-    summaryRows.push({
-      Naam: 'Subtotaal',
-      Factuurnummer: '',
-      Datum: '',
-      'Excl. BTW': +monthRows.reduce((s, r) => s + r['Excl. BTW'], 0).toFixed(2),
-      'BTW bedrag': +monthRows.reduce((s, r) => s + r['BTW bedrag'], 0).toFixed(2),
-      'Totaal incl. BTW': +monthRows.reduce((s, r) => s + r['Totaal incl. BTW'], 0).toFixed(2),
-      Status: '',
-    })
-    summaryRows.push({ Naam: '', Factuurnummer: '', Datum: '', 'Excl. BTW': '', 'BTW bedrag': '', 'Totaal incl. BTW': '', Status: '' })
+    summaryWs.addRow({ naam: `── ${label} ──` }).font = { italic: true }
+    monthRows.forEach(r => { summaryWs.addRow(r); allRows.push(r) })
+    const sub = summaryWs.addRow({ naam: 'Subtotaal', excl: sumRows(monthRows, 'excl'), btw: sumRows(monthRows, 'btw'), totaal: sumRows(monthRows, 'totaal') })
+    sub.font = { bold: true }
+    summaryWs.addRow({})
   }
+  const grand = summaryWs.addRow({ naam: 'GRAND TOTAL', excl: sumRows(allRows, 'excl'), btw: sumRows(allRows, 'btw'), totaal: sumRows(allRows, 'totaal') })
+  grand.font = { bold: true }
 
-  // Grand total row
-  summaryRows.push({
-    Naam: 'GRAND TOTAL',
-    Factuurnummer: '',
-    Datum: '',
-    'Excl. BTW': +allRows.reduce((s, r) => s + r['Excl. BTW'], 0).toFixed(2),
-    'BTW bedrag': +allRows.reduce((s, r) => s + r['BTW bedrag'], 0).toFixed(2),
-    'Totaal incl. BTW': +allRows.reduce((s, r) => s + r['Totaal incl. BTW'], 0).toFixed(2),
-    Status: '',
-  })
-
-  const summaryWs = XLSX.utils.json_to_sheet(summaryRows)
-  applyColumnWidths(summaryWs, summaryRows)
-  XLSX.utils.book_append_sheet(wb, summaryWs, 'Overzicht')
-
-  const year = new Date().getFullYear()
-  XLSX.writeFile(wb, `Omniworx-Facturen-${year}.xlsx`)
-}
-
-function applyColumnWidths(ws, rows) {
-  const cols = [
-    { wch: 28 }, // Naam
-    { wch: 16 }, // Factuurnummer
-    { wch: 12 }, // Datum
-    { wch: 14 }, // Excl. BTW
-    { wch: 14 }, // BTW bedrag
-    { wch: 18 }, // Totaal incl. BTW
-    { wch: 12 }, // Status
-  ]
-  ws['!cols'] = cols
+  // Download in browser
+  const buffer = await wb.xlsx.writeBuffer()
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `Omniworx-Facturen-${new Date().getFullYear()}.xlsx`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
