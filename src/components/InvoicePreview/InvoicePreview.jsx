@@ -121,10 +121,11 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
             {t('invoice_title')}
           </h1>
           <div style={{
-            display: 'inline-block',
+            display: 'inline-flex',
+            alignItems: 'center',
             background: BRAND_GREEN, color: BRAND_GOLD,
             fontFamily: 'Poppins, sans-serif', fontWeight: 700, fontSize: 14,
-            height: 28, lineHeight: '12px',
+            height: 28, lineHeight: 1,
             padding: '0 14px', borderRadius: 20, marginBottom: 14, letterSpacing: 1,
           }}>
             #{invoice.invoiceNumber}
