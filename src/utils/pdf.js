@@ -63,15 +63,32 @@ async function captureElement(element, filename) {
   })
   document.body.appendChild(clone)
 
-  // Let the browser lay out the clone before html2canvas measures it
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+  // overflow-x:hidden on <html>/<body> clips the 794px clone on a 390px mobile
+  // viewport — temporarily allow overflow so html2canvas sees the full width
+  const htmlEl = document.documentElement
+  const bodyEl = document.body
+  const prevHtmlOX = htmlEl.style.overflowX
+  const prevBodyOX = bodyEl.style.overflowX
+  htmlEl.style.overflowX = 'visible'
+  bodyEl.style.overflowX = 'visible'
+
+  // Wait for fonts + layout (important on slower/newer Android devices)
+  await document.fonts.ready
+  await new Promise(r => setTimeout(r, 500))
 
   try {
     const canvas = await html2canvas(clone, {
-      scale: 2,
+      scale: 1.5,
       useCORS: true,
+      allowTaint: true,
       logging: false,
+      width: 794,
+      height: clone.scrollHeight,
       windowWidth: 794,
+      windowHeight: clone.scrollHeight,
+      foreignObjectRendering: false,
+      imageTimeout: 15000,
+      backgroundColor: '#ffffff',
     })
 
     const previewDataUrl = canvas.toDataURL('image/jpeg', 0.88)
@@ -114,6 +131,8 @@ async function captureElement(element, filename) {
     const blob = pdf.output('blob')
     return { blob, previewDataUrl }
   } finally {
+    htmlEl.style.overflowX = prevHtmlOX
+    bodyEl.style.overflowX = prevBodyOX
     document.body.removeChild(clone)
     document.body.removeChild(overlay)
   }
