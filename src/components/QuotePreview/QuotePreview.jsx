@@ -132,6 +132,10 @@ export const QuotePreview = forwardRef(function QuotePreview({ quote }, ref) {
           </h1>
           <div style={{ fontSize: 13, lineHeight: 2, color: '#374151' }}>
             <div>
+              <span style={{ color: '#6b7280', marginInlineEnd: 8 }}>{t('quote_number')}:</span>
+              <strong>#{quote.quoteNumber}</strong>
+            </div>
+            <div>
               <span style={{ color: '#6b7280', marginInlineEnd: 8 }}>{t('quote_date')}:</span>
               <strong>{formatDate(quote.date, quoteLang)}</strong>
             </div>

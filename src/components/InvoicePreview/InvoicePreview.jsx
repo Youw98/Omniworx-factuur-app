@@ -122,6 +122,10 @@ export const InvoicePreview = forwardRef(function InvoicePreview({ invoice }, re
           </h1>
           <div style={{ fontSize: 13, lineHeight: 2, color: '#374151' }}>
             <div>
+              <span style={{ color: '#6b7280', marginInlineEnd: 8 }}>{t('invoice_number')}:</span>
+              <strong>#{invoice.invoiceNumber}</strong>
+            </div>
+            <div>
               <span style={{ color: '#6b7280', marginInlineEnd: 8 }}>{t('invoice_date')}:</span>
               <strong>{formatDate(invoice.date, invoiceLang)}</strong>
             </div>
