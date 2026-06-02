@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useInvoices } from '../hooks/useInvoices'
@@ -20,11 +20,10 @@ export function InvoiceDetail() {
   const { getInvoice, markPaid, markUnpaid, deleteInvoice } = useInvoices()
   const showToast = useToast()
   const invoice = getInvoice(id)
-  const previewRef = useRef(null)
 
   const [generating, setGenerating] = useState(false)
   const [pdfBlob, setPdfBlob] = useState(null)
-  const [previewDataUrl, setPreviewDataUrl] = useState(null)
+  const [pdfReady, setPdfReady] = useState(false)
   const [sharing, setSharing] = useState(false)
   const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
@@ -42,11 +41,10 @@ export function InvoiceDetail() {
     setGenerating(true)
     setError('')
     try {
-      const { blob, previewDataUrl: dataUrl } = await generateInvoicePdf(previewRef.current, invoice.invoiceNumber)
-      // Pre-merge AV so share fires instantly from the button tap (no async gap)
+      const { blob } = await generateInvoicePdf(invoice)
       const merged = await mergeWithAV(blob)
       setPdfBlob(merged)
-      setPreviewDataUrl(dataUrl)
+      setPdfReady(true)
     } catch (e) {
       console.error(e)
       setError(t('error_pdf'))
@@ -69,7 +67,7 @@ export function InvoiceDetail() {
   }
 
   const handleCloseViewer = () => {
-    setPreviewDataUrl(null)
+    setPdfReady(false)
     setPdfBlob(null)
   }
 
@@ -113,13 +111,13 @@ export function InvoiceDetail() {
       {/* Invoice preview scaled to fit screen */}
       <div className="flex-1 p-4 pb-24 overflow-hidden">
         <ScaledPreview>
-          <InvoicePreview ref={previewRef} invoice={invoice} />
+          <InvoicePreview invoice={invoice} />
         </ScaledPreview>
       </div>
 
-      {previewDataUrl && (
+      {pdfReady && (
         <PdfViewerModal
-          previewDataUrl={previewDataUrl}
+          docTitle={`Factuur #${invoice.invoiceNumber}`}
           onClose={handleCloseViewer}
           onShare={handleShare}
           sharing={sharing}

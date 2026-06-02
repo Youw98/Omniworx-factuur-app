@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuotes } from '../hooks/useQuotes'
@@ -30,11 +30,10 @@ export function QuoteDetail() {
   const { settings } = useSettings()
   const showToast = useToast()
   const quote = getQuote(id)
-  const previewRef = useRef(null)
 
   const [generating, setGenerating] = useState(false)
   const [pdfBlob, setPdfBlob] = useState(null)
-  const [previewDataUrl, setPreviewDataUrl] = useState(null)
+  const [pdfReady, setPdfReady] = useState(false)
   const [sharing, setSharing] = useState(false)
   const [error, setError] = useState('')
   const [showDelete, setShowDelete] = useState(false)
@@ -54,11 +53,10 @@ export function QuoteDetail() {
     setGenerating(true)
     setError('')
     try {
-      const { blob, previewDataUrl: dataUrl } = await generateQuotePdf(previewRef.current, quote.quoteNumber)
-      // Pre-merge AV so share fires instantly from the button tap (no async gap)
+      const { blob } = await generateQuotePdf(quote)
       const merged = await mergeWithAV(blob)
       setPdfBlob(merged)
-      setPreviewDataUrl(dataUrl)
+      setPdfReady(true)
     } catch (e) {
       console.error(e)
       setError(t('error_pdf'))
@@ -81,7 +79,7 @@ export function QuoteDetail() {
   }
 
   const handleCloseViewer = () => {
-    setPreviewDataUrl(null)
+    setPdfReady(false)
     setPdfBlob(null)
   }
 
@@ -153,13 +151,13 @@ export function QuoteDetail() {
       {/* Quote preview scaled to fit screen */}
       <div className="flex-1 p-4 pb-24 overflow-hidden">
         <ScaledPreview>
-          <QuotePreview ref={previewRef} quote={quote} />
+          <QuotePreview quote={quote} />
         </ScaledPreview>
       </div>
 
-      {previewDataUrl && (
+      {pdfReady && (
         <PdfViewerModal
-          previewDataUrl={previewDataUrl}
+          docTitle={`Offerte #${quote.quoteNumber}`}
           onClose={handleCloseViewer}
           onShare={handleShare}
           sharing={sharing}
